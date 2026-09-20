@@ -1,5 +1,5 @@
-import { Link } from '@inertiajs/react';
 import {
+    HardDrive,
     Headset,
     LayoutGrid,
     Server,
@@ -27,7 +27,9 @@ import { index as adUsers } from '@/routes/ad-users';
 import { index as itSupport } from '@/routes/it-support';
 import { index as serverModels } from '@/routes/server-models';
 import { index as serverServices } from '@/routes/server-services';
+import { index as servers } from '@/routes/servers';
 import type { NavItem } from '@/types';
+import { Link } from '@inertiajs/react';
 
 const platformItems: NavItem[] = [
     {
@@ -46,6 +48,11 @@ const directoryItems: NavItem[] = [
 ];
 
 const infrastructureItems: NavItem[] = [
+    {
+        title: 'Servers',
+        href: servers(),
+        icon: HardDrive,
+    },
     {
         title: 'Server Models',
         href: serverModels(),

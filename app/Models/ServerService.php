@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -16,6 +17,14 @@ use Illuminate\Support\Carbon;
 #[Fillable(['name'])]
 class ServerService extends Model
 {
+    /**
+     * @return BelongsToMany<Server, $this>
+     */
+    public function servers(): BelongsToMany
+    {
+        return $this->belongsToMany(Server::class)->withTimestamps();
+    }
+
     /**
      * @param  Builder<ServerService>  $query
      * @return Builder<ServerService>

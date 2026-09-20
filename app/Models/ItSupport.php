@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -18,6 +19,14 @@ use Illuminate\Support\Carbon;
 #[Fillable(['name', 'lastname', 'pbx'])]
 class ItSupport extends Model
 {
+    /**
+     * @return HasMany<Server, $this>
+     */
+    public function servers(): HasMany
+    {
+        return $this->hasMany(Server::class);
+    }
+
     /**
      * @param  Builder<ItSupport>  $query
      * @return Builder<ItSupport>
