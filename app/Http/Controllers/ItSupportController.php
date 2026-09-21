@@ -3,17 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Concerns\HandlesResourceIndexQuery;
+use App\Http\Controllers\Concerns\HasModelPermissionMiddleware;
 use App\Http\Requests\StoreItSupportRequest;
 use App\Http\Requests\UpdateItSupportRequest;
 use App\Models\ItSupport;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class ItSupportController extends Controller
+class ItSupportController extends Controller implements HasMiddleware
 {
     use HandlesResourceIndexQuery;
+    use HasModelPermissionMiddleware;
+
+    public static function middleware(): array
+    {
+        return self::modelPermissionMiddleware('it_support');
+    }
 
     /** @var list<string> */
     private const SORTABLE = ['name', 'lastname', 'pbx', 'created_at', 'updated_at'];

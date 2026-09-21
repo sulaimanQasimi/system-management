@@ -14,6 +14,7 @@ import ActiveDirectoryUserController from '@/actions/App/Http/Controllers/Active
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useCan } from '@/hooks/use-can';
 import { create, edit, index } from '@/routes/ad-users';
 
 type AdUserRow = {
@@ -146,6 +147,7 @@ export default function AdUsersIndex({
     filters: Filters;
     perPageOptions: number[];
 }) {
+    const { can } = useCan();
     const [search, setSearch] = useState(filters.search);
     const [job, setJob] = useState(filters.job);
     const [dateFrom, setDateFrom] = useState(filters.date_from);
@@ -201,12 +203,14 @@ export default function AdUsersIndex({
                             Manage directory accounts for the Network Section.
                         </p>
                     </div>
-                    <Button asChild>
-                        <Link href={create()}>
-                            <Plus />
-                            Add user
-                        </Link>
-                    </Button>
+                    {can('ad_user.create') && (
+                        <Button asChild>
+                            <Link href={create()}>
+                                <Plus />
+                                Add user
+                            </Link>
+                        </Button>
+                    )}
                 </div>
 
                 <div className="border-border bg-card rounded-xl border p-4">
@@ -443,56 +447,64 @@ export default function AdUsersIndex({
                                             </td>
                                             <td className="px-4 py-3">
                                                 <div className="flex items-center justify-end gap-1">
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        asChild
-                                                    >
-                                                        <Link
-                                                            href={edit(
+                                                    {can('ad_user.update') && (
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            asChild
+                                                        >
+                                                            <Link
+                                                                href={edit(
+                                                                    user.id,
+                                                                )}
+                                                            >
+                                                                <Pencil />
+                                                                <span className="sr-only">
+                                                                    Edit
+                                                                </span>
+                                                            </Link>
+                                                        </Button>
+                                                    )}
+                                                    {can('ad_user.delete') && (
+                                                        <Form
+                                                            {...ActiveDirectoryUserController.destroy.form(
                                                                 user.id,
                                                             )}
-                                                        >
-                                                            <Pencil />
-                                                            <span className="sr-only">
-                                                                Edit
-                                                            </span>
-                                                        </Link>
-                                                    </Button>
-                                                    <Form
-                                                        {...ActiveDirectoryUserController.destroy.form(
-                                                            user.id,
-                                                        )}
-                                                        options={{
-                                                            preserveScroll: true,
-                                                        }}
-                                                        onSubmit={(event) => {
-                                                            if (
-                                                                !confirm(
-                                                                    'Delete this Active Directory user?',
-                                                                )
-                                                            ) {
-                                                                event.preventDefault();
-                                                            }
-                                                        }}
-                                                    >
-                                                        {({ processing }) => (
-                                                            <Button
-                                                                type="submit"
-                                                                variant="ghost"
-                                                                size="icon"
-                                                                disabled={
-                                                                    processing
+                                                            options={{
+                                                                preserveScroll: true,
+                                                            }}
+                                                            onSubmit={(
+                                                                event,
+                                                            ) => {
+                                                                if (
+                                                                    !confirm(
+                                                                        'Delete this Active Directory user?',
+                                                                    )
+                                                                ) {
+                                                                    event.preventDefault();
                                                                 }
-                                                                className="text-destructive hover:text-destructive"
-                                                            >
-                                                                <Trash2 />
-                                                                <span className="sr-only">
-                                                                    Delete
-                                                                </span>
-                                                            </Button>
-                                                        )}
-                                                    </Form>
+                                                            }}
+                                                        >
+                                                            {({
+                                                                processing,
+                                                            }) => (
+                                                                <Button
+                                                                    type="submit"
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    disabled={
+                                                                        processing
+                                                                    }
+                                                                    className="text-destructive hover:text-destructive"
+                                                                >
+                                                                    <Trash2 />
+                                                                    <span className="sr-only">
+                                                                        Delete
+                                                                    </span>
+                                                                </Button>
+                                                            )}
+                                                        </Form>
+                                                    )}
                                                 </div>
                                             </td>
                                         </tr>

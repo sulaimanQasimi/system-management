@@ -3,17 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Concerns\HandlesResourceIndexQuery;
+use App\Http\Controllers\Concerns\HasModelPermissionMiddleware;
 use App\Http\Requests\StoreServerModelRequest;
 use App\Http\Requests\UpdateServerModelRequest;
 use App\Models\ServerModel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class ServerModelController extends Controller
+class ServerModelController extends Controller implements HasMiddleware
 {
     use HandlesResourceIndexQuery;
+    use HasModelPermissionMiddleware;
+
+    public static function middleware(): array
+    {
+        return self::modelPermissionMiddleware('server_model');
+    }
 
     /** @var list<string> */
     private const SORTABLE = ['name', 'created_at', 'updated_at'];

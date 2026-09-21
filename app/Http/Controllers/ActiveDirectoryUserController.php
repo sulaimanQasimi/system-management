@@ -2,17 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\HasModelPermissionMiddleware;
 use App\Http\Requests\StoreActiveDirectoryUserRequest;
 use App\Http\Requests\UpdateActiveDirectoryUserRequest;
 use App\Models\ActiveDirectoryUser;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class ActiveDirectoryUserController extends Controller
+class ActiveDirectoryUserController extends Controller implements HasMiddleware
 {
+    use HasModelPermissionMiddleware;
+
+    public static function middleware(): array
+    {
+        return self::modelPermissionMiddleware('ad_user');
+    }
+
     /** @var list<int> */
     private const PER_PAGE_OPTIONS = [10, 15, 25, 50, 100];
 

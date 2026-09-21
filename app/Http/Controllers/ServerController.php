@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Concerns\HandlesResourceIndexQuery;
 use App\Enums\ServerStatus;
+use App\Http\Controllers\Concerns\HasModelPermissionMiddleware;
 use App\Http\Requests\StoreServerRequest;
 use App\Http\Requests\UpdateServerRequest;
 use App\Models\Department;
@@ -13,14 +14,21 @@ use App\Models\ServerModel;
 use App\Models\ServerService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class ServerController extends Controller
+class ServerController extends Controller implements HasMiddleware
 {
     use HandlesResourceIndexQuery;
+    use HasModelPermissionMiddleware;
+
+    public static function middleware(): array
+    {
+        return self::modelPermissionMiddleware('server');
+    }
 
     /** @var list<string> */
     private const SORTABLE = [

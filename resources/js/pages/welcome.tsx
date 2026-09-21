@@ -1,6 +1,6 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { ArrowRight, Network } from 'lucide-react';
-import { dashboard, login, register } from '@/routes';
+import { dashboard, login } from '@/routes';
 
 export default function Welcome() {
     const { auth, name } = usePage().props;
@@ -104,21 +104,13 @@ export default function Welcome() {
                                 <ArrowRight className="size-4" />
                             </Link>
                         ) : (
-                            <>
-                                <Link
-                                    href={login()}
-                                    className="rounded-md px-4 py-2 text-white/80 transition hover:bg-white/10 hover:text-white"
-                                >
-                                    Log in
-                                </Link>
-                                <Link
-                                    href={register()}
-                                    className="inline-flex items-center gap-2 rounded-md bg-[oklch(0.72_0.12_195)] px-4 py-2 font-medium text-[oklch(0.16_0.04_240)] transition hover:brightness-110"
-                                >
-                                    Request access
-                                    <ArrowRight className="size-4" />
-                                </Link>
-                            </>
+                            <Link
+                                href={login()}
+                                className="inline-flex items-center gap-2 rounded-md bg-[oklch(0.72_0.12_195)] px-4 py-2 font-medium text-[oklch(0.16_0.04_240)] transition hover:brightness-110"
+                            >
+                                Log in
+                                <ArrowRight className="size-4" />
+                            </Link>
                         )}
                     </nav>
                 </header>
@@ -145,21 +137,13 @@ export default function Welcome() {
                                 <ArrowRight className="size-4" />
                             </Link>
                         ) : (
-                            <>
-                                <Link
-                                    href={login()}
-                                    className="inline-flex items-center gap-2 rounded-md bg-white px-5 py-2.5 text-sm font-semibold text-[oklch(0.18_0.04_240)] transition hover:bg-white/90"
-                                >
-                                    Sign in
-                                    <ArrowRight className="size-4" />
-                                </Link>
-                                <Link
-                                    href={register()}
-                                    className="rounded-md border border-white/25 px-5 py-2.5 text-sm font-medium text-white/90 transition hover:border-white/45 hover:bg-white/5"
-                                >
-                                    Create account
-                                </Link>
-                            </>
+                            <Link
+                                href={login()}
+                                className="inline-flex items-center gap-2 rounded-md bg-white px-5 py-2.5 text-sm font-semibold text-[oklch(0.18_0.04_240)] transition hover:bg-white/90"
+                            >
+                                Sign in
+                                <ArrowRight className="size-4" />
+                            </Link>
                         )}
                     </div>
                 </main>

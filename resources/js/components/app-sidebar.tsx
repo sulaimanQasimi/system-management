@@ -1,9 +1,11 @@
+import { Link } from '@inertiajs/react';
 import {
     HardDrive,
     Headset,
     LayoutGrid,
     Server,
     ServerCog,
+    UserRound,
     Users,
 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
@@ -21,6 +23,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { useCan } from '@/hooks/use-can';
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import { dashboard } from '@/routes';
 import { index as adUsers } from '@/routes/ad-users';
@@ -28,8 +31,8 @@ import { index as itSupport } from '@/routes/it-support';
 import { index as serverModels } from '@/routes/server-models';
 import { index as serverServices } from '@/routes/server-services';
 import { index as servers } from '@/routes/servers';
+import { index as users } from '@/routes/users';
 import type { NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
 
 const platformItems: NavItem[] = [
     {
@@ -39,48 +42,28 @@ const platformItems: NavItem[] = [
     },
 ];
 
-const directoryItems: NavItem[] = [
-    {
-        title: 'AD Users',
-        href: adUsers(),
-        icon: Users,
-    },
-];
-
-const infrastructureItems: NavItem[] = [
-    {
-        title: 'Servers',
-        href: servers(),
-        icon: HardDrive,
-    },
-    {
-        title: 'Server Models',
-        href: serverModels(),
-        icon: Server,
-    },
-    {
-        title: 'Server Services',
-        href: serverServices(),
-        icon: ServerCog,
-    },
-];
-
-const supportItems: NavItem[] = [
-    {
-        title: 'IT Support',
-        href: itSupport(),
-        icon: Headset,
-    },
-];
-
-function NavSection({ label, items }: { label: string; items: NavItem[] }) {
+function NavSection({
+    label,
+    items,
+}: {
+    label: string;
+    items: (NavItem & { permission?: string })[];
+}) {
     const { isCurrentUrl } = useCurrentUrl();
+    const { can } = useCan();
+    const visible = items.filter(
+        (item) => !item.permission || can(item.permission),
+    );
+
+    if (visible.length === 0) {
+        return null;
+    }
 
     return (
         <SidebarGroup className="px-2 py-0">
             <SidebarGroupLabel>{label}</SidebarGroupLabel>
             <SidebarMenu>
-                {items.map((item) => (
+                {visible.map((item) => (
                     <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton
                             asChild
@@ -102,6 +85,54 @@ function NavSection({ label, items }: { label: string; items: NavItem[] }) {
 const footerNavItems: NavItem[] = [];
 
 export function AppSidebar() {
+    const directoryItems = [
+        {
+            title: 'AD Users',
+            href: adUsers(),
+            icon: Users,
+            permission: 'ad_user.view',
+        },
+    ];
+
+    const infrastructureItems = [
+        {
+            title: 'Servers',
+            href: servers(),
+            icon: HardDrive,
+            permission: 'server.view',
+        },
+        {
+            title: 'Server Models',
+            href: serverModels(),
+            icon: Server,
+            permission: 'server_model.view',
+        },
+        {
+            title: 'Server Services',
+            href: serverServices(),
+            icon: ServerCog,
+            permission: 'server_service.view',
+        },
+    ];
+
+    const supportItems = [
+        {
+            title: 'IT Support',
+            href: itSupport(),
+            icon: Headset,
+            permission: 'it_support.view',
+        },
+    ];
+
+    const adminItems = [
+        {
+            title: 'Users',
+            href: users(),
+            icon: UserRound,
+            permission: 'user.view',
+        },
+    ];
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -124,6 +155,7 @@ export function AppSidebar() {
                     items={infrastructureItems}
                 />
                 <NavSection label="Support" items={supportItems} />
+                <NavSection label="Administration" items={adminItems} />
             </SidebarContent>
 
             <SidebarFooter>

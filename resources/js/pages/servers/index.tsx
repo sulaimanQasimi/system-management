@@ -15,6 +15,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useCan } from '@/hooks/use-can';
 import { create, edit, index } from '@/routes/servers';
 
 type Option = { id: number; name: string };
@@ -77,6 +78,7 @@ export default function ServersIndex({
     services: Option[];
 }) {
     const indexUrl = index.url();
+    const { can } = useCan();
     const [siteName, setSiteName] = useState(filters.site_name);
     const [status, setStatus] = useState(filters.status);
     const [departmentId, setDepartmentId] = useState(filters.department_id);
@@ -106,12 +108,14 @@ export default function ServersIndex({
                             services, and iDRAC access.
                         </p>
                     </div>
-                    <Button asChild>
-                        <Link href={create()}>
-                            <Plus />
-                            Add server
-                        </Link>
-                    </Button>
+                    {can('server.create') && (
+                        <Button asChild>
+                            <Link href={create()}>
+                                <Plus />
+                                Add server
+                            </Link>
+                        </Button>
+                    )}
                 </div>
 
                 <ResourceFilters
@@ -394,56 +398,64 @@ export default function ServersIndex({
                                             </td>
                                             <td className="px-4 py-3">
                                                 <div className="flex items-center justify-end gap-1">
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        asChild
-                                                    >
-                                                        <Link
-                                                            href={edit(
+                                                    {can('server.update') && (
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            asChild
+                                                        >
+                                                            <Link
+                                                                href={edit(
+                                                                    server.id,
+                                                                )}
+                                                            >
+                                                                <Pencil />
+                                                                <span className="sr-only">
+                                                                    Edit
+                                                                </span>
+                                                            </Link>
+                                                        </Button>
+                                                    )}
+                                                    {can('server.delete') && (
+                                                        <Form
+                                                            {...ServerController.destroy.form(
                                                                 server.id,
                                                             )}
-                                                        >
-                                                            <Pencil />
-                                                            <span className="sr-only">
-                                                                Edit
-                                                            </span>
-                                                        </Link>
-                                                    </Button>
-                                                    <Form
-                                                        {...ServerController.destroy.form(
-                                                            server.id,
-                                                        )}
-                                                        options={{
-                                                            preserveScroll: true,
-                                                        }}
-                                                        onSubmit={(event) => {
-                                                            if (
-                                                                !confirm(
-                                                                    'Delete this server?',
-                                                                )
-                                                            ) {
-                                                                event.preventDefault();
-                                                            }
-                                                        }}
-                                                    >
-                                                        {({ processing }) => (
-                                                            <Button
-                                                                type="submit"
-                                                                variant="ghost"
-                                                                size="icon"
-                                                                disabled={
-                                                                    processing
+                                                            options={{
+                                                                preserveScroll: true,
+                                                            }}
+                                                            onSubmit={(
+                                                                event,
+                                                            ) => {
+                                                                if (
+                                                                    !confirm(
+                                                                        'Delete this server?',
+                                                                    )
+                                                                ) {
+                                                                    event.preventDefault();
                                                                 }
-                                                                className="text-destructive hover:text-destructive"
-                                                            >
-                                                                <Trash2 />
-                                                                <span className="sr-only">
-                                                                    Delete
-                                                                </span>
-                                                            </Button>
-                                                        )}
-                                                    </Form>
+                                                            }}
+                                                        >
+                                                            {({
+                                                                processing,
+                                                            }) => (
+                                                                <Button
+                                                                    type="submit"
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    disabled={
+                                                                        processing
+                                                                    }
+                                                                    className="text-destructive hover:text-destructive"
+                                                                >
+                                                                    <Trash2 />
+                                                                    <span className="sr-only">
+                                                                        Delete
+                                                                    </span>
+                                                                </Button>
+                                                            )}
+                                                        </Form>
+                                                    )}
                                                 </div>
                                             </td>
                                         </tr>

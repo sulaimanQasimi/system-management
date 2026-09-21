@@ -14,6 +14,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useCan } from '@/hooks/use-can';
 import { create, edit, index } from '@/routes/it-support';
 
 type ItSupportRow = {
@@ -39,6 +40,7 @@ export default function ItSupportIndex({
     perPageOptions: number[];
 }) {
     const indexUrl = index.url();
+    const { can } = useCan();
     const [pbx, setPbx] = useState(filters.pbx);
 
     useEffect(() => {
@@ -60,12 +62,14 @@ export default function ItSupportIndex({
                             department.
                         </p>
                     </div>
-                    <Button asChild>
-                        <Link href={create()}>
-                            <Plus />
-                            Add contact
-                        </Link>
-                    </Button>
+                    {can('it_support.create') && (
+                        <Button asChild>
+                            <Link href={create()}>
+                                <Plus />
+                                Add contact
+                            </Link>
+                        </Button>
+                    )}
                 </div>
 
                 <ResourceFilters
@@ -180,56 +184,68 @@ export default function ItSupportIndex({
                                             </td>
                                             <td className="px-4 py-3">
                                                 <div className="flex items-center justify-end gap-1">
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        asChild
-                                                    >
-                                                        <Link
-                                                            href={edit(
+                                                    {can(
+                                                        'it_support.update',
+                                                    ) && (
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            asChild
+                                                        >
+                                                            <Link
+                                                                href={edit(
+                                                                    contact.id,
+                                                                )}
+                                                            >
+                                                                <Pencil />
+                                                                <span className="sr-only">
+                                                                    Edit
+                                                                </span>
+                                                            </Link>
+                                                        </Button>
+                                                    )}
+                                                    {can(
+                                                        'it_support.delete',
+                                                    ) && (
+                                                        <Form
+                                                            {...ItSupportController.destroy.form(
                                                                 contact.id,
                                                             )}
-                                                        >
-                                                            <Pencil />
-                                                            <span className="sr-only">
-                                                                Edit
-                                                            </span>
-                                                        </Link>
-                                                    </Button>
-                                                    <Form
-                                                        {...ItSupportController.destroy.form(
-                                                            contact.id,
-                                                        )}
-                                                        options={{
-                                                            preserveScroll: true,
-                                                        }}
-                                                        onSubmit={(event) => {
-                                                            if (
-                                                                !confirm(
-                                                                    'Delete this IT Support contact?',
-                                                                )
-                                                            ) {
-                                                                event.preventDefault();
-                                                            }
-                                                        }}
-                                                    >
-                                                        {({ processing }) => (
-                                                            <Button
-                                                                type="submit"
-                                                                variant="ghost"
-                                                                size="icon"
-                                                                disabled={
-                                                                    processing
+                                                            options={{
+                                                                preserveScroll: true,
+                                                            }}
+                                                            onSubmit={(
+                                                                event,
+                                                            ) => {
+                                                                if (
+                                                                    !confirm(
+                                                                        'Delete this IT Support contact?',
+                                                                    )
+                                                                ) {
+                                                                    event.preventDefault();
                                                                 }
-                                                                className="text-destructive hover:text-destructive"
-                                                            >
-                                                                <Trash2 />
-                                                                <span className="sr-only">
-                                                                    Delete
-                                                                </span>
-                                                            </Button>
-                                                        )}
-                                                    </Form>
+                                                            }}
+                                                        >
+                                                            {({
+                                                                processing,
+                                                            }) => (
+                                                                <Button
+                                                                    type="submit"
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    disabled={
+                                                                        processing
+                                                                    }
+                                                                    className="text-destructive hover:text-destructive"
+                                                                >
+                                                                    <Trash2 />
+                                                                    <span className="sr-only">
+                                                                        Delete
+                                                                    </span>
+                                                                </Button>
+                                                            )}
+                                                        </Form>
+                                                    )}
                                                 </div>
                                             </td>
                                         </tr>

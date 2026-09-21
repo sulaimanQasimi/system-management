@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useCan } from '@/hooks/use-can';
 
 export type Option = { id: number; name: string };
 export type ItSupportOption = {
@@ -121,6 +122,7 @@ export default function ServerFormFields({
     statusOptions: StatusOption[];
     isEdit?: boolean;
 }) {
+    const { can } = useCan();
     const [departmentOptions, setDepartmentOptions] =
         useState<Option[]>(departments);
     const [modelOptions, setModelOptions] = useState<Option[]>(serverModels);
@@ -256,15 +258,19 @@ export default function ServerFormFields({
                             >
                                 Department
                             </FieldIconLabel>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setDepartmentDialogOpen(true)}
-                            >
-                                <Plus />
-                                New
-                            </Button>
+                            {can('department.create') && (
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() =>
+                                        setDepartmentDialogOpen(true)
+                                    }
+                                >
+                                    <Plus />
+                                    New
+                                </Button>
+                            )}
                         </div>
                         <select
                             id="department_id"
@@ -299,15 +305,17 @@ export default function ServerFormFields({
                             >
                                 Server model
                             </FieldIconLabel>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setModelDialogOpen(true)}
-                            >
-                                <Plus />
-                                New
-                            </Button>
+                            {can('server_model.create') && (
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setModelDialogOpen(true)}
+                                >
+                                    <Plus />
+                                    New
+                                </Button>
+                            )}
                         </div>
                         <select
                             id="server_model_id"
@@ -383,15 +391,17 @@ export default function ServerFormFields({
                 description="Select all services this server currently runs."
                 icon={<ServerCog className="size-5" />}
                 action={
-                    <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setServiceDialogOpen(true)}
-                    >
-                        <Plus />
-                        New service
-                    </Button>
+                    can('server_service.create') ? (
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setServiceDialogOpen(true)}
+                        >
+                            <Plus />
+                            New service
+                        </Button>
+                    ) : undefined
                 }
             >
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

@@ -12,6 +12,8 @@ class QuickCreateController extends Controller
 {
     public function department(Request $request): JsonResponse
     {
+        abort_unless($request->user()?->can('department.create'), 403);
+
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:departments,name'],
         ]);
@@ -26,6 +28,8 @@ class QuickCreateController extends Controller
 
     public function serverModel(Request $request): JsonResponse
     {
+        abort_unless($request->user()?->can('server_model.create'), 403);
+
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:server_models,name'],
         ]);
@@ -40,6 +44,8 @@ class QuickCreateController extends Controller
 
     public function serverService(Request $request): JsonResponse
     {
+        abort_unless($request->user()?->can('server_service.create'), 403);
+
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:server_services,name'],
         ]);
