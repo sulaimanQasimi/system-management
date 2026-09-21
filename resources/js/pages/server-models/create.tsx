@@ -19,7 +19,7 @@ export default function ServerModelsCreate() {
                     description="Register a new server model type."
                 />
 
-                <div className="border-border bg-card max-w-xl rounded-xl border p-6">
+                <div className="border-border bg-card w-full rounded-xl border p-4 md:p-6">
                     <Form
                         {...ServerModelController.store.form()}
                         className="space-y-6"

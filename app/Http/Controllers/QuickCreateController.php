@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Department;
+use App\Models\ItSupport;
 use App\Models\ServerModel;
 use App\Models\ServerService;
 use Illuminate\Http\JsonResponse;
@@ -55,6 +56,25 @@ class QuickCreateController extends Controller
         return response()->json([
             'id' => $service->id,
             'name' => $service->name,
+        ]);
+    }
+
+    public function itSupport(Request $request): JsonResponse
+    {
+        abort_unless($request->user()?->can('it_support.create'), 403);
+
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'lastname' => ['required', 'string', 'max:255'],
+            'pbx' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $contact = ItSupport::create($data);
+
+        return response()->json([
+            'id' => $contact->id,
+            'name' => trim($contact->name.' '.$contact->lastname),
+            'phone' => $contact->pbx,
         ]);
     }
 }

@@ -23,7 +23,7 @@ export default function ServerModelsEdit({
                     description={`Update details for ${model.name}.`}
                 />
 
-                <div className="border-border bg-card max-w-xl rounded-xl border p-6">
+                <div className="border-border bg-card w-full rounded-xl border p-4 md:p-6">
                     <Form
                         {...ServerModelController.update.form(model.id)}
                         className="space-y-6"

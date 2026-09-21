@@ -43,6 +43,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('server-models');
         Route::post('server-services', [QuickCreateController::class, 'serverService'])
             ->name('server-services');
+        Route::post('it-support', [QuickCreateController::class, 'itSupport'])
+            ->name('it-support');
     });
 });
 

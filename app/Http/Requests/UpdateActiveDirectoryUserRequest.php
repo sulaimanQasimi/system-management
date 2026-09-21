@@ -8,9 +8,23 @@ use Illuminate\Validation\Rule;
 
 class UpdateActiveDirectoryUserRequest extends FormRequest
 {
+    private const EMAIL_DOMAIN = 'mov.gov.af';
+
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $username = trim((string) $this->input('username', ''));
+
+        $this->merge([
+            'username' => $username,
+            'email' => $username !== ''
+                ? $username.'@'.self::EMAIL_DOMAIN
+                : null,
+        ]);
     }
 
     /**
@@ -38,7 +52,6 @@ class UpdateActiveDirectoryUserRequest extends FormRequest
             'job' => ['nullable', 'string', 'max:255'],
             'pbx' => ['nullable', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:255'],
-            'date' => ['nullable', 'date'],
         ];
     }
 }

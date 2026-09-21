@@ -23,7 +23,7 @@ export default function ServerServicesEdit({
                     description={`Update details for ${service.name}.`}
                 />
 
-                <div className="border-border bg-card max-w-xl rounded-xl border p-6">
+                <div className="border-border bg-card w-full rounded-xl border p-4 md:p-6">
                     <Form
                         {...ServerServiceController.update.form(service.id)}
                         className="space-y-6"

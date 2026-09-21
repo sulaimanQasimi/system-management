@@ -128,7 +128,6 @@ class ActiveDirectoryUserController extends Controller implements HasMiddleware
                 'job' => $activeDirectoryUser->job,
                 'pbx' => $activeDirectoryUser->pbx,
                 'phone' => $activeDirectoryUser->phone,
-                'date' => $activeDirectoryUser->date?->toDateString(),
             ],
         ]);
     }

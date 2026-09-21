@@ -19,7 +19,7 @@ export default function ItSupportCreate() {
                     description="Register a new support contact and PBX."
                 />
 
-                <div className="border-border bg-card max-w-2xl rounded-xl border p-6">
+                <div className="border-border bg-card w-full rounded-xl border p-4 md:p-6">
                     <Form
                         {...ItSupportController.store.form()}
                         className="space-y-6"
@@ -50,7 +50,7 @@ export default function ItSupportCreate() {
                                         />
                                         <InputError message={errors.lastname} />
                                     </div>
-                                    <div className="grid gap-2 sm:col-span-2 sm:max-w-xs">
+                                    <div className="grid gap-2">
                                         <Label htmlFor="pbx">PBX</Label>
                                         <Input
                                             id="pbx"

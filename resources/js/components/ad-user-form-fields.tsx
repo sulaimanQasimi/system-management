@@ -1,6 +1,9 @@
+import { useState } from 'react';
 import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+
+const EMAIL_DOMAIN = 'mov.gov.af';
 
 export type AdUserFormValues = {
     name?: string;
@@ -10,8 +13,13 @@ export type AdUserFormValues = {
     job?: string | null;
     pbx?: string | null;
     phone?: string | null;
-    date?: string | null;
 };
+
+function emailFromUsername(username: string): string {
+    const local = username.trim();
+
+    return local ? `${local}@${EMAIL_DOMAIN}` : '';
+}
 
 export default function AdUserFormFields({
     values = {},
@@ -20,8 +28,13 @@ export default function AdUserFormFields({
     values?: AdUserFormValues;
     errors?: Partial<Record<keyof AdUserFormValues, string>>;
 }) {
+    const [username, setUsername] = useState(values.username ?? '');
+    const [email, setEmail] = useState(
+        values.email ?? emailFromUsername(values.username ?? ''),
+    );
+
     return (
-        <div className="grid gap-6 sm:grid-cols-2">
+        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
             <div className="grid gap-2">
                 <Label htmlFor="name">Name</Label>
                 <Input
@@ -54,7 +67,12 @@ export default function AdUserFormFields({
                     id="username"
                     name="username"
                     required
-                    defaultValue={values.username ?? ''}
+                    value={username}
+                    onChange={(event) => {
+                        const next = event.target.value;
+                        setUsername(next);
+                        setEmail(emailFromUsername(next));
+                    }}
                     placeholder="AD username"
                     autoComplete="username"
                 />
@@ -68,8 +86,10 @@ export default function AdUserFormFields({
                     name="email"
                     type="email"
                     required
-                    defaultValue={values.email ?? ''}
-                    placeholder="user@example.com"
+                    readOnly
+                    value={email}
+                    className="bg-muted"
+                    placeholder={`username@${EMAIL_DOMAIN}`}
                     autoComplete="email"
                 />
                 <InputError message={errors.email} />
@@ -107,17 +127,6 @@ export default function AdUserFormFields({
                     autoComplete="tel"
                 />
                 <InputError message={errors.phone} />
-            </div>
-
-            <div className="grid gap-2">
-                <Label htmlFor="date">Date</Label>
-                <Input
-                    id="date"
-                    name="date"
-                    type="date"
-                    defaultValue={values.date ?? ''}
-                />
-                <InputError message={errors.date} />
             </div>
         </div>
     );

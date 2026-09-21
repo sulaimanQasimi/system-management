@@ -52,6 +52,10 @@ export function applyListFilters(
             return;
         }
 
+        if (key === 'created_from' || key === 'created_to') {
+            return;
+        }
+
         if (key === 'sort' && value === defaultSort) {
             return;
         }
@@ -135,18 +139,10 @@ export function ResourceFilters({
     searchPlaceholder?: string;
 }) {
     const [search, setSearch] = useState(String(filters.search ?? ''));
-    const [createdFrom, setCreatedFrom] = useState(
-        String(filters.created_from ?? ''),
-    );
-    const [createdTo, setCreatedTo] = useState(
-        String(filters.created_to ?? ''),
-    );
     const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => {
         setSearch(String(filters.search ?? ''));
-        setCreatedFrom(String(filters.created_from ?? ''));
-        setCreatedTo(String(filters.created_to ?? ''));
     }, [filters]);
 
     useEffect(() => {
@@ -166,6 +162,9 @@ export function ResourceFilters({
         }
         if (key === 'per_page') {
             return Number(value) !== 15;
+        }
+        if (key === 'created_from' || key === 'created_to') {
+            return false;
         }
 
         return value !== '' && value !== null && value !== undefined;
@@ -198,42 +197,6 @@ export function ResourceFilters({
                             className="pl-9"
                         />
                     </div>
-                </div>
-
-                <div className="grid gap-2">
-                    <Label htmlFor="created_from">Created from</Label>
-                    <Input
-                        id="created_from"
-                        type="date"
-                        value={createdFrom}
-                        onChange={(event) => {
-                            const value = event.target.value;
-                            setCreatedFrom(value);
-                            applyListFilters(
-                                indexUrl,
-                                { created_from: value },
-                                filters,
-                            );
-                        }}
-                    />
-                </div>
-
-                <div className="grid gap-2">
-                    <Label htmlFor="created_to">Created to</Label>
-                    <Input
-                        id="created_to"
-                        type="date"
-                        value={createdTo}
-                        onChange={(event) => {
-                            const value = event.target.value;
-                            setCreatedTo(value);
-                            applyListFilters(
-                                indexUrl,
-                                { created_to: value },
-                                filters,
-                            );
-                        }}
-                    />
                 </div>
 
                 {extraFields}

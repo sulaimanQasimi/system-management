@@ -7,9 +7,24 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreActiveDirectoryUserRequest extends FormRequest
 {
+    private const EMAIL_DOMAIN = 'mov.gov.af';
+
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $username = trim((string) $this->input('username', ''));
+
+        $this->merge([
+            'username' => $username,
+            'email' => $username !== ''
+                ? $username.'@'.self::EMAIL_DOMAIN
+                : null,
+            'date' => now()->toDateString(),
+        ]);
     }
 
     /**
@@ -25,7 +40,7 @@ class StoreActiveDirectoryUserRequest extends FormRequest
             'job' => ['nullable', 'string', 'max:255'],
             'pbx' => ['nullable', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:255'],
-            'date' => ['nullable', 'date'],
+            'date' => ['required', 'date'],
         ];
     }
 }

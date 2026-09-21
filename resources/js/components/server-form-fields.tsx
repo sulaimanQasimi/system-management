@@ -11,10 +11,12 @@ import {
 } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 import InputError from '@/components/input-error';
+import QuickCreateItSupportDialog from '@/components/quick-create-it-support-dialog';
 import QuickCreateNameDialog from '@/components/quick-create-name-dialog';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
+import IpInput from '@/components/ui/ip-input';
 import { Label } from '@/components/ui/label';
 import { useCan } from '@/hooks/use-can';
 
@@ -47,6 +49,8 @@ export type ServerFormValues = {
 };
 
 type Errors = Partial<Record<string, string>>;
+
+const EMPTY_VALUES: ServerFormValues = {};
 
 function Section({
     title,
@@ -104,7 +108,7 @@ function FieldIconLabel({
 }
 
 export default function ServerFormFields({
-    values = {},
+    values = EMPTY_VALUES,
     errors = {},
     departments,
     serverModels,
@@ -127,6 +131,8 @@ export default function ServerFormFields({
         useState<Option[]>(departments);
     const [modelOptions, setModelOptions] = useState<Option[]>(serverModels);
     const [serviceOptions, setServiceOptions] = useState<Option[]>(services);
+    const [itSupportOptions, setItSupportOptions] =
+        useState<ItSupportOption[]>(itSupports);
 
     const [departmentId, setDepartmentId] = useState(
         values.department_id ? String(values.department_id) : '',
@@ -147,24 +153,35 @@ export default function ServerFormFields({
     const [departmentDialogOpen, setDepartmentDialogOpen] = useState(false);
     const [modelDialogOpen, setModelDialogOpen] = useState(false);
     const [serviceDialogOpen, setServiceDialogOpen] = useState(false);
+    const [itSupportDialogOpen, setItSupportDialogOpen] = useState(false);
 
     useEffect(() => {
         setDepartmentOptions(departments);
         setModelOptions(serverModels);
         setServiceOptions(services);
-    }, [departments, serverModels, services]);
+        setItSupportOptions(itSupports);
+    }, [departments, serverModels, services, itSupports]);
 
     useEffect(() => {
         setDepartmentId(
             values.department_id ? String(values.department_id) : '',
         );
+    }, [values.department_id]);
+
+    useEffect(() => {
         setServerModelId(
             values.server_model_id ? String(values.server_model_id) : '',
         );
+    }, [values.server_model_id]);
+
+    useEffect(() => {
         setSelectedServices(values.service_ids ?? []);
+    }, [values.service_ids]);
+
+    useEffect(() => {
         setItSupportId(values.it_support_id ? String(values.it_support_id) : '');
         setItSupportPhone(values.it_support_phone ?? '');
-    }, [values]);
+    }, [values.it_support_id, values.it_support_phone]);
 
     const toggleService = (id: number, checked: boolean) => {
         setSelectedServices((current) =>
@@ -176,7 +193,9 @@ export default function ServerFormFields({
 
     const onItSupportChange = (value: string) => {
         setItSupportId(value);
-        const contact = itSupports.find((item) => String(item.id) === value);
+        const contact = itSupportOptions.find(
+            (item) => String(item.id) === value,
+        );
         if (contact?.phone) {
             setItSupportPhone(contact.phone);
         }
@@ -354,32 +373,29 @@ export default function ServerFormFields({
                         >
                             Server IP address
                         </FieldIconLabel>
-                        <Input
+                        <IpInput
                             id="ip_address"
                             name="ip_address"
                             required
                             defaultValue={values.ip_address ?? ''}
-                            placeholder="10.0.0.10"
                         />
                         <InputError message={errors.ip_address} />
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="subnet_mask">Subnet mask</Label>
-                        <Input
+                        <IpInput
                             id="subnet_mask"
                             name="subnet_mask"
                             defaultValue={values.subnet_mask ?? ''}
-                            placeholder="255.255.255.0"
                         />
                         <InputError message={errors.subnet_mask} />
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="default_gateway">Default gateway</Label>
-                        <Input
+                        <IpInput
                             id="default_gateway"
                             name="default_gateway"
                             defaultValue={values.default_gateway ?? ''}
-                            placeholder="10.0.0.1"
                         />
                         <InputError message={errors.default_gateway} />
                     </div>
@@ -452,6 +468,19 @@ export default function ServerFormFields({
                 title="IT Support"
                 description="Assigned support contact and reachable phone / PBX."
                 icon={<Headset className="size-5" />}
+                action={
+                    can('it_support.create') ? (
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setItSupportDialogOpen(true)}
+                        >
+                            <Plus />
+                            New
+                        </Button>
+                    ) : undefined
+                }
             >
                 <div className="grid gap-4 md:grid-cols-2">
                     <div className="grid gap-2">
@@ -471,7 +500,7 @@ export default function ServerFormFields({
                             className="border-input bg-background h-9 w-full rounded-md border px-3 text-sm shadow-xs"
                         >
                             <option value="">Select contact</option>
-                            {itSupports.map((contact) => (
+                            {itSupportOptions.map((contact) => (
                                 <option key={contact.id} value={contact.id}>
                                     {contact.name}
                                 </option>
@@ -505,21 +534,19 @@ export default function ServerFormFields({
                 <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                     <div className="grid gap-2">
                         <Label htmlFor="idrac_ip_address">iDRAC IP address</Label>
-                        <Input
+                        <IpInput
                             id="idrac_ip_address"
                             name="idrac_ip_address"
                             defaultValue={values.idrac_ip_address ?? ''}
-                            placeholder="10.0.1.10"
                         />
                         <InputError message={errors.idrac_ip_address} />
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="idrac_subnet_mask">Subnet mask</Label>
-                        <Input
+                        <IpInput
                             id="idrac_subnet_mask"
                             name="idrac_subnet_mask"
                             defaultValue={values.idrac_subnet_mask ?? ''}
-                            placeholder="255.255.255.0"
                         />
                         <InputError message={errors.idrac_subnet_mask} />
                     </div>
@@ -527,11 +554,10 @@ export default function ServerFormFields({
                         <Label htmlFor="idrac_default_gateway">
                             Default gateway
                         </Label>
-                        <Input
+                        <IpInput
                             id="idrac_default_gateway"
                             name="idrac_default_gateway"
                             defaultValue={values.idrac_default_gateway ?? ''}
-                            placeholder="10.0.1.1"
                         />
                         <InputError message={errors.idrac_default_gateway} />
                     </div>
@@ -642,6 +668,22 @@ export default function ServerFormFields({
                             ? current
                             : [...current, option.id],
                     );
+                }}
+            />
+
+            <QuickCreateItSupportDialog
+                open={itSupportDialogOpen}
+                onOpenChange={setItSupportDialogOpen}
+                onCreated={(contact) => {
+                    setItSupportOptions((current) =>
+                        [...current, contact].sort((a, b) =>
+                            a.name.localeCompare(b.name),
+                        ),
+                    );
+                    setItSupportId(String(contact.id));
+                    if (contact.phone) {
+                        setItSupportPhone(contact.phone);
+                    }
                 }}
             />
         </div>

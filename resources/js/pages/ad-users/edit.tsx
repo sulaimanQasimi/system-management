@@ -18,7 +18,7 @@ export default function AdUsersEdit({ user }: { user: AdUserFormValues & { id: n
                     description={`Update account details for ${user.username}.`}
                 />
 
-                <div className="border-border bg-card max-w-3xl rounded-xl border p-6">
+                <div className="border-border bg-card w-full rounded-xl border p-4 md:p-6">
                     <Form
                         {...ActiveDirectoryUserController.update.form(user.id)}
                         className="space-y-6"

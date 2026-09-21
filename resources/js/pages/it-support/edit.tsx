@@ -28,7 +28,7 @@ export default function ItSupportEdit({
                     description={`Update details for ${contact.name} ${contact.lastname}.`}
                 />
 
-                <div className="border-border bg-card max-w-2xl rounded-xl border p-6">
+                <div className="border-border bg-card w-full rounded-xl border p-4 md:p-6">
                     <Form
                         {...ItSupportController.update.form(contact.id)}
                         className="space-y-6"
@@ -59,7 +59,7 @@ export default function ItSupportEdit({
                                         />
                                         <InputError message={errors.lastname} />
                                     </div>
-                                    <div className="grid gap-2 sm:col-span-2 sm:max-w-xs">
+                                    <div className="grid gap-2">
                                         <Label htmlFor="pbx">PBX</Label>
                                         <Input
                                             id="pbx"
