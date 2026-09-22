@@ -12,7 +12,7 @@ export default function Welcome() {
 
     return (
         <>
-            <Head title = "system management & network section" />
+            <Head title="system management & network section" />
             <div className="relative min-h-svh overflow-hidden">
                 <img src="/images/background.jpg" alt="" className="absolute inset-0 size-full object-cover object-center" />
 
@@ -47,18 +47,12 @@ export default function Welcome() {
 
                 <main className="relative z-10 mx-auto flex min-h-svh w-full max-w-6xl flex-col justify-center px-6 py-16 lg:px-8">
                     <div className="max-w-xl opacity-100 transition-all duration-700 starting:translate-y-3 starting:opacity-0">
-                        <p className="text-accent-gold mb-4 text-xs font-semibold tracking-[0.22em] uppercase">
-                            Network Section · Department Portal
-                        </p>
-
                         <h1 className="text-sidebar-foreground text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
-                            System Management
+                            مدیریت سیستم
                         </h1>
-
                         <p className="text-sidebar-foreground/75 mt-5 max-w-md text-base leading-relaxed sm:text-lg">
-                            Secure infrastructure oversight for the Network
-                            Section — servers, directory accounts, and support
-                            operations in one place.
+                            نظارت و مدیریت مصون زیرساخت‌های شبکه
+                            تمام سرورها، حساب‌های کاربری و عملیات پشتیبانی بخش شبکه در یک محل.
                         </p>
 
                         <div className="mt-10">
