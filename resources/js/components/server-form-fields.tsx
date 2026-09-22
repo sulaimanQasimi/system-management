@@ -223,7 +223,7 @@ export default function ServerFormFields({
                         </FieldIconLabel>
                         <Input
                             id="site_name"
-                            
+                            name="site_name"
                             required
                             defaultValue={values.site_name ?? ''}
                             placeholder="e.g. HQ Data Center"
