@@ -52,8 +52,7 @@ export default function Welcome() {
                         </h1>
                         <p className="text-sidebar-foreground/75 mt-5 max-w-md text-base leading-relaxed sm:text-lg">
                             نظارت و مدیریت مصون زیرساخت‌های شبکه
-                            تمام سرورها، حساب‌های کاربری و عملیات پشتیبانی بخش شبکه در یک محل.
-                        </p>
+                            .تمام سرورها، حساب‌های کاربری و عملیات پشتیبانی بخش شبکه در یک محل                        </p>
 
                         <div className="mt-10">
                             <Link
