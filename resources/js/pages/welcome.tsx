@@ -14,7 +14,7 @@ export default function Welcome() {
         <>
             <Head title="system management & network section" />
             <div className="relative min-h-svh overflow-hidden">
-                <img src="/images/background.jpg" alt="" className="absolute inset-0 size-full object-cover object-center" />
+                <img src="/images/background.png" alt="" className="absolute inset-0 size-full object-cover object-center" />
 
                 {/* Regal navy wash for contrast over the photograph */}
                 <div
