@@ -1,7 +1,6 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { ArrowRight } from 'lucide-react';
 import { dashboard, login } from '@/routes';
-
 /**
  * Public landing — full-bleed institutional imagery with a calm Regal overlay.
  * Brand title is the primary signal; CTA lives in the hero (no separate header).
@@ -16,11 +15,7 @@ export default function Welcome() {
             <Head title="System Management" />
 
             <div className="relative min-h-svh overflow-hidden">
-                <img
-                    src="/images/background.jpg"
-                    alt=""
-                    className="absolute inset-0 size-full object-cover object-center"
-                />
+                <img src="/images/background.jpg" alt="" className="absolute inset-0 size-full object-cover object-center" />
 
                 {/* Regal navy wash for contrast over the photograph */}
                 <div
