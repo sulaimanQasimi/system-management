@@ -211,7 +211,6 @@ export default function ServerFormFields({
         <div className="space-y-6">
             <Section
                 title="Identity"
-                description="Site, department, model, naming, and operational status."
                 icon={<HardDrive className="size-5" />}
             >
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -400,7 +399,6 @@ export default function ServerFormFields({
 
             <Section
                 title="Network"
-                description="Primary IP addressing for the production interface."
                 icon={<Network className="size-5" />}
             >
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -442,7 +440,6 @@ export default function ServerFormFields({
 
             <Section
                 title="Running services"
-                description="Select all services this server currently runs."
                 icon={<ServerCog className="size-5" />}
                 action={
                     can('server_service.create') ? (
@@ -506,7 +503,6 @@ export default function ServerFormFields({
                 <>
                     <Section
                         title="IT Support"
-                        description="Assigned support contact and reachable phone / PBX."
                         icon={<Headset className="size-5" />}
                         action={
                             can('it_support.create') ? (
@@ -571,7 +567,6 @@ export default function ServerFormFields({
 
                     <Section
                         title="iDRAC / Out-of-band"
-                        description="Management network and credentials for remote access."
                         icon={<KeyRound className="size-5" />}
                     >
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -653,7 +648,6 @@ export default function ServerFormFields({
 
             <Section
                 title="Description"
-                description="Role, dependencies, and maintenance notes."
                 icon={<HardDrive className="size-5" />}
             >
                 <div className="grid gap-2">
