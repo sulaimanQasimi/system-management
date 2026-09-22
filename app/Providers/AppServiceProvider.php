@@ -49,7 +49,7 @@ class AppServiceProvider extends ServiceProvider
         );
 
         Password::defaults(fn (): ?Password => app()->isProduction()
-            ? Password::min(8)
+            ? Password::min(5)
                 ->mixedCase()
                 ->letters()
                 ->numbers()
