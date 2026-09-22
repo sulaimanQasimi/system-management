@@ -1,6 +1,7 @@
 import { Form, Head, Link } from '@inertiajs/react';
 import { HardDrive } from 'lucide-react';
 import ServerController from '@/actions/App/Http/Controllers/ServerController';
+import { PageHeader } from '@/components/layout/page-header';
 import ServerFormFields, {
     type ItSupportOption,
     type Option,
@@ -31,56 +32,46 @@ export default function ServersEdit({
             <Head title={`Edit ${server.name}`} />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-4 md:p-6">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="flex items-start gap-3">
-                        <div className="bg-primary-light text-primary flex size-11 items-center justify-center rounded-lg">
-                            <HardDrive className="size-5" />
-                        </div>
-                        <div>
-                            <h1 className="text-xl font-semibold tracking-tight">
-                                Edit server
-                            </h1>
-                            <p className="text-muted-foreground text-sm">
-                                Update inventory details for {server.name}.
-                            </p>
-                        </div>
-                    </div>
-                    <Button variant="outline" asChild>
-                        <Link href={index()}>Back to servers</Link>
-                    </Button>
-                </div>
+                <PageHeader
+                    title="Edit server"
+                    description={`Update inventory details for ${server.name}.`}
+                    icon={HardDrive}
+                    action={
+                        <Button variant="outline" asChild>
+                            <Link href={index()}>Back to servers</Link>
+                        </Button>
+                    }
+                />
 
-                <div className="border-border/80 bg-card w-full rounded-lg border shadow-regal p-4 md:p-6">
-                    <Form
-                        {...ServerController.update.form(server.id)}
-                        className="space-y-6"
-                    >
-                        {({ processing, errors }) => (
-                            <>
-                                <ServerFormFields
-                                    values={server}
-                                    errors={errors}
-                                    departments={departments}
-                                    serverModels={serverModels}
-                                    services={services}
-                                    itSupports={itSupports}
-                                    statusOptions={statusOptions}
-                                    isEdit
-                                />
+                <Form
+                    {...ServerController.update.form(server.id)}
+                    className="space-y-6"
+                >
+                    {({ processing, errors }) => (
+                        <>
+                            <ServerFormFields
+                                values={server}
+                                errors={errors}
+                                departments={departments}
+                                serverModels={serverModels}
+                                services={services}
+                                itSupports={itSupports}
+                                statusOptions={statusOptions}
+                                isEdit
+                            />
 
-                                <div className="border-border sticky bottom-0 flex flex-wrap items-center gap-3 border-t bg-card/95 py-4 backdrop-blur">
-                                    <Button disabled={processing}>
-                                        {processing && <Spinner />}
-                                        Save changes
-                                    </Button>
-                                    <Button variant="outline" asChild>
-                                        <Link href={index()}>Cancel</Link>
-                                    </Button>
-                                </div>
-                            </>
-                        )}
-                    </Form>
-                </div>
+                            <div className="border-border/60 bg-background/95 sticky bottom-0 z-[1] -mx-4 flex flex-wrap items-center gap-3 border-t px-4 py-4 backdrop-blur md:-mx-6 md:px-6">
+                                <Button disabled={processing}>
+                                    {processing && <Spinner />}
+                                    Save changes
+                                </Button>
+                                <Button variant="outline" asChild>
+                                    <Link href={index()}>Cancel</Link>
+                                </Button>
+                            </div>
+                        </>
+                    )}
+                </Form>
             </div>
         </>
     );

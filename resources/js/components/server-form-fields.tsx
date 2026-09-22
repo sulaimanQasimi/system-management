@@ -214,7 +214,7 @@ export default function ServerFormFields({
                 description="Site, department, model, naming, and operational status."
                 icon={<HardDrive className="size-5" />}
             >
-                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div className="grid gap-2">
                         <FieldIconLabel
                             htmlFor="site_name"
@@ -247,6 +247,95 @@ export default function ServerFormFields({
                             placeholder="e.g. DC01-APP"
                         />
                         <InputError message={errors.name} />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <div className="flex items-center justify-between gap-2">
+                            <FieldIconLabel
+                                htmlFor="department_id"
+                                icon={<Building2 className="size-3.5" />}
+                            >
+                                Department
+                            </FieldIconLabel>
+                            {can('department.create') && (
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() =>
+                                        setDepartmentDialogOpen(true)
+                                    }
+                                >
+                                    <Plus />
+                                    New
+                                </Button>
+                            )}
+                        </div>
+                        <select
+                            id="department_id"
+                            name="department_id"
+                            required
+                            value={departmentId}
+                            onChange={(event) =>
+                                setDepartmentId(event.target.value)
+                            }
+                            className="border-input bg-background h-9 w-full rounded-md border px-3 text-sm shadow-xs"
+                        >
+                            <option value="" disabled>
+                                Select department
+                            </option>
+                            {departmentOptions.map((department) => (
+                                <option
+                                    key={department.id}
+                                    value={department.id}
+                                >
+                                    {department.name}
+                                </option>
+                            ))}
+                        </select>
+                        <InputError message={errors.department_id} />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <div className="flex items-center justify-between gap-2">
+                            <FieldIconLabel
+                                htmlFor="server_model_id"
+                                icon={<Server className="size-3.5" />}
+                            >
+                                Server model
+                            </FieldIconLabel>
+                            {can('server_model.create') && (
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setModelDialogOpen(true)}
+                                >
+                                    <Plus />
+                                    New
+                                </Button>
+                            )}
+                        </div>
+                        <select
+                            id="server_model_id"
+                            name="server_model_id"
+                            required
+                            value={serverModelId}
+                            onChange={(event) =>
+                                setServerModelId(event.target.value)
+                            }
+                            className="border-input bg-background h-9 w-full rounded-md border px-3 text-sm shadow-xs"
+                        >
+                            <option value="" disabled>
+                                Select server model
+                            </option>
+                            {modelOptions.map((model) => (
+                                <option key={model.id} value={model.id}>
+                                    {model.name}
+                                </option>
+                            ))}
+                        </select>
+                        <InputError message={errors.server_model_id} />
                     </div>
 
                     <div className="grid gap-2">
@@ -306,95 +395,6 @@ export default function ServerFormFields({
                         </label>
                         <InputError message={errors.is_vm} />
                     </div>
-
-                    <div className="grid gap-2">
-                        <div className="flex items-center justify-between gap-2">
-                            <FieldIconLabel
-                                htmlFor="department_id"
-                                icon={<Building2 className="size-3.5" />}
-                            >
-                                Department
-                            </FieldIconLabel>
-                            {can('department.create') && (
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() =>
-                                        setDepartmentDialogOpen(true)
-                                    }
-                                >
-                                    <Plus />
-                                    New
-                                </Button>
-                            )}
-                        </div>
-                        <select
-                            id="department_id"
-                            name="department_id"
-                            required
-                            value={departmentId}
-                            onChange={(event) =>
-                                setDepartmentId(event.target.value)
-                            }
-                            className="border-input bg-background h-9 w-full rounded-md border px-3 text-sm shadow-xs"
-                        >
-                            <option value="" disabled>
-                                Select department
-                            </option>
-                            {departmentOptions.map((department) => (
-                                <option
-                                    key={department.id}
-                                    value={department.id}
-                                >
-                                    {department.name}
-                                </option>
-                            ))}
-                        </select>
-                        <InputError message={errors.department_id} />
-                    </div>
-
-                    <div className="grid gap-2 md:col-span-2 xl:col-span-2">
-                        <div className="flex items-center justify-between gap-2">
-                            <FieldIconLabel
-                                htmlFor="server_model_id"
-                                icon={<Server className="size-3.5" />}
-                            >
-                                Server model
-                            </FieldIconLabel>
-                            {can('server_model.create') && (
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => setModelDialogOpen(true)}
-                                >
-                                    <Plus />
-                                    New
-                                </Button>
-                            )}
-                        </div>
-                        <select
-                            id="server_model_id"
-                            name="server_model_id"
-                            required
-                            value={serverModelId}
-                            onChange={(event) =>
-                                setServerModelId(event.target.value)
-                            }
-                            className="border-input bg-background h-9 w-full rounded-md border px-3 text-sm shadow-xs"
-                        >
-                            <option value="" disabled>
-                                Select server model
-                            </option>
-                            {modelOptions.map((model) => (
-                                <option key={model.id} value={model.id}>
-                                    {model.name}
-                                </option>
-                            ))}
-                        </select>
-                        <InputError message={errors.server_model_id} />
-                    </div>
                 </div>
             </Section>
 
@@ -403,7 +403,7 @@ export default function ServerFormFields({
                 description="Primary IP addressing for the production interface."
                 icon={<Network className="size-5" />}
             >
-                <div className="grid gap-4 md:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     <div className="grid gap-2">
                         <FieldIconLabel
                             htmlFor="ip_address"
@@ -428,7 +428,7 @@ export default function ServerFormFields({
                         />
                         <InputError message={errors.subnet_mask} />
                     </div>
-                    <div className="grid gap-2">
+                    <div className="grid gap-2 sm:col-span-2 lg:col-span-1">
                         <Label htmlFor="default_gateway">Default gateway</Label>
                         <IpInput
                             id="default_gateway"
@@ -458,9 +458,9 @@ export default function ServerFormFields({
                     ) : undefined
                 }
             >
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                     {serviceOptions.length === 0 ? (
-                        <p className="text-muted-foreground text-sm sm:col-span-2 lg:col-span-3 xl:col-span-4">
+                        <p className="text-muted-foreground text-sm sm:col-span-2 lg:col-span-3">
                             No services yet. Create one with the button above.
                         </p>
                     ) : (
@@ -522,7 +522,7 @@ export default function ServerFormFields({
                             ) : undefined
                         }
                     >
-                        <div className="grid gap-4 md:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div className="grid gap-2">
                                 <FieldIconLabel
                                     htmlFor="it_support_id"
@@ -574,7 +574,7 @@ export default function ServerFormFields({
                         description="Management network and credentials for remote access."
                         icon={<KeyRound className="size-5" />}
                     >
-                        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div className="grid gap-2">
                                 <Label htmlFor="idrac_ip_address">
                                     iDRAC IP address
@@ -631,7 +631,7 @@ export default function ServerFormFields({
                                 />
                                 <InputError message={errors.username} />
                             </div>
-                            <div className="grid gap-2 md:col-span-2 xl:col-span-2">
+                            <div className="grid gap-2 sm:col-span-2">
                                 <Label htmlFor="password">Password</Label>
                                 <Input
                                     id="password"

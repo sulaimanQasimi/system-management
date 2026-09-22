@@ -135,7 +135,7 @@ export function AppSidebar() {
 
     return (
         <Sidebar collapsible="icon" variant="inset">
-            <SidebarHeader>
+            <SidebarHeader className="pb-3">
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
@@ -147,7 +147,7 @@ export function AppSidebar() {
                 </SidebarMenu>
             </SidebarHeader>
 
-            <SidebarContent>
+            <SidebarContent className="gap-3 px-1">
                 <NavMain items={platformItems} />
                 <NavSection label="Directory" items={directoryItems} />
                 <NavSection
@@ -158,7 +158,7 @@ export function AppSidebar() {
                 <NavSection label="Administration" items={adminItems} />
             </SidebarContent>
 
-            <SidebarFooter>
+            <SidebarFooter className="pt-3">
                 <NavFooter items={footerNavItems} className="mt-auto" />
                 <NavUser />
             </SidebarFooter>

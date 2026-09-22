@@ -1,67 +1,38 @@
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import {
-    Activity,
     Cable,
     HardDrive,
+    Headset,
     Network,
     Server,
-    ShieldCheck,
-    Ticket,
     Users,
+    UserRound,
     Wifi,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import {
-    ActivityCard,
-    ChartCard,
-    ChartPlaceholder,
     DashboardCard,
     FocusTile,
     StatCard,
-    type ActivityItem,
-    type StatCardProps,
+    type StatTone,
 } from '@/components/dashboard';
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
+import { useCan } from '@/hooks/use-can';
 import { dashboard } from '@/routes';
+import { index as adUsers } from '@/routes/ad-users';
+import { index as itSupport } from '@/routes/it-support';
+import { index as servers } from '@/routes/servers';
+import { index as users } from '@/routes/users';
 
-/**
- * Dashboard metric definitions live here (not inside StatCard)
- * so the same card can be reused with different data sources later.
- */
-const stats: StatCardProps[] = [
-    {
-        title: 'Active nodes',
-        value: '128',
-        icon: Network,
-        trend: '+4.2%',
-        trendType: 'positive',
-        trendLabel: 'vs last month',
-    },
-    {
-        title: 'Uptime',
-        value: '99.97%',
-        icon: Activity,
-        trend: '0.0%',
-        trendType: 'neutral',
-        trendLabel: 'last 30 days',
-    },
-    {
-        title: 'Open tickets',
-        value: '6',
-        icon: Ticket,
-        trend: '-2',
-        trendType: 'positive',
-        trendLabel: '2 high priority',
-    },
-    {
-        title: 'Directory users',
-        value: '1,842',
-        icon: Users,
-        trend: '+18',
-        trendType: 'positive',
-        trendLabel: 'this quarter',
-    },
-];
+type DashboardStat = {
+    key: string;
+    title: string;
+    value: number;
+    progress: number;
+    tone: StatTone;
+    hint?: string;
+};
 
 const focusAreas = [
     {
@@ -84,38 +55,34 @@ const focusAreas = [
     },
 ];
 
-const capacitySeries = [
-    { label: 'Core uplink', value: '72%', percent: 72 },
-    { label: 'Edge distribution', value: '54%', percent: 54 },
-    { label: 'Wireless backhaul', value: '41%', percent: 41 },
-    { label: 'Backup path', value: '18%', percent: 18 },
-];
+const statIcons: Record<string, LucideIcon> = {
+    servers: HardDrive,
+    ad_users: Users,
+    portal_users: UserRound,
+    it_support: Headset,
+};
 
-const recentActivity: ActivityItem[] = [
-    {
-        id: 1,
-        title: 'Server health check completed',
-        description: 'All monitored hosts responded within threshold.',
-        timestamp: '12m ago',
-        icon: HardDrive,
-    },
-    {
-        id: 2,
-        title: 'AD user provisioned',
-        description: 'Account created for new department staff member.',
-        timestamp: '1h ago',
-        icon: Users,
-    },
-    {
-        id: 3,
-        title: 'Support ticket updated',
-        description: 'Priority ticket #1042 moved to in progress.',
-        timestamp: '3h ago',
-        icon: ShieldCheck,
-    },
-];
+const statLinks: Record<string, string> = {
+    servers: servers.url(),
+    ad_users: adUsers.url(),
+    portal_users: users.url(),
+    it_support: itSupport.url(),
+};
 
-export default function Dashboard() {
+const statPermissions: Record<string, string> = {
+    servers: 'server.view',
+    ad_users: 'ad_user.view',
+    portal_users: 'user.view',
+    it_support: 'it_support.view',
+};
+
+function formatCount(value: number): string {
+    return new Intl.NumberFormat().format(value);
+}
+
+export default function Dashboard({ stats }: { stats: DashboardStat[] }) {
+    const { can } = useCan();
+
     return (
         <>
             <Head title="Dashboard" />
@@ -126,46 +93,47 @@ export default function Dashboard() {
                     icon={Network}
                 />
 
-                {/* Responsive: 1 / 2 / 4 columns */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                    {stats.map((stat) => (
-                        <StatCard key={stat.title} {...stat} />
-                    ))}
-                </div>
+                    {stats.map((stat) => {
+                        const Icon = statIcons[stat.key];
+                        const href = statLinks[stat.key];
+                        const permission = statPermissions[stat.key];
+                        const canView = !permission || can(permission);
 
-                <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
-                    <ChartCard
-                        className="lg:col-span-3"
-                        title="Link utilization"
-                        description="Approximate capacity across primary paths."
-                        minHeight="14rem"
-                    >
-                        <div className="flex flex-col justify-center gap-5">
-                            {capacitySeries.map((series) => (
-                                <ChartPlaceholder
-                                    key={series.label}
-                                    {...series}
-                                />
-                            ))}
-                        </div>
-                    </ChartCard>
-
-                    <ActivityCard
-                        className="lg:col-span-2"
-                        title="Recent activity"
-                        description="Latest system events."
-                        items={recentActivity}
-                        action={
-                            <Button variant="outline" size="sm" type="button">
-                                View all
-                            </Button>
-                        }
-                    />
+                        return (
+                            <StatCard
+                                key={stat.key}
+                                title={stat.title}
+                                value={formatCount(stat.value)}
+                                progress={stat.progress}
+                                tone={stat.tone}
+                                icon={Icon}
+                                hint={stat.hint}
+                                menuItems={
+                                    canView && href
+                                        ? [
+                                              {
+                                                  label: 'View all',
+                                                  href,
+                                              },
+                                          ]
+                                        : undefined
+                                }
+                            />
+                        );
+                    })}
                 </div>
 
                 <DashboardCard
                     title="Focus areas"
                     description="Day-to-day coverage for section teams."
+                    action={
+                        can('server.view') ? (
+                            <Button variant="outline" size="sm" asChild>
+                                <Link href={servers()}>View servers</Link>
+                            </Button>
+                        ) : undefined
+                    }
                 >
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                         {focusAreas.map((area) => (

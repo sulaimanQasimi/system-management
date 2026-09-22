@@ -9,5 +9,8 @@ export type { DashboardCardProps } from '@/components/dashboard/dashboard-card';
 export { StatCard } from '@/components/dashboard/stat-card';
 export type {
     StatCardProps,
+    StatMenuItem,
+    StatTone,
     StatTrendType,
 } from '@/components/dashboard/stat-card';
+

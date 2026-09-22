@@ -81,6 +81,9 @@
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-glass: var(--sidebar-glass);
+    --color-sidebar-glass-hover: var(--sidebar-glass-hover);
+    --color-sidebar-glass-active: var(--sidebar-glass-active);
 
     --shadow-regal: var(--elevation-regal);
     --shadow-regal-md: var(--elevation-regal-md);
@@ -148,15 +151,27 @@
     --elevation-regal-md: 0 2px 8px oklch(0.24 0.025 265 / 0.06),
         0 1px 2px oklch(0.24 0.025 265 / 0.04);
 
-    /* Sidebar — midnight navy with gold active accent */
-    --sidebar: oklch(0.2 0.05 265);
-    --sidebar-foreground: oklch(0.93 0.01 90);
-    --sidebar-primary: oklch(0.78 0.09 85);
-    --sidebar-primary-foreground: oklch(0.2 0.05 265);
-    --sidebar-accent: oklch(0.28 0.055 270);
-    --sidebar-accent-foreground: oklch(0.95 0.015 90);
-    --sidebar-border: oklch(0.3 0.04 265);
-    --sidebar-ring: oklch(0.72 0.09 85);
+    /* Sidebar — light ivory glass (adapts in .dark to midnight navy) */
+    --sidebar: oklch(0.985 0.007 90);
+    --sidebar-foreground: oklch(0.28 0.04 265);
+    --sidebar-primary: oklch(0.36 0.085 265);
+    --sidebar-primary-foreground: oklch(0.98 0.01 90);
+    --sidebar-accent: oklch(0.94 0.02 270);
+    --sidebar-accent-foreground: oklch(0.28 0.05 265);
+    --sidebar-border: oklch(0.88 0.02 265);
+    --sidebar-ring: oklch(0.5 0.08 265);
+    --sidebar-glass: oklch(0.32 0.06 265 / 0.04);
+    --sidebar-glass-hover: oklch(0.32 0.06 265 / 0.08);
+    --sidebar-glass-active: color-mix(
+        in oklch,
+        var(--sidebar-primary) 12%,
+        transparent
+    );
+    --sidebar-glow: color-mix(in oklch, oklch(0.72 0.1 85) 45%, transparent);
+    --sidebar-wash: oklch(0.55 0.1 300);
+    --sidebar-highlight: oklch(1 0 0 / 0.7);
+    --sidebar-edge: oklch(0.32 0.05 265 / 0.08);
+    --sidebar-gradient-end: color-mix(in oklch, var(--sidebar) 94%, oklch(0.9 0.02 270));
 }
 
 .dark {
@@ -211,14 +226,27 @@
     --elevation-regal-md: 0 2px 8px oklch(0 0 0 / 0.28),
         0 1px 2px oklch(0 0 0 / 0.18);
 
-    --sidebar: oklch(0.14 0.04 265);
-    --sidebar-foreground: oklch(0.92 0.012 90);
-    --sidebar-primary: oklch(0.78 0.09 85);
-    --sidebar-primary-foreground: oklch(0.14 0.04 265);
-    --sidebar-accent: oklch(0.24 0.045 270);
-    --sidebar-accent-foreground: oklch(0.93 0.02 90);
-    --sidebar-border: oklch(0.28 0.04 265);
-    --sidebar-ring: oklch(0.72 0.09 85);
+    /* Sidebar — midnight navy glass for dark mode */
+    --sidebar: oklch(0.15 0.05 268);
+    --sidebar-foreground: oklch(0.93 0.012 90);
+    --sidebar-primary: oklch(0.8 0.1 85);
+    --sidebar-primary-foreground: oklch(0.15 0.05 265);
+    --sidebar-accent: oklch(0.26 0.05 280);
+    --sidebar-accent-foreground: oklch(0.95 0.02 90);
+    --sidebar-border: oklch(0.3 0.045 275);
+    --sidebar-ring: oklch(0.75 0.1 85);
+    --sidebar-glass: oklch(1 0 0 / 0.06);
+    --sidebar-glass-hover: oklch(1 0 0 / 0.1);
+    --sidebar-glass-active: color-mix(
+        in oklch,
+        var(--sidebar-primary) 20%,
+        transparent
+    );
+    --sidebar-glow: color-mix(in oklch, var(--sidebar-primary) 32%, transparent);
+    --sidebar-wash: oklch(0.45 0.12 300);
+    --sidebar-highlight: oklch(1 0 0 / 0.1);
+    --sidebar-edge: oklch(1 0 0 / 0.06);
+    --sidebar-gradient-end: color-mix(in oklch, var(--sidebar) 90%, black);
 }
 
 @layer base {
@@ -306,4 +334,95 @@
 .animate-link-draw {
     stroke-dasharray: 120;
     animation: link-draw 1.6s ease-out forwards;
+}
+
+/*
+ |--------------------------------------------------------------------------
+ | Sidebar glass surface (theme-aware)
+ |--------------------------------------------------------------------------
+ | Light: ivory / navy glass. Dark: midnight navy / gold glass.
+ | All washes and highlights come from CSS variables so both modes work.
+ */
+[data-sidebar='sidebar'] {
+    background-color: var(--sidebar);
+    background-image:
+        radial-gradient(
+            ellipse 120% 55% at 0% 0%,
+            color-mix(in oklch, var(--sidebar-primary) 14%, transparent),
+            transparent 55%
+        ),
+        radial-gradient(
+            ellipse 90% 50% at 100% 100%,
+            color-mix(in oklch, var(--sidebar-wash) 18%, transparent),
+            transparent 55%
+        ),
+        linear-gradient(
+            165deg,
+            color-mix(in oklch, var(--sidebar) 92%, var(--sidebar-wash)),
+            var(--sidebar) 48%,
+            var(--sidebar-gradient-end)
+        );
+    box-shadow:
+        inset 0 1px 0 var(--sidebar-highlight),
+        inset 0 0 0 1px var(--sidebar-edge);
+}
+
+[data-sidebar='menu-button'] {
+    transition:
+        background-color 180ms ease,
+        color 180ms ease,
+        box-shadow 180ms ease,
+        backdrop-filter 180ms ease,
+        transform 180ms ease;
+}
+
+[data-sidebar='menu-button']:hover {
+    background-color: var(--sidebar-glass-hover);
+    backdrop-filter: blur(10px);
+    box-shadow:
+        inset 0 1px 0 var(--sidebar-highlight),
+        0 0 0 1px var(--sidebar-edge);
+}
+
+[data-sidebar='menu-button'][data-active='true'] {
+    background-color: var(--sidebar-glass-active);
+    backdrop-filter: blur(12px);
+    box-shadow:
+        inset 3px 0 0 0 var(--sidebar-primary),
+        inset 0 1px 0 var(--sidebar-highlight),
+        0 0 20px -6px var(--sidebar-glow);
+}
+
+[data-sidebar='menu-button'][data-active='true'] svg {
+    color: var(--sidebar-primary);
+    filter: drop-shadow(0 0 6px var(--sidebar-glow));
+}
+
+[data-sidebar='header'],
+[data-sidebar='footer'] {
+    position: relative;
+}
+
+[data-sidebar='header']::after,
+[data-sidebar='footer']::before {
+    content: '';
+    position: absolute;
+    left: 0.75rem;
+    right: 0.75rem;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        color-mix(in oklch, var(--sidebar-primary) 40%, transparent),
+        var(--sidebar-edge),
+        transparent
+    );
+}
+
+[data-sidebar='header']::after {
+    bottom: 0;
+}
+
+[data-sidebar='footer']::before {
+    top: 0;
 }
