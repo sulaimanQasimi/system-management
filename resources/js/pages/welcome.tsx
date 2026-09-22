@@ -12,8 +12,7 @@ export default function Welcome() {
 
     return (
         <>
-            <Head title="System Management" />
-
+            <Head title = "system management & network section" />
             <div className="relative min-h-svh overflow-hidden">
                 <img src="/images/background.jpg" alt="" className="absolute inset-0 size-full object-cover object-center" />
 
