@@ -1,15 +1,15 @@
 import { Form, Head } from '@inertiajs/react';
+import { LockKeyhole } from 'lucide-react';
 import InputError from '@/components/input-error';
+import PasskeyVerify from '@/components/passkey-verify';
 import PasswordInput from '@/components/password-input';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import { store } from '@/routes/login';
 import { request } from '@/routes/password';
-import PasskeyVerify from '@/components/passkey-verify';
 
 type Props = {
     status?: string;
@@ -21,18 +21,36 @@ export default function Login({ status, canResetPassword }: Props) {
         <>
             <Head title="Log in" />
 
-            <PasskeyVerify />
+            <div className="flex flex-col gap-6">
+                {status && (
+                    <div
+                        role="status"
+                        className="border-success/25 bg-success/10 text-success rounded-lg border px-3.5 py-2.5 text-center text-sm font-medium"
+                    >
+                        {status}
+                    </div>
+                )}
 
-            <Form
-                {...store.form()}
-                resetOnSuccess={['password']}
-                className="flex flex-col gap-6"
-            >
-                {({ processing, errors }) => (
-                    <>
-                        <div className="grid gap-6">
-                            <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
+                <PasskeyVerify
+                    label="Continue with passkey"
+                    loadingLabel="Waiting for passkey…"
+                    separator="Or continue with email"
+                />
+
+                <Form
+                    {...store.form()}
+                    resetOnSuccess={['password']}
+                    className="flex flex-col gap-5"
+                >
+                    {({ processing, errors }) => (
+                        <>
+                            <div className="space-y-2">
+                                <label
+                                    htmlFor="email"
+                                    className="text-foreground text-sm font-medium"
+                                >
+                                    Email address
+                                </label>
                                 <Input
                                     id="email"
                                     type="email"
@@ -41,21 +59,27 @@ export default function Login({ status, canResetPassword }: Props) {
                                     autoFocus
                                     tabIndex={1}
                                     autoComplete="email"
-                                    placeholder="email@example.com"
+                                    placeholder="name@organization.local"
+                                    className="h-10"
                                 />
                                 <InputError message={errors.email} />
                             </div>
 
-                            <div className="grid gap-2">
-                                <div className="flex items-center">
-                                    <Label htmlFor="password">Password</Label>
+                            <div className="space-y-2">
+                                <div className="flex items-center justify-between gap-3">
+                                    <label
+                                        htmlFor="password"
+                                        className="text-foreground text-sm font-medium"
+                                    >
+                                        Password
+                                    </label>
                                     {canResetPassword && (
                                         <TextLink
                                             href={request()}
-                                            className="ml-auto text-sm"
+                                            className="text-muted-foreground hover:text-foreground text-xs font-medium"
                                             tabIndex={5}
                                         >
-                                            Forgot your password?
+                                            Forgot password?
                                         </TextLink>
                                     )}
                                 </div>
@@ -65,45 +89,53 @@ export default function Login({ status, canResetPassword }: Props) {
                                     required
                                     tabIndex={2}
                                     autoComplete="current-password"
-                                    placeholder="Password"
+                                    placeholder="Enter your password"
+                                    className="h-10"
                                 />
                                 <InputError message={errors.password} />
                             </div>
 
-                            <div className="flex items-center space-x-3">
+                            <div className="flex items-center gap-2.5">
                                 <Checkbox
                                     id="remember"
                                     name="remember"
                                     tabIndex={3}
                                 />
-                                <Label htmlFor="remember">Remember me</Label>
+                                <label
+                                    htmlFor="remember"
+                                    className="text-muted-foreground text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                >
+                                    Keep me signed in on this device
+                                </label>
                             </div>
 
                             <Button
                                 type="submit"
-                                className="mt-4 w-full"
+                                className="mt-1 h-10 w-full font-semibold"
                                 tabIndex={4}
                                 disabled={processing}
                                 data-test="login-button"
                             >
-                                {processing && <Spinner />}
-                                Log in
+                                {processing ? (
+                                    <Spinner />
+                                ) : (
+                                    <LockKeyhole
+                                        className="size-4"
+                                        aria-hidden
+                                    />
+                                )}
+                                {processing ? 'Signing in…' : 'Sign in'}
                             </Button>
-                        </div>
-                    </>
-                )}
-            </Form>
-
-            {status && (
-                <div className="mb-4 text-center text-sm font-medium text-green-600">
-                    {status}
-                </div>
-            )}
+                        </>
+                    )}
+                </Form>
+            </div>
         </>
     );
 }
 
 Login.layout = {
-    title: 'Log in to your account',
-    description: 'Enter your email and password below to log in',
+    title: 'Welcome back',
+    description:
+        'Sign in with your department credentials to open the operations portal.',
 };

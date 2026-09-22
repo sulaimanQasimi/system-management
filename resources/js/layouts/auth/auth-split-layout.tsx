@@ -1,5 +1,4 @@
 import { Link, usePage } from '@inertiajs/react';
-import AppLogoIcon from '@/components/app-logo-icon';
 import { home } from '@/routes';
 import type { AuthLayoutProps } from '@/types';
 
@@ -11,62 +10,97 @@ export default function AuthSplitLayout({
     const { name } = usePage().props;
 
     return (
-        <div className="relative grid h-dvh flex-col items-center justify-center px-8 sm:px-0 lg:max-w-none lg:grid-cols-2 lg:px-0">
-            <div className="bg-sidebar text-sidebar-foreground relative hidden h-full flex-col overflow-hidden p-10 lg:flex dark:border-r">
+        <div className="relative grid min-h-svh lg:grid-cols-2">
+            {/* Brand panel — institutional imagery + regal wash */}
+            <aside className="bg-sidebar text-sidebar-foreground relative hidden overflow-hidden lg:flex lg:flex-col">
+                <img
+                    src="/images/background.png"
+                    alt=""
+                    className="absolute inset-0 size-full object-cover object-center"
+                />
                 <div
+                    aria-hidden
                     className="absolute inset-0"
                     style={{
                         backgroundImage: `
-                            radial-gradient(ellipse 80% 60% at 20% 20%, color-mix(in oklch, var(--accent-gold) 32%, transparent), transparent 55%),
-                            linear-gradient(165deg, var(--sidebar), color-mix(in oklch, var(--sidebar) 85%, black))
+                            linear-gradient(
+                                115deg,
+                                color-mix(in oklch, var(--sidebar) 92%, transparent) 0%,
+                                color-mix(in oklch, var(--sidebar) 78%, transparent) 48%,
+                                color-mix(in oklch, var(--sidebar) 55%, transparent) 100%
+                            )
                         `,
                     }}
                 />
                 <div
                     aria-hidden
-                    className="pointer-events-none absolute inset-0 opacity-20"
+                    className="absolute inset-0"
                     style={{
                         backgroundImage: `
-                            linear-gradient(color-mix(in oklch, var(--accent-gold) 25%, transparent) 1px, transparent 1px),
-                            linear-gradient(90deg, color-mix(in oklch, var(--accent-gold) 25%, transparent) 1px, transparent 1px)
+                            radial-gradient(
+                                ellipse 65% 50% at 20% 35%,
+                                color-mix(in oklch, var(--accent-gold) 16%, transparent),
+                                transparent 62%
+                            )
                         `,
-                        backgroundSize: '40px 40px',
                     }}
                 />
-                <Link
-                    href={home()}
-                    className="relative z-20 flex items-center text-lg font-semibold"
-                >
-                    <AppLogoIcon className="text-sidebar-primary mr-2 size-8" />
-                    {name}
-                </Link>
-                <div className="relative z-20 mt-auto">
-                    <p className="text-lg font-medium">
-                        Network Section Department
-                    </p>
-                    <p className="text-sidebar-foreground/65 mt-2 max-w-sm text-sm">
-                        Secure access to infrastructure operations, connectivity
-                        oversight, and department systems.
+
+                <div className="relative z-10 flex h-full flex-col items-center justify-center p-10 xl:p-12">
+                    <Link href={home()} className="inline-flex">
+                        <img
+                            src="/images/logo.jpg"
+                            alt={name}
+                            className="border-sidebar-foreground/20 size-36 rounded-full border-2 object-cover shadow-regal xl:size-44"
+                        />
+                    </Link>
+                    <h1 className="text-3xl font-semibold tracking-tight text-balance xl:text-4xl">Welcome to the System Management</h1>
+                    <p className="text-sidebar-foreground/70 text-sm leading-relaxed text-pretty xl:text-base">
+                        Sign in to manage servers, directory accounts, and
+                        department support from one controlled portal.
                     </p>
                 </div>
-            </div>
-            <div className="bg-background w-full lg:p-8">
-                <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+            </aside>
+
+            {/* Form panel */}
+            <div className="bg-background relative flex flex-col justify-center px-6 py-12 sm:px-10 lg:px-12">
+                <div
+                    aria-hidden
+                    className="pointer-events-none absolute inset-0"
+                    style={{
+                        backgroundImage: `
+                            radial-gradient(ellipse 60% 40% at 80% 0%, color-mix(in oklch, var(--accent-gold) 10%, transparent), transparent 55%),
+                            radial-gradient(ellipse 45% 35% at 0% 100%, color-mix(in oklch, var(--primary) 8%, transparent), transparent 50%)
+                        `,
+                    }}
+                />
+
+                <div className="relative z-10 mx-auto w-full max-w-[24rem]">
                     <Link
                         href={home()}
-                        className="relative z-20 flex items-center justify-center lg:hidden"
+                        className="mb-10 flex justify-center lg:hidden"
                     >
-                        <div className="bg-primary text-primary-foreground flex size-11 items-center justify-center rounded-lg shadow-regal">
-                            <AppLogoIcon className="size-6" />
-                        </div>
+                        <img
+                            src="/images/logo.jpg"
+                            alt={name}
+                            className="border-border size-16 rounded-xl border object-cover shadow-regal"
+                        />
                     </Link>
-                    <div className="flex flex-col items-start gap-2 text-left sm:items-center sm:text-center">
-                        <h1 className="text-section-title">{title}</h1>
-                        <p className="text-muted-foreground text-body text-balance">
-                            {description}
-                        </p>
+
+                    <header className="mb-8 space-y-2 opacity-100 transition-all duration-500 starting:translate-y-2 starting:opacity-0">
+                        <h1 className="text-section-title text-balance">
+                            {title}
+                        </h1>
+                        {description && (
+                            <p className="text-muted-foreground text-body text-pretty">
+                                {description}
+                            </p>
+                        )}
+                    </header>
+
+                    <div className="opacity-100 transition-all delay-75 duration-500 starting:translate-y-2 starting:opacity-0">
+                        {children}
                     </div>
-                    {children}
                 </div>
             </div>
         </div>
