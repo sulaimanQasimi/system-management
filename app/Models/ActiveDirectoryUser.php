@@ -58,13 +58,13 @@ class ActiveDirectoryUser extends Model
 
         return $query->where(function (Builder $builder) use ($term): void {
             $builder
-                ->where('name', 'like', $term)
-                ->orWhere('lastname', 'like', $term)
-                ->orWhere('username', 'like', $term)
-                ->orWhere('email', 'like', $term)
-                ->orWhere('job', 'like', $term)
-                ->orWhere('pbx', 'like', $term)
-                ->orWhere('phone', 'like', $term);
+                ->whereLike('name', $term)
+                ->orWhereLike('lastname', $term)
+                ->orWhereLike('username', $term)
+                ->orWhereLike('email', $term)
+                ->orWhereLike('job', $term)
+                ->orWhereLike('pbx', $term)
+                ->orWhereLike('phone', $term);
         });
     }
 

@@ -357,6 +357,13 @@ export default function AdUsersIndex({
                                     </th>
                                     <th className="px-4 py-3">
                                         <SortButton
+                                            label="Last name"
+                                            column="lastname"
+                                            filters={filters}
+                                        />
+                                    </th>
+                                    <th className="px-4 py-3">
+                                        <SortButton
                                             label="Username"
                                             column="username"
                                             filters={filters}
@@ -409,7 +416,7 @@ export default function AdUsersIndex({
                                 {users.data.length === 0 ? (
                                     <tr>
                                         <td
-                                            colSpan={9}
+                                            colSpan={10}
                                             className="text-muted-foreground px-4 py-10 text-center"
                                         >
                                             No Active Directory users found.
@@ -422,7 +429,10 @@ export default function AdUsersIndex({
                                             className="border-b last:border-0"
                                         >
                                             <td className="px-4 py-3 font-medium">
-                                                {user.name} {user.lastname}
+                                                {user.name}
+                                            </td>
+                                            <td className="px-4 py-3">
+                                                {user.lastname}
                                             </td>
                                             <td className="px-4 py-3">
                                                 {user.username}

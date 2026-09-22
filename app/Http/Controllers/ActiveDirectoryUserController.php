@@ -61,7 +61,7 @@ class ActiveDirectoryUserController extends Controller implements HasMiddleware
         $users = ActiveDirectoryUser::query()
             ->with('creator:id,name')
             ->search($search)
-            ->when($job, fn ($query) => $query->where('job', 'like', '%'.$job.'%'))
+            ->when($job, fn ($query) => $query->whereLike('job', '%'.$job.'%'))
             ->when($dateFrom, fn ($query) => $query->whereDate('date', '>=', $dateFrom))
             ->when($dateTo, fn ($query) => $query->whereDate('date', '<=', $dateTo))
             ->orderBy($sort, $direction)
