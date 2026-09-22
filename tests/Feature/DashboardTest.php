@@ -15,10 +15,13 @@ test('authenticated users can visit the dashboard', function () {
     $response->assertOk();
     $response->assertInertia(fn ($page) => $page
         ->component('dashboard')
-        ->has('stats', 4)
+        ->has('stats', 6)
         ->where('stats.0.key', 'servers')
-        ->where('stats.1.key', 'ad_users')
-        ->where('stats.2.key', 'portal_users')
-        ->where('stats.3.key', 'it_support')
+        ->where('stats.1.key', 'virtual_machines')
+        ->where('stats.2.key', 'physical_servers')
+        ->where('stats.3.key', 'ad_users')
+        ->where('stats.4.key', 'portal_users')
+        ->where('stats.5.key', 'it_support')
+        ->has('serversByService')
     );
 });

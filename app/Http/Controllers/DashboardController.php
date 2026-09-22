@@ -6,6 +6,7 @@ use App\Enums\ServerStatus;
 use App\Models\ActiveDirectoryUser;
 use App\Models\ItSupport;
 use App\Models\Server;
+use App\Models\ServerService;
 use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -19,6 +20,7 @@ class DashboardController extends Controller
             ->where('status', ServerStatus::Active)
             ->count();
         $serversVm = Server::query()->where('is_vm', true)->count();
+        $serversPhysical = Server::query()->where('is_vm', false)->count();
         $adUsersTotal = ActiveDirectoryUser::query()->count();
         $adUsersWithPhone = ActiveDirectoryUser::query()
             ->whereNotNull('phone')
@@ -34,6 +36,19 @@ class DashboardController extends Controller
             ->where('pbx', '!=', '')
             ->count();
 
+        $serversByService = ServerService::query()
+            ->withCount('servers')
+            ->orderByDesc('servers_count')
+            ->orderBy('name')
+            ->get(['id', 'name'])
+            ->map(fn (ServerService $service): array => [
+                'id' => $service->id,
+                'name' => $service->name,
+                'servers_count' => $service->servers_count,
+            ])
+            ->values()
+            ->all();
+
         return Inertia::render('dashboard', [
             'stats' => [
                 [
@@ -43,6 +58,22 @@ class DashboardController extends Controller
                     'progress' => $this->percent($serversActive, $serversTotal),
                     'tone' => 'primary',
                     'hint' => $serversActive.' active',
+                ],
+                [
+                    'key' => 'virtual_machines',
+                    'title' => 'Virtual machines',
+                    'value' => $serversVm,
+                    'progress' => $this->percent($serversVm, $serversTotal),
+                    'tone' => 'info',
+                    'hint' => $this->percent($serversVm, $serversTotal).'% of servers',
+                ],
+                [
+                    'key' => 'physical_servers',
+                    'title' => 'Physical servers',
+                    'value' => $serversPhysical,
+                    'progress' => $this->percent($serversPhysical, $serversTotal),
+                    'tone' => 'secondary',
+                    'hint' => $this->percent($serversPhysical, $serversTotal).'% of servers',
                 ],
                 [
                     'key' => 'ad_users',
@@ -69,10 +100,7 @@ class DashboardController extends Controller
                     'hint' => $itSupportWithPbx.' with PBX',
                 ],
             ],
-            'meta' => [
-                'virtual_machines' => $serversVm,
-                'active_servers' => $serversActive,
-            ],
+            'serversByService' => $serversByService,
         ]);
     }
 
