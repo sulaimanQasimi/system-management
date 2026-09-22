@@ -17,7 +17,7 @@ export default function AdUsersCreate() {
                     description="Create a new directory account record."
                 />
 
-                <div className="border-border bg-card w-full rounded-xl border p-4 md:p-6">
+                <div className="border-border/80 bg-card w-full rounded-lg border shadow-regal p-4 md:p-6">
                     <Form
                         {...ActiveDirectoryUserController.store.form()}
                         className="space-y-6"

@@ -1,5 +1,5 @@
 import { Form, Head, Link } from '@inertiajs/react';
-import { Eye, Pencil, Plus, Trash2 } from 'lucide-react';
+import { Eye, Pencil, Plus, Server, Trash2 } from 'lucide-react';
 import ServerModelController from '@/actions/App/Http/Controllers/ServerModelController';
 import {
     ResourceFilters,
@@ -9,6 +9,7 @@ import {
     type ListFilters,
     type Paginated,
 } from '@/components/resource-list';
+import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
 import { useCan } from '@/hooks/use-can';
 import { create, edit, index, show } from '@/routes/server-models';
@@ -37,25 +38,21 @@ export default function ServerModelsIndex({
             <Head title="Server Models" />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-4 md:p-6">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <h1 className="text-xl font-semibold tracking-tight">
-                            Server Models
-                        </h1>
-                        <p className="text-muted-foreground text-sm">
-                            Catalog of server model types used by the Network
-                            Section.
-                        </p>
-                    </div>
-                    {can('server_model.create') && (
-                        <Button asChild>
-                            <Link href={create()}>
-                                <Plus />
-                                Add model
-                            </Link>
-                        </Button>
-                    )}
-                </div>
+                <PageHeader
+                    title="Server Models"
+                    description="Catalog of server model types used by the Network Section."
+                    icon={Server}
+                    action={
+                        can('server_model.create') ? (
+                            <Button asChild>
+                                <Link href={create()}>
+                                    <Plus />
+                                    Add model
+                                </Link>
+                            </Button>
+                        ) : undefined
+                    }
+                />
 
                 <ResourceFilters
                     indexUrl={indexUrl}
@@ -72,7 +69,7 @@ export default function ServerModelsIndex({
                     />
                 </div>
 
-                <div className="border-border bg-card overflow-hidden rounded-xl border">
+                <div className="border-border/80 bg-card overflow-hidden rounded-lg border shadow-regal">
                     <div className="overflow-x-auto">
                         <table className="w-full min-w-[640px] text-left text-sm">
                             <thead className="bg-muted/50 border-b">

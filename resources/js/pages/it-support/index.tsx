@@ -1,5 +1,5 @@
 import { Form, Head, Link } from '@inertiajs/react';
-import { Pencil, Plus, Trash2, Eye } from 'lucide-react';
+import { Eye, Headset, Pencil, Plus, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import ItSupportController from '@/actions/App/Http/Controllers/ItSupportController';
 import {
@@ -11,6 +11,7 @@ import {
     type ListFilters,
     type Paginated,
 } from '@/components/resource-list';
+import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -52,25 +53,21 @@ export default function ItSupportIndex({
             <Head title="IT Support" />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-4 md:p-6">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <h1 className="text-xl font-semibold tracking-tight">
-                            IT Support
-                        </h1>
-                        <p className="text-muted-foreground text-sm">
-                            Support contacts and PBX extensions for the
-                            department.
-                        </p>
-                    </div>
-                    {can('it_support.create') && (
-                        <Button asChild>
-                            <Link href={create()}>
-                                <Plus />
-                                Add contact
-                            </Link>
-                        </Button>
-                    )}
-                </div>
+                <PageHeader
+                    title="IT Support"
+                    description="Support contacts and PBX extensions for the department."
+                    icon={Headset}
+                    action={
+                        can('it_support.create') ? (
+                            <Button asChild>
+                                <Link href={create()}>
+                                    <Plus />
+                                    Add contact
+                                </Link>
+                            </Button>
+                        ) : undefined
+                    }
+                />
 
                 <ResourceFilters
                     indexUrl={indexUrl}
@@ -112,7 +109,7 @@ export default function ItSupportIndex({
                     total={contacts.total}
                 />
 
-                <div className="border-border bg-card overflow-hidden rounded-xl border">
+                <div className="border-border/80 bg-card overflow-hidden rounded-lg border shadow-regal">
                     <div className="overflow-x-auto">
                         <table className="w-full min-w-[720px] text-left text-sm">
                             <thead className="bg-muted/50 border-b">

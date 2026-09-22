@@ -43,7 +43,7 @@ export default function UserFormFields({
 
     return (
         <div className="space-y-6">
-            <section className="border-border space-y-4 rounded-xl border p-5">
+            <section className="border-border/80 space-y-4 rounded-lg border p-5">
                 <h3 className="text-sm font-semibold tracking-tight">
                     Account
                 </h3>
@@ -100,7 +100,7 @@ export default function UserFormFields({
                 </div>
             </section>
 
-            <section className="border-border space-y-4 rounded-xl border p-5">
+            <section className="border-border/80 space-y-4 rounded-lg border p-5">
                 <div>
                     <h3 className="text-sm font-semibold tracking-tight">
                         Roles
@@ -141,7 +141,7 @@ export default function UserFormFields({
                 <InputError message={errors.roles} />
             </section>
 
-            <section className="border-border space-y-4 rounded-xl border p-5">
+            <section className="border-border/80 space-y-4 rounded-lg border p-5">
                 <div>
                     <h3 className="text-sm font-semibold tracking-tight">
                         Permission matrix

@@ -11,6 +11,7 @@ import {
     type ListFilters,
     type Paginated,
 } from '@/components/resource-list';
+import { PageHeader } from '@/components/layout/page-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -54,29 +55,21 @@ export default function UsersIndex({
             <Head title="Users" />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-4 md:p-6">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="flex items-start gap-3">
-                        <div className="bg-primary/10 text-primary flex size-11 items-center justify-center rounded-xl">
-                            <UserRound className="size-5" />
-                        </div>
-                        <div>
-                            <h1 className="text-xl font-semibold tracking-tight">
-                                User management
-                            </h1>
-                            <p className="text-muted-foreground text-sm">
-                                Manage portal users, roles, and access.
-                            </p>
-                        </div>
-                    </div>
-                    {can('user.create') && (
-                        <Button asChild>
-                            <Link href={create()}>
-                                <Plus />
-                                Add user
-                            </Link>
-                        </Button>
-                    )}
-                </div>
+                <PageHeader
+                    title="User management"
+                    description="Manage portal users, roles, and access."
+                    icon={UserRound}
+                    action={
+                        can('user.create') ? (
+                            <Button asChild>
+                                <Link href={create()}>
+                                    <Plus />
+                                    Add user
+                                </Link>
+                            </Button>
+                        ) : undefined
+                    }
+                />
 
                 <ResourceFilters
                     indexUrl={indexUrl}
@@ -117,7 +110,7 @@ export default function UsersIndex({
                     total={users.total}
                 />
 
-                <div className="border-border bg-card overflow-hidden rounded-xl border">
+                <div className="border-border/80 bg-card overflow-hidden rounded-lg border shadow-regal">
                     <div className="overflow-x-auto">
                         <table className="w-full min-w-[800px] text-left text-sm">
                             <thead className="bg-muted/50 border-b">

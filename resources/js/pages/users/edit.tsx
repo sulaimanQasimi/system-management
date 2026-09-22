@@ -1,6 +1,7 @@
 import { Form, Head, Link } from '@inertiajs/react';
 import { UserRound } from 'lucide-react';
 import UserController from '@/actions/App/Http/Controllers/UserController';
+import { PageHeader } from '@/components/layout/page-header';
 import UserFormFields from '@/components/user-form-fields';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
@@ -32,22 +33,13 @@ export default function UsersEdit({
             <Head title={`Edit ${user.name}`} />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-4 md:p-6">
-                <div className="flex items-start gap-3">
-                    <div className="bg-primary/10 text-primary flex size-11 items-center justify-center rounded-xl">
-                        <UserRound className="size-5" />
-                    </div>
-                    <div>
-                        <h1 className="text-xl font-semibold tracking-tight">
-                            Edit user
-                        </h1>
-                        <p className="text-muted-foreground text-sm">
-                            Update account details and role assignments for{' '}
-                            {user.name}.
-                        </p>
-                    </div>
-                </div>
+                <PageHeader
+                    title="Edit user"
+                    description={`Update account details and role assignments for ${user.name}.`}
+                    icon={UserRound}
+                />
 
-                <div className="border-border bg-card w-full rounded-xl border p-4 md:p-6">
+                <div className="border-border/80 bg-card w-full rounded-lg border p-4 shadow-regal md:p-6">
                     <Form
                         {...UserController.update.form(user.id)}
                         className="space-y-6"

@@ -12,19 +12,17 @@ export function DetailSection({
     children: ReactNode;
 }) {
     return (
-        <section className="border-border bg-card/40 space-y-5 rounded-xl border p-5 md:p-6">
+        <section className="border-border/80 bg-card/40 space-y-5 rounded-lg border p-5 shadow-regal md:p-6">
             <div className="flex items-start gap-3">
                 {icon && (
-                    <div className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg">
+                    <div className="bg-primary-light text-primary flex size-10 shrink-0 items-center justify-center rounded-lg">
                         {icon}
                     </div>
                 )}
                 <div>
-                    <h3 className="text-base font-semibold tracking-tight">
-                        {title}
-                    </h3>
+                    <h3 className="text-heading">{title}</h3>
                     {description && (
-                        <p className="text-muted-foreground mt-1 text-sm">
+                        <p className="text-muted-foreground mt-1 text-body">
                             {description}
                         </p>
                     )}

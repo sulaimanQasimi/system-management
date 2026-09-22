@@ -1,5 +1,5 @@
 import { Form, Head, Link } from '@inertiajs/react';
-import { Eye, Pencil, Plus, Trash2 } from 'lucide-react';
+import { Eye, HardDrive, Pencil, Plus, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import ServerController from '@/actions/App/Http/Controllers/ServerController';
 import {
@@ -11,6 +11,7 @@ import {
     type ListFilters,
     type Paginated,
 } from '@/components/resource-list';
+import { PageHeader } from '@/components/layout/page-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -49,9 +50,9 @@ type ServerFilters = ListFilters & {
 function statusVariant(status: string) {
     switch (status) {
         case 'active':
-            return 'default' as const;
+            return 'success' as const;
         case 'maintenance':
-            return 'secondary' as const;
+            return 'warning' as const;
         case 'inactive':
             return 'outline' as const;
         case 'decommissioned':
@@ -99,25 +100,21 @@ export default function ServersIndex({
             <Head title="Servers" />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-4 md:p-6">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <h1 className="text-xl font-semibold tracking-tight">
-                            Servers
-                        </h1>
-                        <p className="text-muted-foreground text-sm">
-                            Inventory of department servers, network details,
-                            services, and iDRAC access.
-                        </p>
-                    </div>
-                    {can('server.create') && (
-                        <Button asChild>
-                            <Link href={create()}>
-                                <Plus />
-                                Add server
-                            </Link>
-                        </Button>
-                    )}
-                </div>
+                <PageHeader
+                    title="Servers"
+                    description="Inventory of department servers, network details, services, and iDRAC access."
+                    icon={HardDrive}
+                    action={
+                        can('server.create') ? (
+                            <Button asChild>
+                                <Link href={create()}>
+                                    <Plus />
+                                    Add server
+                                </Link>
+                            </Button>
+                        ) : undefined
+                    }
+                />
 
                 <ResourceFilters
                     indexUrl={indexUrl}
@@ -272,7 +269,7 @@ export default function ServersIndex({
                     total={servers.total}
                 />
 
-                <div className="border-border bg-card overflow-hidden rounded-xl border">
+                <div className="border-border/80 bg-card overflow-hidden rounded-lg border shadow-regal">
                     <div className="overflow-x-auto">
                         <table className="w-full min-w-[1200px] text-left text-sm">
                             <thead className="bg-muted/50 border-b">

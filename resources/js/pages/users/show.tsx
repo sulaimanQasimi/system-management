@@ -1,6 +1,7 @@
 import { Head, Link } from '@inertiajs/react';
 import { Pencil, UserRound } from 'lucide-react';
 import { DetailField, DetailSection } from '@/components/detail-fields';
+import { PageHeader } from '@/components/layout/page-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useCan } from '@/hooks/use-can';
@@ -23,34 +24,26 @@ export default function UsersShow({ user }: { user: UserShow }) {
             <Head title={user.name} />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-4 md:p-6">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="flex items-start gap-3">
-                        <div className="bg-primary/10 text-primary flex size-11 items-center justify-center rounded-xl">
-                            <UserRound className="size-5" />
-                        </div>
-                        <div>
-                            <h1 className="text-xl font-semibold tracking-tight">
-                                {user.name}
-                            </h1>
-                            <p className="text-muted-foreground text-sm">
-                                {user.email}
-                            </p>
-                        </div>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                        <Button variant="outline" asChild>
-                            <Link href={index()}>Back to users</Link>
-                        </Button>
-                        {can('user.update') && (
-                            <Button asChild>
-                                <Link href={edit(user.id)}>
-                                    <Pencil />
-                                    Edit
-                                </Link>
+                <PageHeader
+                    title={user.name}
+                    description={user.email}
+                    icon={UserRound}
+                    action={
+                        <>
+                            <Button variant="outline" asChild>
+                                <Link href={index()}>Back to users</Link>
                             </Button>
-                        )}
-                    </div>
-                </div>
+                            {can('user.update') && (
+                                <Button asChild>
+                                    <Link href={edit(user.id)}>
+                                        <Pencil />
+                                        Edit
+                                    </Link>
+                                </Button>
+                            )}
+                        </>
+                    }
+                />
 
                 <DetailSection title="User details">
                     <DetailField label="Name" value={user.name} />

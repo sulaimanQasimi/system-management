@@ -93,7 +93,7 @@ export default function QuickCreateItSupportDialog({
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
-                        <span className="bg-primary/10 text-primary flex size-8 items-center justify-center rounded-md">
+                        <span className="bg-primary-light text-primary flex size-8 items-center justify-center rounded-md">
                             <Headset className="size-4" />
                         </span>
                         Create IT Support

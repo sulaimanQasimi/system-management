@@ -8,10 +8,12 @@ import {
     Pencil,
     Search,
     Trash2,
+    Users,
     X,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import ActiveDirectoryUserController from '@/actions/App/Http/Controllers/ActiveDirectoryUserController';
+import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -195,26 +197,23 @@ export default function AdUsersIndex({
             <Head title="Active Directory Users" />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-4 md:p-6">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <h1 className="text-xl font-semibold tracking-tight">
-                            Active Directory Users
-                        </h1>
-                        <p className="text-muted-foreground text-sm">
-                            Manage directory accounts for the Network Section.
-                        </p>
-                    </div>
-                    {can('ad_user.create') && (
-                        <Button asChild>
-                            <Link href={create()}>
-                                <Plus />
-                                Add user
-                            </Link>
-                        </Button>
-                    )}
-                </div>
+                <PageHeader
+                    title="Active Directory Users"
+                    description="Manage directory accounts for the Network Section."
+                    icon={Users}
+                    action={
+                        can('ad_user.create') ? (
+                            <Button asChild>
+                                <Link href={create()}>
+                                    <Plus />
+                                    Add user
+                                </Link>
+                            </Button>
+                        ) : undefined
+                    }
+                />
 
-                <div className="border-border bg-card rounded-xl border p-4">
+                <div className="border-border/80 bg-card rounded-lg border p-4 shadow-regal">
                     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
                         <div className="grid gap-2 xl:col-span-2">
                             <Label htmlFor="search">Search</Label>
@@ -344,7 +343,7 @@ export default function AdUsersIndex({
                     </div>
                 </div>
 
-                <div className="border-border bg-card overflow-hidden rounded-xl border">
+                <div className="border-border/80 bg-card overflow-hidden rounded-lg border shadow-regal">
                     <div className="overflow-x-auto">
                         <table className="w-full min-w-[1100px] text-left text-sm">
                             <thead className="bg-muted/50 border-b">

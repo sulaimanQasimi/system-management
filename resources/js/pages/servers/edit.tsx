@@ -33,7 +33,7 @@ export default function ServersEdit({
             <div className="flex h-full flex-1 flex-col gap-6 p-4 md:p-6">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-start gap-3">
-                        <div className="bg-primary/10 text-primary flex size-11 items-center justify-center rounded-xl">
+                        <div className="bg-primary-light text-primary flex size-11 items-center justify-center rounded-lg">
                             <HardDrive className="size-5" />
                         </div>
                         <div>
@@ -50,7 +50,7 @@ export default function ServersEdit({
                     </Button>
                 </div>
 
-                <div className="border-border bg-card w-full rounded-xl border p-4 md:p-6">
+                <div className="border-border/80 bg-card w-full rounded-lg border shadow-regal p-4 md:p-6">
                     <Form
                         {...ServerController.update.form(server.id)}
                         className="space-y-6"

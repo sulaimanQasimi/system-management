@@ -181,7 +181,7 @@ export function ResourceFilters({
     };
 
     return (
-        <div className="border-border bg-card rounded-xl border p-4">
+        <div className="border-border/80 bg-card rounded-lg border p-4 shadow-regal">
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                 <div className="grid gap-2 xl:col-span-2">
                     <Label htmlFor="resource-search">Search</Label>

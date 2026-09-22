@@ -22,7 +22,7 @@ export default function ServerModelsShow({ model }: { model: ModelShow }) {
             <div className="flex h-full flex-1 flex-col gap-6 p-4 md:p-6">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-start gap-3">
-                        <div className="bg-primary/10 text-primary flex size-11 items-center justify-center rounded-xl">
+                        <div className="bg-primary-light text-primary flex size-11 items-center justify-center rounded-lg">
                             <Server className="size-5" />
                         </div>
                         <div>

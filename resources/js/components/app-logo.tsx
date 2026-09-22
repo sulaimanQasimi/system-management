@@ -7,14 +7,14 @@ export default function AppLogo() {
 
     return (
         <>
-            <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-md">
+            <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-md shadow-sm">
                 <AppLogoIcon className="size-5 text-current" />
             </div>
             <div className="ml-1 grid flex-1 text-left text-sm">
-                <span className="truncate leading-tight font-semibold">
+                <span className="truncate leading-tight font-semibold tracking-tight">
                     {name}
                 </span>
-                <span className="text-sidebar-foreground/60 truncate text-[11px] leading-tight">
+                <span className="text-sidebar-foreground/55 truncate text-[11px] leading-tight">
                     Department Portal
                 </span>
             </div>

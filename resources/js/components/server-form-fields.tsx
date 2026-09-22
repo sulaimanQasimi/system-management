@@ -67,10 +67,10 @@ function Section({
     children: ReactNode;
 }) {
     return (
-        <section className="border-border bg-card/40 space-y-5 rounded-xl border p-5 md:p-6">
+        <section className="border-border/80 bg-card/40 space-y-5 rounded-lg border shadow-regal p-5 md:p-6">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div className="flex items-start gap-3">
-                    <div className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg">
+                    <div className="bg-primary-light text-primary flex size-10 shrink-0 items-center justify-center rounded-lg">
                         {icon}
                     </div>
                     <div>

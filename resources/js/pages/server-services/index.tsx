@@ -1,5 +1,5 @@
 import { Form, Head, Link } from '@inertiajs/react';
-import { Eye, Pencil, Plus, Trash2 } from 'lucide-react';
+import { Eye, Pencil, Plus, ServerCog, Trash2 } from 'lucide-react';
 import ServerServiceController from '@/actions/App/Http/Controllers/ServerServiceController';
 import {
     ResourceFilters,
@@ -9,6 +9,7 @@ import {
     type ListFilters,
     type Paginated,
 } from '@/components/resource-list';
+import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
 import { useCan } from '@/hooks/use-can';
 import { create, edit, index, show } from '@/routes/server-services';
@@ -37,24 +38,21 @@ export default function ServerServicesIndex({
             <Head title="Server Services" />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-4 md:p-6">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <h1 className="text-xl font-semibold tracking-tight">
-                            Server Services
-                        </h1>
-                        <p className="text-muted-foreground text-sm">
-                            Track services running across the infrastructure.
-                        </p>
-                    </div>
-                    {can('server_service.create') && (
-                        <Button asChild>
-                            <Link href={create()}>
-                                <Plus />
-                                Add service
-                            </Link>
-                        </Button>
-                    )}
-                </div>
+                <PageHeader
+                    title="Server Services"
+                    description="Track services running across the infrastructure."
+                    icon={ServerCog}
+                    action={
+                        can('server_service.create') ? (
+                            <Button asChild>
+                                <Link href={create()}>
+                                    <Plus />
+                                    Add service
+                                </Link>
+                            </Button>
+                        ) : undefined
+                    }
+                />
 
                 <ResourceFilters
                     indexUrl={indexUrl}
@@ -69,7 +67,7 @@ export default function ServerServicesIndex({
                     total={services.total}
                 />
 
-                <div className="border-border bg-card overflow-hidden rounded-xl border">
+                <div className="border-border/80 bg-card overflow-hidden rounded-lg border shadow-regal">
                     <div className="overflow-x-auto">
                         <table className="w-full min-w-[640px] text-left text-sm">
                             <thead className="bg-muted/50 border-b">
