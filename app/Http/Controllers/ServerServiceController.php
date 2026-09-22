@@ -68,6 +68,18 @@ class ServerServiceController extends Controller implements HasMiddleware
         return to_route('server-services.index');
     }
 
+    public function show(ServerService $serverService): Response
+    {
+        return Inertia::render('server-services/show', [
+            'service' => [
+                'id' => $serverService->id,
+                'name' => $serverService->name,
+                'created_at' => $serverService->created_at?->toDateTimeString(),
+                'updated_at' => $serverService->updated_at?->toDateTimeString(),
+            ],
+        ]);
+    }
+
     public function edit(ServerService $serverService): Response
     {
         return Inertia::render('server-services/edit', [

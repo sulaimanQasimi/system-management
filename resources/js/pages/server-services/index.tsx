@@ -1,5 +1,5 @@
 import { Form, Head, Link } from '@inertiajs/react';
-import { Pencil, Plus, Trash2 } from 'lucide-react';
+import { Eye, Pencil, Plus, Trash2 } from 'lucide-react';
 import ServerServiceController from '@/actions/App/Http/Controllers/ServerServiceController';
 import {
     ResourceFilters,
@@ -11,7 +11,7 @@ import {
 } from '@/components/resource-list';
 import { Button } from '@/components/ui/button';
 import { useCan } from '@/hooks/use-can';
-import { create, edit, index } from '@/routes/server-services';
+import { create, edit, index, show } from '@/routes/server-services';
 
 type ServerServiceRow = {
     id: number;
@@ -130,6 +130,26 @@ export default function ServerServicesIndex({
                                             </td>
                                             <td className="px-4 py-3">
                                                 <div className="flex items-center justify-end gap-1">
+                                                    {can(
+                                                        'server_service.view',
+                                                    ) && (
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            asChild
+                                                        >
+                                                            <Link
+                                                                href={show(
+                                                                    service.id,
+                                                                )}
+                                                            >
+                                                                <Eye />
+                                                                <span className="sr-only">
+                                                                    View
+                                                                </span>
+                                                            </Link>
+                                                        </Button>
+                                                    )}
                                                     {can(
                                                         'server_service.update',
                                                     ) && (

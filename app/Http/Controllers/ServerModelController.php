@@ -68,6 +68,18 @@ class ServerModelController extends Controller implements HasMiddleware
         return to_route('server-models.index');
     }
 
+    public function show(ServerModel $serverModel): Response
+    {
+        return Inertia::render('server-models/show', [
+            'model' => [
+                'id' => $serverModel->id,
+                'name' => $serverModel->name,
+                'created_at' => $serverModel->created_at?->toDateTimeString(),
+                'updated_at' => $serverModel->updated_at?->toDateTimeString(),
+            ],
+        ]);
+    }
+
     public function edit(ServerModel $serverModel): Response
     {
         return Inertia::render('server-models/edit', [

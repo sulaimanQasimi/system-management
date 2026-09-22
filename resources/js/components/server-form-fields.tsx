@@ -44,6 +44,7 @@ export type ServerFormValues = {
     idrac_default_gateway?: string | null;
     username?: string | null;
     status?: string;
+    is_vm?: boolean;
     service_ids?: number[];
     has_password?: boolean;
 };
@@ -149,6 +150,7 @@ export default function ServerFormFields({
     const [itSupportPhone, setItSupportPhone] = useState(
         values.it_support_phone ?? '',
     );
+    const [isVm, setIsVm] = useState(Boolean(values.is_vm));
 
     const [departmentDialogOpen, setDepartmentDialogOpen] = useState(false);
     const [modelDialogOpen, setModelDialogOpen] = useState(false);
@@ -182,6 +184,10 @@ export default function ServerFormFields({
         setItSupportId(values.it_support_id ? String(values.it_support_id) : '');
         setItSupportPhone(values.it_support_phone ?? '');
     }, [values.it_support_id, values.it_support_phone]);
+
+    useEffect(() => {
+        setIsVm(Boolean(values.is_vm));
+    }, [values.is_vm]);
 
     const toggleService = (id: number, checked: boolean) => {
         setSelectedServices((current) =>
@@ -267,6 +273,38 @@ export default function ServerFormFields({
                             ))}
                         </select>
                         <InputError message={errors.status} />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label htmlFor="is_vm" className="flex items-center gap-2">
+                            <span className="text-muted-foreground">
+                                <ServerCog className="size-3.5" />
+                            </span>
+                            Virtual machine
+                        </Label>
+                        <input
+                            type="hidden"
+                            name="is_vm"
+                            value={isVm ? '1' : '0'}
+                        />
+                        <label
+                            htmlFor="is_vm"
+                            className="border-input bg-background hover:bg-muted/40 flex h-9 cursor-pointer items-center gap-3 rounded-md border px-3 text-sm shadow-xs"
+                        >
+                            <Checkbox
+                                id="is_vm"
+                                checked={isVm}
+                                onCheckedChange={(checked) =>
+                                    setIsVm(checked === true)
+                                }
+                            />
+                            <span>
+                                {isVm
+                                    ? 'This is a VM (no iDRAC / IT Support)'
+                                    : 'Mark as virtual machine'}
+                            </span>
+                        </label>
+                        <InputError message={errors.is_vm} />
                     </div>
 
                     <div className="grid gap-2">
@@ -464,135 +502,154 @@ export default function ServerFormFields({
                 <InputError message={errors.service_ids} />
             </Section>
 
-            <Section
-                title="IT Support"
-                description="Assigned support contact and reachable phone / PBX."
-                icon={<Headset className="size-5" />}
-                action={
-                    can('it_support.create') ? (
-                        <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setItSupportDialogOpen(true)}
-                        >
-                            <Plus />
-                            New
-                        </Button>
-                    ) : undefined
-                }
-            >
-                <div className="grid gap-4 md:grid-cols-2">
-                    <div className="grid gap-2">
-                        <FieldIconLabel
-                            htmlFor="it_support_id"
-                            icon={<Headset className="size-3.5" />}
-                        >
-                            IT Support name
-                        </FieldIconLabel>
-                        <select
-                            id="it_support_id"
-                            name="it_support_id"
-                            value={itSupportId}
-                            onChange={(event) =>
-                                onItSupportChange(event.target.value)
-                            }
-                            className="border-input bg-background h-9 w-full rounded-md border px-3 text-sm shadow-xs"
-                        >
-                            <option value="">Select contact</option>
-                            {itSupportOptions.map((contact) => (
-                                <option key={contact.id} value={contact.id}>
-                                    {contact.name}
-                                </option>
-                            ))}
-                        </select>
-                        <InputError message={errors.it_support_id} />
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="it_support_phone">
-                            IT Support phone no
-                        </Label>
-                        <Input
-                            id="it_support_phone"
-                            name="it_support_phone"
-                            value={itSupportPhone}
-                            onChange={(event) =>
-                                setItSupportPhone(event.target.value)
-                            }
-                            placeholder="PBX / phone"
-                        />
-                        <InputError message={errors.it_support_phone} />
-                    </div>
-                </div>
-            </Section>
+            {!isVm && (
+                <>
+                    <Section
+                        title="IT Support"
+                        description="Assigned support contact and reachable phone / PBX."
+                        icon={<Headset className="size-5" />}
+                        action={
+                            can('it_support.create') ? (
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setItSupportDialogOpen(true)}
+                                >
+                                    <Plus />
+                                    New
+                                </Button>
+                            ) : undefined
+                        }
+                    >
+                        <div className="grid gap-4 md:grid-cols-2">
+                            <div className="grid gap-2">
+                                <FieldIconLabel
+                                    htmlFor="it_support_id"
+                                    icon={<Headset className="size-3.5" />}
+                                >
+                                    IT Support name
+                                </FieldIconLabel>
+                                <select
+                                    id="it_support_id"
+                                    name="it_support_id"
+                                    value={itSupportId}
+                                    onChange={(event) =>
+                                        onItSupportChange(event.target.value)
+                                    }
+                                    className="border-input bg-background h-9 w-full rounded-md border px-3 text-sm shadow-xs"
+                                >
+                                    <option value="">Select contact</option>
+                                    {itSupportOptions.map((contact) => (
+                                        <option
+                                            key={contact.id}
+                                            value={contact.id}
+                                        >
+                                            {contact.name}
+                                        </option>
+                                    ))}
+                                </select>
+                                <InputError message={errors.it_support_id} />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="it_support_phone">
+                                    IT Support phone no
+                                </Label>
+                                <Input
+                                    id="it_support_phone"
+                                    name="it_support_phone"
+                                    value={itSupportPhone}
+                                    onChange={(event) =>
+                                        setItSupportPhone(event.target.value)
+                                    }
+                                    placeholder="PBX / phone"
+                                />
+                                <InputError message={errors.it_support_phone} />
+                            </div>
+                        </div>
+                    </Section>
 
-            <Section
-                title="iDRAC / Out-of-band"
-                description="Management network and credentials for remote access."
-                icon={<KeyRound className="size-5" />}
-            >
-                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                    <div className="grid gap-2">
-                        <Label htmlFor="idrac_ip_address">iDRAC IP address</Label>
-                        <IpInput
-                            id="idrac_ip_address"
-                            name="idrac_ip_address"
-                            defaultValue={values.idrac_ip_address ?? ''}
-                        />
-                        <InputError message={errors.idrac_ip_address} />
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="idrac_subnet_mask">Subnet mask</Label>
-                        <IpInput
-                            id="idrac_subnet_mask"
-                            name="idrac_subnet_mask"
-                            defaultValue={values.idrac_subnet_mask ?? ''}
-                        />
-                        <InputError message={errors.idrac_subnet_mask} />
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="idrac_default_gateway">
-                            Default gateway
-                        </Label>
-                        <IpInput
-                            id="idrac_default_gateway"
-                            name="idrac_default_gateway"
-                            defaultValue={values.idrac_default_gateway ?? ''}
-                        />
-                        <InputError message={errors.idrac_default_gateway} />
-                    </div>
-                    <div className="grid gap-2">
-                        <FieldIconLabel
-                            htmlFor="username"
-                            icon={<KeyRound className="size-3.5" />}
-                        >
-                            Username
-                        </FieldIconLabel>
-                        <Input
-                            id="username"
-                            name="username"
-                            defaultValue={values.username ?? ''}
-                            autoComplete="off"
-                        />
-                        <InputError message={errors.username} />
-                    </div>
-                    <div className="grid gap-2 md:col-span-2 xl:col-span-2">
-                        <Label htmlFor="password">Password</Label>
-                        <Input
-                            id="password"
-                            name="password"
-                            type="password"
-                            placeholder={
-                                isEdit && values.has_password
-                                    ? 'Leave blank to keep current password'
-                                    : 'Enter password'
-                            }
-                            autoComplete="new-password"
-                        />
-                        <InputError message={errors.password} />
-                    </div>
-                </div>
-            </Section>
+                    <Section
+                        title="iDRAC / Out-of-band"
+                        description="Management network and credentials for remote access."
+                        icon={<KeyRound className="size-5" />}
+                    >
+                        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                            <div className="grid gap-2">
+                                <Label htmlFor="idrac_ip_address">
+                                    iDRAC IP address
+                                </Label>
+                                <IpInput
+                                    id="idrac_ip_address"
+                                    name="idrac_ip_address"
+                                    defaultValue={values.idrac_ip_address ?? ''}
+                                />
+                                <InputError message={errors.idrac_ip_address} />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="idrac_subnet_mask">
+                                    Subnet mask
+                                </Label>
+                                <IpInput
+                                    id="idrac_subnet_mask"
+                                    name="idrac_subnet_mask"
+                                    defaultValue={
+                                        values.idrac_subnet_mask ?? ''
+                                    }
+                                />
+                                <InputError
+                                    message={errors.idrac_subnet_mask}
+                                />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="idrac_default_gateway">
+                                    Default gateway
+                                </Label>
+                                <IpInput
+                                    id="idrac_default_gateway"
+                                    name="idrac_default_gateway"
+                                    defaultValue={
+                                        values.idrac_default_gateway ?? ''
+                                    }
+                                />
+                                <InputError
+                                    message={errors.idrac_default_gateway}
+                                />
+                            </div>
+                            <div className="grid gap-2">
+                                <FieldIconLabel
+                                    htmlFor="username"
+                                    icon={<KeyRound className="size-3.5" />}
+                                >
+                                    Username
+                                </FieldIconLabel>
+                                <Input
+                                    id="username"
+                                    name="username"
+                                    defaultValue={values.username ?? ''}
+                                    autoComplete="off"
+                                />
+                                <InputError message={errors.username} />
+                            </div>
+                            <div className="grid gap-2 md:col-span-2 xl:col-span-2">
+                                <Label htmlFor="password">Password</Label>
+                                <Input
+                                    id="password"
+                                    name="password"
+                                    type="password"
+                                    placeholder={
+                                        isEdit && values.has_password
+                                            ? 'Leave blank to keep current password'
+                                            : 'Enter password'
+                                    }
+                                    autoComplete="new-password"
+                                />
+                                <InputError message={errors.password} />
+                            </div>
+                        </div>
+                    </Section>
+                </>
+            )}
 
             <Section
                 title="Description"

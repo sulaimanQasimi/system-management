@@ -14,6 +14,28 @@ class UpdateServerRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $isVm = $this->boolean('is_vm');
+
+        $merged = ['is_vm' => $isVm];
+
+        if ($isVm) {
+            $merged = [
+                ...$merged,
+                'it_support_id' => null,
+                'it_support_phone' => null,
+                'idrac_ip_address' => null,
+                'idrac_subnet_mask' => null,
+                'idrac_default_gateway' => null,
+                'username' => null,
+                'password' => null,
+            ];
+        }
+
+        $this->merge($merged);
+    }
+
     /**
      * @return array<string, ValidationRule|array<mixed>|string>
      */
@@ -45,6 +67,7 @@ class UpdateServerRequest extends FormRequest
             'username' => ['nullable', 'string', 'max:255'],
             'password' => ['nullable', 'string', 'max:255'],
             'status' => ['required', Rule::enum(ServerStatus::class)],
+            'is_vm' => ['required', 'boolean'],
             'service_ids' => ['nullable', 'array'],
             'service_ids.*' => ['integer', 'exists:server_services,id'],
         ];

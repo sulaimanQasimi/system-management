@@ -80,6 +80,20 @@ class ItSupportController extends Controller implements HasMiddleware
         return to_route('it-support.index');
     }
 
+    public function show(ItSupport $itSupport): Response
+    {
+        return Inertia::render('it-support/show', [
+            'contact' => [
+                'id' => $itSupport->id,
+                'name' => $itSupport->name,
+                'lastname' => $itSupport->lastname,
+                'pbx' => $itSupport->pbx,
+                'created_at' => $itSupport->created_at?->toDateTimeString(),
+                'updated_at' => $itSupport->updated_at?->toDateTimeString(),
+            ],
+        ]);
+    }
+
     public function edit(ItSupport $itSupport): Response
     {
         return Inertia::render('it-support/edit', [

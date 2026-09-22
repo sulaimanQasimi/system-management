@@ -1,5 +1,5 @@
 import { Form, Head, Link } from '@inertiajs/react';
-import { Pencil, Plus, Trash2 } from 'lucide-react';
+import { Eye, Pencil, Plus, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import ServerController from '@/actions/App/Http/Controllers/ServerController';
 import {
@@ -16,7 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useCan } from '@/hooks/use-can';
-import { create, edit, index } from '@/routes/servers';
+import { create, edit, index, show } from '@/routes/servers';
 
 type Option = { id: number; name: string };
 type StatusOption = { value: string; label: string };
@@ -28,6 +28,7 @@ type ServerRow = {
     ip_address: string;
     status: string;
     status_label: string;
+    is_vm: boolean;
     department: string | null;
     server_model: string | null;
     it_support: string | null;
@@ -338,7 +339,19 @@ export default function ServersIndex({
                                                 {server.site_name}
                                             </td>
                                             <td className="px-4 py-3 font-medium">
-                                                {server.name}
+                                                <div className="flex flex-wrap items-center gap-2">
+                                                    <Link
+                                                        href={show(server.id)}
+                                                        className="hover:text-primary hover:underline"
+                                                    >
+                                                        {server.name}
+                                                    </Link>
+                                                    {server.is_vm && (
+                                                        <Badge variant="secondary">
+                                                            VM
+                                                        </Badge>
+                                                    )}
+                                                </div>
                                             </td>
                                             <td className="px-4 py-3">
                                                 {server.server_model ?? '—'}
@@ -373,15 +386,24 @@ export default function ServersIndex({
                                                 {server.department ?? '—'}
                                             </td>
                                             <td className="px-4 py-3">
-                                                <div>
-                                                    {server.it_support ?? '—'}
-                                                </div>
-                                                {server.it_support_phone && (
-                                                    <div className="text-muted-foreground text-xs">
-                                                        {
-                                                            server.it_support_phone
-                                                        }
-                                                    </div>
+                                                {server.is_vm ? (
+                                                    <span className="text-muted-foreground">
+                                                        —
+                                                    </span>
+                                                ) : (
+                                                    <>
+                                                        <div>
+                                                            {server.it_support ??
+                                                                '—'}
+                                                        </div>
+                                                        {server.it_support_phone && (
+                                                            <div className="text-muted-foreground text-xs">
+                                                                {
+                                                                    server.it_support_phone
+                                                                }
+                                                            </div>
+                                                        )}
+                                                    </>
                                                 )}
                                             </td>
                                             <td className="px-4 py-3">
@@ -398,6 +420,24 @@ export default function ServersIndex({
                                             </td>
                                             <td className="px-4 py-3">
                                                 <div className="flex items-center justify-end gap-1">
+                                                    {can('server.view') && (
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            asChild
+                                                        >
+                                                            <Link
+                                                                href={show(
+                                                                    server.id,
+                                                                )}
+                                                            >
+                                                                <Eye />
+                                                                <span className="sr-only">
+                                                                    View
+                                                                </span>
+                                                            </Link>
+                                                        </Button>
+                                                    )}
                                                     {can('server.update') && (
                                                         <Button
                                                             variant="ghost"

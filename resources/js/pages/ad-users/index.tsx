@@ -4,6 +4,7 @@ import {
     ArrowUp,
     ArrowUpDown,
     Plus,
+    Eye,
     Pencil,
     Search,
     Trash2,
@@ -15,7 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useCan } from '@/hooks/use-can';
-import { create, edit, index } from '@/routes/ad-users';
+import { create, edit, index, show } from '@/routes/ad-users';
 
 type AdUserRow = {
     id: number;
@@ -447,6 +448,24 @@ export default function AdUsersIndex({
                                             </td>
                                             <td className="px-4 py-3">
                                                 <div className="flex items-center justify-end gap-1">
+                                                    {can('ad_user.view') && (
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            asChild
+                                                        >
+                                                            <Link
+                                                                href={show(
+                                                                    user.id,
+                                                                )}
+                                                            >
+                                                                <Eye />
+                                                                <span className="sr-only">
+                                                                    View
+                                                                </span>
+                                                            </Link>
+                                                        </Button>
+                                                    )}
                                                     {can('ad_user.update') && (
                                                         <Button
                                                             variant="ghost"

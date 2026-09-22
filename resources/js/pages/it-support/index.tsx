@@ -1,5 +1,5 @@
 import { Form, Head, Link } from '@inertiajs/react';
-import { Pencil, Plus, Trash2 } from 'lucide-react';
+import { Pencil, Plus, Trash2, Eye } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import ItSupportController from '@/actions/App/Http/Controllers/ItSupportController';
 import {
@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useCan } from '@/hooks/use-can';
-import { create, edit, index } from '@/routes/it-support';
+import { create, edit, index, show } from '@/routes/it-support';
 
 type ItSupportRow = {
     id: number;
@@ -184,6 +184,24 @@ export default function ItSupportIndex({
                                             </td>
                                             <td className="px-4 py-3">
                                                 <div className="flex items-center justify-end gap-1">
+                                                    {can('it_support.view') && (
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            asChild
+                                                        >
+                                                            <Link
+                                                                href={show(
+                                                                    contact.id,
+                                                                )}
+                                                            >
+                                                                <Eye />
+                                                                <span className="sr-only">
+                                                                    View
+                                                                </span>
+                                                            </Link>
+                                                        </Button>
+                                                    )}
                                                     {can(
                                                         'it_support.update',
                                                     ) && (

@@ -99,6 +99,22 @@ class UserController extends Controller implements HasMiddleware
         return to_route('users.index');
     }
 
+    public function show(User $user): Response
+    {
+        $user->load('roles:id,name');
+
+        return Inertia::render('users/show', [
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'roles' => $user->roles->pluck('name')->all(),
+                'created_at' => $user->created_at?->toDateTimeString(),
+                'updated_at' => $user->updated_at?->toDateTimeString(),
+            ],
+        ]);
+    }
+
     public function edit(User $user): Response
     {
         $user->load('roles:id,name');

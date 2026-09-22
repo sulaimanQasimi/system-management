@@ -1,5 +1,5 @@
 import { Form, Head, Link } from '@inertiajs/react';
-import { Pencil, Plus, Shield, Trash2, UserRound } from 'lucide-react';
+import { Eye, Pencil, Plus, Shield, Trash2, UserRound } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import UserController from '@/actions/App/Http/Controllers/UserController';
 import {
@@ -15,7 +15,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { useCan } from '@/hooks/use-can';
-import { create, edit, index } from '@/routes/users';
+import { create, edit, index, show } from '@/routes/users';
 
 type UserRow = {
     id: number;
@@ -204,6 +204,24 @@ export default function UsersIndex({
                                             </td>
                                             <td className="px-4 py-3">
                                                 <div className="flex items-center justify-end gap-1">
+                                                    {can('user.view') && (
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            asChild
+                                                        >
+                                                            <Link
+                                                                href={show(
+                                                                    user.id,
+                                                                )}
+                                                            >
+                                                                <Eye />
+                                                                <span className="sr-only">
+                                                                    View
+                                                                </span>
+                                                            </Link>
+                                                        </Button>
+                                                    )}
                                                     {can('user.update') && (
                                                         <Button
                                                             variant="ghost"

@@ -29,6 +29,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $username
  * @property string|null $password
  * @property ServerStatus $status
+ * @property bool $is_vm
  * @property int $created_by
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -54,6 +55,7 @@ use Illuminate\Support\Carbon;
     'username',
     'password',
     'status',
+    'is_vm',
     'created_by',
 ])]
 #[Hidden(['password'])]
@@ -131,6 +133,7 @@ class Server extends Model
         return [
             'status' => ServerStatus::class,
             'password' => 'encrypted',
+            'is_vm' => 'boolean',
         ];
     }
 }

@@ -129,7 +129,48 @@ class ServerController extends Controller implements HasMiddleware
             'message' => __('Server created.'),
         ]);
 
-        return to_route('servers.index');
+        return to_route('servers.show', $server);
+    }
+
+    public function show(Server $server): Response
+    {
+        $server->load([
+            'department:id,name',
+            'serverModel:id,name',
+            'itSupport:id,name,lastname,pbx',
+            'services:id,name',
+            'creator:id,name',
+        ]);
+
+        return Inertia::render('servers/show', [
+            'server' => [
+                'id' => $server->id,
+                'site_name' => $server->site_name,
+                'name' => $server->name,
+                'ip_address' => $server->ip_address,
+                'subnet_mask' => $server->subnet_mask,
+                'default_gateway' => $server->default_gateway,
+                'description' => $server->description,
+                'is_vm' => $server->is_vm,
+                'status' => $server->status->value,
+                'status_label' => $server->status->label(),
+                'department' => $server->department?->name,
+                'server_model' => $server->serverModel?->name,
+                'it_support' => $server->itSupport
+                    ? trim($server->itSupport->name.' '.$server->itSupport->lastname)
+                    : null,
+                'it_support_phone' => $server->it_support_phone,
+                'idrac_ip_address' => $server->idrac_ip_address,
+                'idrac_subnet_mask' => $server->idrac_subnet_mask,
+                'idrac_default_gateway' => $server->idrac_default_gateway,
+                'username' => $server->username,
+                'has_password' => filled($server->password),
+                'services' => $server->services->pluck('name')->all(),
+                'created_by' => $server->creator?->name,
+                'created_at' => $server->created_at?->toDateTimeString(),
+                'updated_at' => $server->updated_at?->toDateTimeString(),
+            ],
+        ]);
     }
 
     public function edit(Server $server): Response
@@ -155,6 +196,7 @@ class ServerController extends Controller implements HasMiddleware
                 'idrac_default_gateway' => $server->idrac_default_gateway,
                 'username' => $server->username,
                 'status' => $server->status->value,
+                'is_vm' => $server->is_vm,
                 'service_ids' => $server->services->pluck('id')->all(),
                 'has_password' => filled($server->password),
             ],
@@ -165,7 +207,9 @@ class ServerController extends Controller implements HasMiddleware
     {
         $data = $request->safe()->except(['service_ids', 'password']);
 
-        if ($request->filled('password')) {
+        if ($request->boolean('is_vm')) {
+            $data['password'] = null;
+        } elseif ($request->filled('password')) {
             $data['password'] = $request->validated('password');
         }
 
@@ -177,7 +221,7 @@ class ServerController extends Controller implements HasMiddleware
             'message' => __('Server updated.'),
         ]);
 
-        return to_route('servers.index');
+        return to_route('servers.show', $server);
     }
 
     public function destroy(Server $server): RedirectResponse
@@ -235,6 +279,7 @@ class ServerController extends Controller implements HasMiddleware
             'idrac_ip_address' => $server->idrac_ip_address,
             'status' => $server->status->value,
             'status_label' => $server->status->label(),
+            'is_vm' => $server->is_vm,
             'department' => $server->department?->name,
             'server_model' => $server->serverModel?->name,
             'it_support' => $server->itSupport

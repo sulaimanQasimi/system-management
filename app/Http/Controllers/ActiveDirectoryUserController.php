@@ -116,6 +116,28 @@ class ActiveDirectoryUserController extends Controller implements HasMiddleware
         return to_route('ad-users.index');
     }
 
+    public function show(ActiveDirectoryUser $activeDirectoryUser): Response
+    {
+        $activeDirectoryUser->load('creator:id,name');
+
+        return Inertia::render('ad-users/show', [
+            'user' => [
+                'id' => $activeDirectoryUser->id,
+                'name' => $activeDirectoryUser->name,
+                'lastname' => $activeDirectoryUser->lastname,
+                'username' => $activeDirectoryUser->username,
+                'email' => $activeDirectoryUser->email,
+                'job' => $activeDirectoryUser->job,
+                'pbx' => $activeDirectoryUser->pbx,
+                'phone' => $activeDirectoryUser->phone,
+                'date' => $activeDirectoryUser->date?->toDateString(),
+                'created_by' => $activeDirectoryUser->creator?->name,
+                'created_at' => $activeDirectoryUser->created_at?->toDateTimeString(),
+                'updated_at' => $activeDirectoryUser->updated_at?->toDateTimeString(),
+            ],
+        ]);
+    }
+
     public function edit(ActiveDirectoryUser $activeDirectoryUser): Response
     {
         return Inertia::render('ad-users/edit', [

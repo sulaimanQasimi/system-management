@@ -14,26 +14,20 @@ Route::inertia('/', 'welcome')->name('home');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
 
-    Route::resource('users', UserController::class)
-        ->except(['show']);
+    Route::resource('users', UserController::class);
 
     Route::resource('ad-users', ActiveDirectoryUserController::class)
-        ->except(['show'])
         ->parameters(['ad-users' => 'activeDirectoryUser']);
 
-    Route::resource('servers', ServerController::class)
-        ->except(['show']);
+    Route::resource('servers', ServerController::class);
 
     Route::resource('server-models', ServerModelController::class)
-        ->except(['show'])
         ->parameters(['server-models' => 'serverModel']);
 
     Route::resource('server-services', ServerServiceController::class)
-        ->except(['show'])
         ->parameters(['server-services' => 'serverService']);
 
     Route::resource('it-support', ItSupportController::class)
-        ->except(['show'])
         ->parameters(['it-support' => 'itSupport']);
 
     Route::prefix('quick-create')->name('quick-create.')->group(function () {
