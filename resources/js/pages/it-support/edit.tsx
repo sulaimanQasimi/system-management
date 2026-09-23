@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
+import { useTranslations } from '@/hooks/use-locale';
 import { index } from '@/routes/it-support';
 
 export default function ItSupportEdit({
@@ -18,14 +19,19 @@ export default function ItSupportEdit({
         pbx: string | null;
     };
 }) {
+    const { t } = useTranslations();
+    const fullName = `${contact.name} ${contact.lastname}`;
+
     return (
         <>
-            <Head title={`Edit ${contact.name} ${contact.lastname}`} />
+            <Head title={t('itSupport.headEdit', { name: fullName })} />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-4 md:p-6">
                 <Heading
-                    title="Edit IT Support contact"
-                    description={`Update details for ${contact.name} ${contact.lastname}.`}
+                    title={t('itSupport.editTitle')}
+                    description={t('itSupport.editDescription', {
+                        name: fullName,
+                    })}
                 />
 
                 <div className="border-border/80 bg-card w-full rounded-lg border shadow-regal p-4 md:p-6">
@@ -37,7 +43,9 @@ export default function ItSupportEdit({
                             <>
                                 <div className="grid gap-6 sm:grid-cols-2">
                                     <div className="grid gap-2">
-                                        <Label htmlFor="name">Name</Label>
+                                        <Label htmlFor="name">
+                                            {t('common.name')}
+                                        </Label>
                                         <Input
                                             id="name"
                                             name="name"
@@ -49,7 +57,7 @@ export default function ItSupportEdit({
                                     </div>
                                     <div className="grid gap-2">
                                         <Label htmlFor="lastname">
-                                            Last name
+                                            {t('common.lastName')}
                                         </Label>
                                         <Input
                                             id="lastname"
@@ -60,7 +68,9 @@ export default function ItSupportEdit({
                                         <InputError message={errors.lastname} />
                                     </div>
                                     <div className="grid gap-2">
-                                        <Label htmlFor="pbx">PBX</Label>
+                                        <Label htmlFor="pbx">
+                                            {t('common.pbx')}
+                                        </Label>
                                         <Input
                                             id="pbx"
                                             name="pbx"
@@ -73,10 +83,12 @@ export default function ItSupportEdit({
                                 <div className="flex items-center gap-3">
                                     <Button disabled={processing}>
                                         {processing && <Spinner />}
-                                        Save changes
+                                        {t('common.saveChanges')}
                                     </Button>
                                     <Button variant="outline" asChild>
-                                        <Link href={index()}>Cancel</Link>
+                                        <Link href={index()}>
+                                            {t('common.cancel')}
+                                        </Link>
                                     </Button>
                                 </div>
                             </>
@@ -91,11 +103,11 @@ export default function ItSupportEdit({
 ItSupportEdit.layout = {
     breadcrumbs: [
         {
-            title: 'IT Support',
+            title: 'itSupport.title',
             href: index(),
         },
         {
-            title: 'Edit contact',
+            title: 'itSupport.breadcrumbEdit',
             href: '#',
         },
     ],

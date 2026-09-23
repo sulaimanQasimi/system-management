@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useCan } from '@/hooks/use-can';
+import { useTranslations } from '@/hooks/use-locale';
 import { create, edit, index, show } from '@/routes/it-support';
 
 type ItSupportRow = {
@@ -42,6 +43,7 @@ export default function ItSupportIndex({
 }) {
     const indexUrl = index.url();
     const { can } = useCan();
+    const { t } = useTranslations();
     const [pbx, setPbx] = useState(filters.pbx);
 
     useEffect(() => {
@@ -50,19 +52,19 @@ export default function ItSupportIndex({
 
     return (
         <>
-            <Head title="IT Support" />
+            <Head title={t('itSupport.title')} />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-4 md:p-6">
                 <PageHeader
-                    title="IT Support"
-                    description="Support contacts and PBX extensions for the department."
+                    title={t('itSupport.title')}
+                    description={t('itSupport.description')}
                     icon={Headset}
                     action={
                         can('it_support.create') ? (
                             <Button asChild>
                                 <Link href={create()}>
                                     <Plus />
-                                    Add contact
+                                    {t('itSupport.addContact')}
                                 </Link>
                             </Button>
                         ) : undefined
@@ -73,10 +75,10 @@ export default function ItSupportIndex({
                     indexUrl={indexUrl}
                     filters={filters}
                     perPageOptions={perPageOptions}
-                    searchPlaceholder="Search name, last name, or PBX…"
+                    searchPlaceholder={t('itSupport.searchPlaceholder')}
                     extraFields={
                         <div className="grid gap-2 xl:col-span-2">
-                            <Label htmlFor="pbx">PBX</Label>
+                            <Label htmlFor="pbx">{t('common.pbx')}</Label>
                             <Input
                                 id="pbx"
                                 value={pbx}
@@ -97,7 +99,7 @@ export default function ItSupportIndex({
                                         );
                                     }
                                 }}
-                                placeholder="Filter by PBX extension"
+                                placeholder={t('itSupport.filterByPbx')}
                             />
                         </div>
                     }
@@ -111,12 +113,12 @@ export default function ItSupportIndex({
 
                 <div className="border-border/80 bg-card overflow-hidden rounded-lg border shadow-regal">
                     <div className="overflow-x-auto">
-                        <table className="w-full min-w-[720px] text-left text-sm">
+                        <table className="w-full min-w-[720px] text-start text-sm">
                             <thead className="bg-muted/50 border-b">
                                 <tr className="text-muted-foreground">
                                     <th className="px-4 py-3">
                                         <SortHeader
-                                            label="Name"
+                                            label={t('common.name')}
                                             column="name"
                                             filters={filters}
                                             indexUrl={indexUrl}
@@ -124,7 +126,7 @@ export default function ItSupportIndex({
                                     </th>
                                     <th className="px-4 py-3">
                                         <SortHeader
-                                            label="Last name"
+                                            label={t('common.lastName')}
                                             column="lastname"
                                             filters={filters}
                                             indexUrl={indexUrl}
@@ -132,7 +134,7 @@ export default function ItSupportIndex({
                                     </th>
                                     <th className="px-4 py-3">
                                         <SortHeader
-                                            label="PBX"
+                                            label={t('common.pbx')}
                                             column="pbx"
                                             filters={filters}
                                             indexUrl={indexUrl}
@@ -140,14 +142,14 @@ export default function ItSupportIndex({
                                     </th>
                                     <th className="px-4 py-3">
                                         <SortHeader
-                                            label="Created"
+                                            label={t('common.created')}
                                             column="created_at"
                                             filters={filters}
                                             indexUrl={indexUrl}
                                         />
                                     </th>
-                                    <th className="px-4 py-3 text-right font-medium">
-                                        Actions
+                                    <th className="px-4 py-3 text-end font-medium">
+                                        {t('common.actions')}
                                     </th>
                                 </tr>
                             </thead>
@@ -158,7 +160,7 @@ export default function ItSupportIndex({
                                             colSpan={5}
                                             className="text-muted-foreground px-4 py-10 text-center"
                                         >
-                                            No IT Support contacts found.
+                                            {t('itSupport.noResults')}
                                         </td>
                                     </tr>
                                 ) : (
@@ -194,7 +196,9 @@ export default function ItSupportIndex({
                                                             >
                                                                 <Eye />
                                                                 <span className="sr-only">
-                                                                    View
+                                                                    {t(
+                                                                        'common.view',
+                                                                    )}
                                                                 </span>
                                                             </Link>
                                                         </Button>
@@ -214,7 +218,9 @@ export default function ItSupportIndex({
                                                             >
                                                                 <Pencil />
                                                                 <span className="sr-only">
-                                                                    Edit
+                                                                    {t(
+                                                                        'common.edit',
+                                                                    )}
                                                                 </span>
                                                             </Link>
                                                         </Button>
@@ -234,7 +240,9 @@ export default function ItSupportIndex({
                                                             ) => {
                                                                 if (
                                                                     !confirm(
-                                                                        'Delete this IT Support contact?',
+                                                                        t(
+                                                                            'itSupport.deleteConfirm',
+                                                                        ),
                                                                     )
                                                                 ) {
                                                                     event.preventDefault();
@@ -255,7 +263,9 @@ export default function ItSupportIndex({
                                                                 >
                                                                     <Trash2 />
                                                                     <span className="sr-only">
-                                                                        Delete
+                                                                        {t(
+                                                                            'common.delete',
+                                                                        )}
                                                                     </span>
                                                                 </Button>
                                                             )}
@@ -280,7 +290,7 @@ export default function ItSupportIndex({
 ItSupportIndex.layout = {
     breadcrumbs: [
         {
-            title: 'IT Support',
+            title: 'itSupport.title',
             href: index(),
         },
     ],

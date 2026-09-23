@@ -6,17 +6,20 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
+import { useTranslations } from '@/hooks/use-locale';
 import { create, index } from '@/routes/it-support';
 
 export default function ItSupportCreate() {
+    const { t } = useTranslations();
+
     return (
         <>
-            <Head title="Add IT Support" />
+            <Head title={t('itSupport.headAdd')} />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-4 md:p-6">
                 <Heading
-                    title="Add IT Support contact"
-                    description="Register a new support contact and PBX."
+                    title={t('itSupport.addTitle')}
+                    description={t('itSupport.addDescription')}
                 />
 
                 <div className="border-border/80 bg-card w-full rounded-lg border shadow-regal p-4 md:p-6">
@@ -28,34 +31,44 @@ export default function ItSupportCreate() {
                             <>
                                 <div className="grid gap-6 sm:grid-cols-2">
                                     <div className="grid gap-2">
-                                        <Label htmlFor="name">Name</Label>
+                                        <Label htmlFor="name">
+                                            {t('common.name')}
+                                        </Label>
                                         <Input
                                             id="name"
                                             name="name"
                                             required
-                                            placeholder="First name"
+                                            placeholder={t(
+                                                'itSupport.placeholderFirstName',
+                                            )}
                                             autoFocus
                                         />
                                         <InputError message={errors.name} />
                                     </div>
                                     <div className="grid gap-2">
                                         <Label htmlFor="lastname">
-                                            Last name
+                                            {t('common.lastName')}
                                         </Label>
                                         <Input
                                             id="lastname"
                                             name="lastname"
                                             required
-                                            placeholder="Last name"
+                                            placeholder={t(
+                                                'itSupport.placeholderLastName',
+                                            )}
                                         />
                                         <InputError message={errors.lastname} />
                                     </div>
                                     <div className="grid gap-2">
-                                        <Label htmlFor="pbx">PBX</Label>
+                                        <Label htmlFor="pbx">
+                                            {t('common.pbx')}
+                                        </Label>
                                         <Input
                                             id="pbx"
                                             name="pbx"
-                                            placeholder="Extension"
+                                            placeholder={t(
+                                                'itSupport.placeholderExtension',
+                                            )}
                                         />
                                         <InputError message={errors.pbx} />
                                     </div>
@@ -64,10 +77,12 @@ export default function ItSupportCreate() {
                                 <div className="flex items-center gap-3">
                                     <Button disabled={processing}>
                                         {processing && <Spinner />}
-                                        Create contact
+                                        {t('itSupport.createContact')}
                                     </Button>
                                     <Button variant="outline" asChild>
-                                        <Link href={index()}>Cancel</Link>
+                                        <Link href={index()}>
+                                            {t('common.cancel')}
+                                        </Link>
                                     </Button>
                                 </div>
                             </>
@@ -82,11 +97,11 @@ export default function ItSupportCreate() {
 ItSupportCreate.layout = {
     breadcrumbs: [
         {
-            title: 'IT Support',
+            title: 'itSupport.title',
             href: index(),
         },
         {
-            title: 'Add contact',
+            title: 'itSupport.breadcrumbAdd',
             href: create(),
         },
     ],
