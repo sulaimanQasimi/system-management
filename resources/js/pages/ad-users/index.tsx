@@ -391,72 +391,85 @@ export default function AdUsersIndex({
 
                 <div className="border-border/80 bg-card overflow-hidden rounded-lg border shadow-regal">
                     <div className="overflow-x-auto">
-                        <table className="w-max min-w-full border-collapse text-start text-sm">
+                        <table className="w-full min-w-[960px] table-fixed text-start text-sm">
+                            <colgroup>
+                                <col className="w-[9%]" />
+                                <col className="w-[9%]" />
+                                <col className="w-[9%]" />
+                                <col className="w-[14%]" />
+                                <col className="w-[10%]" />
+                                <col className="w-[9%]" />
+                                <col className="w-[7%]" />
+                                <col className="w-[8%]" />
+                                <col className="w-[8%]" />
+                                <col className="w-[9%]" />
+                                <col className="w-[8%]" />
+                            </colgroup>
                             <thead className="bg-muted/50 border-b">
                                 <tr className="text-muted-foreground">
-                                    <th className="px-3 py-2.5 whitespace-nowrap">
+                                    <th className="px-4 py-3 font-medium">
                                         <SortButton
                                             label={t('common.name')}
                                             column="name"
                                             filters={filters}
                                         />
                                     </th>
-                                    <th className="px-3 py-2.5 whitespace-nowrap">
+                                    <th className="px-4 py-3 font-medium">
                                         <SortButton
                                             label={t('common.lastName')}
                                             column="lastname"
                                             filters={filters}
                                         />
                                     </th>
-                                    <th className="px-3 py-2.5 whitespace-nowrap">
+                                    <th className="px-4 py-3 font-medium">
                                         <SortButton
                                             label={t('common.username')}
                                             column="username"
                                             filters={filters}
                                         />
                                     </th>
-                                    <th className="px-3 py-2.5 whitespace-nowrap">
+                                    <th className="px-4 py-3 font-medium">
                                         <SortButton
                                             label={t('common.email')}
                                             column="email"
                                             filters={filters}
                                         />
                                     </th>
-                                    <th className="w-full px-3 py-2.5 font-medium whitespace-nowrap">
+                                    <th className="px-4 py-3 font-medium">
                                         {t('common.department')}
                                     </th>
-                                    <th className="px-3 py-2.5 whitespace-nowrap">
+                                    <th className="px-4 py-3 font-medium">
                                         <SortButton
                                             label={t('common.job')}
                                             column="job"
                                             filters={filters}
                                         />
                                     </th>
-                                    <th className="px-3 py-2.5 whitespace-nowrap">
+                                    <th className="px-4 py-3 font-medium">
                                         <SortButton
                                             label={t('common.pbx')}
                                             column="pbx"
                                             filters={filters}
                                         />
                                     </th>
-                                    <th className="px-3 py-2.5 whitespace-nowrap">
+                                    <th className="px-4 py-3 font-medium">
                                         <SortButton
                                             label={t('common.phone')}
                                             column="phone"
                                             filters={filters}
                                         />
                                     </th>
-                                    <th className="px-3 py-2.5 whitespace-nowrap">
+                                    <th className="px-4 py-3 font-medium">
                                         <SortButton
                                             label={t('common.date')}
                                             column="date"
                                             filters={filters}
                                         />
                                     </th>
-                                    <th className="px-3 py-2.5 font-medium whitespace-nowrap">
+                                    <th className="px-4 py-3 font-medium">
                                         {t('common.createdBy')}
                                     </th>
-                                    <th className="w-0 px-3 py-2.5 text-end font-medium whitespace-nowrap">
+                                    <th className="px-4 py-3 text-end font-medium">
                                         {t('common.actions')}
                                     </th>
                                 </tr>
@@ -466,7 +479,7 @@ export default function AdUsersIndex({
                                     <tr>
                                         <td
                                             colSpan={11}
-                                            className="text-muted-foreground px-3 py-8 text-center"
+                                            className="text-muted-foreground px-4 py-8 text-center"
                                         >
                                             {t('adUsers.noResults')}
                                         </td>
@@ -477,37 +490,37 @@ export default function AdUsersIndex({
                                             key={user.id}
                                             className="border-b last:border-0"
                                         >
-                                            <td className="px-3 py-2.5 font-medium whitespace-nowrap">
+                                            <td className="truncate px-4 py-3 font-medium">
                                                 {user.name}
                                             </td>
-                                            <td className="px-3 py-2.5 whitespace-nowrap">
+                                            <td className="truncate px-4 py-3">
                                                 {user.lastname}
                                             </td>
-                                            <td className="px-3 py-2.5 whitespace-nowrap">
+                                            <td className="truncate px-4 py-3">
                                                 {user.username}
                                             </td>
-                                            <td className="max-w-[12rem] truncate px-3 py-2.5">
+                                            <td className="truncate px-4 py-3">
                                                 {user.email}
                                             </td>
-                                            <td className="w-full px-3 py-2.5 whitespace-nowrap">
+                                            <td className="truncate px-4 py-3">
                                                 {user.department ?? '—'}
                                             </td>
-                                            <td className="px-3 py-2.5 whitespace-nowrap">
+                                            <td className="truncate px-4 py-3">
                                                 {user.job ?? '—'}
                                             </td>
-                                            <td className="px-3 py-2.5 whitespace-nowrap">
+                                            <td className="truncate px-4 py-3">
                                                 {user.pbx ?? '—'}
                                             </td>
-                                            <td className="px-3 py-2.5 whitespace-nowrap">
+                                            <td className="truncate px-4 py-3">
                                                 {user.phone ?? '—'}
                                             </td>
-                                            <td className="px-3 py-2.5 whitespace-nowrap">
+                                            <td className="truncate px-4 py-3">
                                                 {user.date ?? '—'}
                                             </td>
-                                            <td className="px-3 py-2.5 whitespace-nowrap">
+                                            <td className="truncate px-4 py-3">
                                                 {user.created_by ?? '—'}
                                             </td>
-                                            <td className="w-0 px-3 py-2.5">
+                                            <td className="px-4 py-3">
                                                 <div className="flex items-center justify-end gap-1">
                                                     {can('ad_user.view') && (
                                                         <Button
