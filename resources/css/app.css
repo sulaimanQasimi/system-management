@@ -174,23 +174,23 @@
     --elevation-regal-md: 0 2px 8px color-mix(in srgb, var(--brand-deep-navy) 8%, transparent),
         0 1px 2px color-mix(in srgb, var(--brand-deep-navy) 5%, transparent);
 
-    /* Sidebar — Deep Navy navigation */
-    --sidebar: var(--brand-deep-navy);
-    --sidebar-foreground: var(--brand-white);
-    --sidebar-primary: var(--brand-royal-blue);
+    /* Sidebar — light surface in light mode (follows theme) */
+    --sidebar: var(--brand-white);
+    --sidebar-foreground: var(--brand-dark-text);
+    --sidebar-primary: var(--brand-primary-blue);
     --sidebar-primary-foreground: var(--brand-white);
-    --sidebar-accent: color-mix(in srgb, var(--brand-deep-navy) 78%, var(--brand-primary-blue));
-    --sidebar-accent-foreground: var(--brand-white);
-    --sidebar-border: color-mix(in srgb, var(--brand-white) 12%, transparent);
+    --sidebar-accent: var(--brand-light-blue);
+    --sidebar-accent-foreground: var(--brand-deep-navy);
+    --sidebar-border: var(--brand-border);
     --sidebar-ring: var(--brand-royal-blue);
-    --sidebar-glass: color-mix(in srgb, var(--brand-white) 6%, transparent);
-    --sidebar-glass-hover: color-mix(in srgb, var(--brand-white) 10%, transparent);
-    --sidebar-glass-active: color-mix(in srgb, var(--brand-royal-blue) 28%, transparent);
-    --sidebar-glow: color-mix(in srgb, var(--brand-royal-blue) 45%, transparent);
-    --sidebar-wash: var(--brand-primary-blue);
-    --sidebar-highlight: color-mix(in srgb, var(--brand-white) 10%, transparent);
-    --sidebar-edge: color-mix(in srgb, var(--brand-white) 8%, transparent);
-    --sidebar-gradient-end: color-mix(in srgb, var(--brand-deep-navy) 88%, black);
+    --sidebar-glass: color-mix(in srgb, var(--brand-primary-blue) 5%, transparent);
+    --sidebar-glass-hover: color-mix(in srgb, var(--brand-primary-blue) 9%, transparent);
+    --sidebar-glass-active: color-mix(in srgb, var(--brand-light-blue) 88%, var(--brand-royal-blue));
+    --sidebar-glow: color-mix(in srgb, var(--brand-royal-blue) 35%, transparent);
+    --sidebar-wash: var(--brand-light-blue);
+    --sidebar-highlight: color-mix(in srgb, var(--brand-white) 80%, transparent);
+    --sidebar-edge: color-mix(in srgb, var(--brand-border) 70%, transparent);
+    --sidebar-gradient-end: var(--brand-off-white);
 }
 
 .dark {
@@ -244,7 +244,8 @@
     --elevation-regal: 0 1px 2px rgb(0 0 0 / 0.24), 0 1px 3px rgb(0 0 0 / 0.16);
     --elevation-regal-md: 0 2px 8px rgb(0 0 0 / 0.32), 0 1px 2px rgb(0 0 0 / 0.2);
 
-    --sidebar: #071525;
+    /* Sidebar — deep navy in dark mode */
+    --sidebar: var(--brand-deep-navy);
     --sidebar-foreground: #eef3fa;
     --sidebar-primary: var(--brand-royal-blue);
     --sidebar-primary-foreground: var(--brand-white);
@@ -259,7 +260,7 @@
     --sidebar-wash: var(--brand-primary-blue);
     --sidebar-highlight: color-mix(in srgb, var(--brand-white) 8%, transparent);
     --sidebar-edge: color-mix(in srgb, var(--brand-white) 6%, transparent);
-    --sidebar-gradient-end: color-mix(in srgb, #071525 90%, black);
+    --sidebar-gradient-end: color-mix(in srgb, var(--brand-deep-navy) 90%, black);
 }
 
 @layer base {
@@ -353,24 +354,25 @@
  |--------------------------------------------------------------------------
  | Sidebar surface (theme-aware)
  |--------------------------------------------------------------------------
- | Deep navy navigation with blue active washes.
+ | Light: white / off-white with blue accents.
+ | Dark: deep navy with royal-blue active washes.
  */
 [data-sidebar='sidebar'] {
     background-color: var(--sidebar);
     background-image:
         radial-gradient(
             ellipse 120% 55% at 0% 0%,
-            color-mix(in srgb, var(--sidebar-primary) 22%, transparent),
+            color-mix(in srgb, var(--sidebar-primary) 12%, transparent),
             transparent 55%
         ),
         radial-gradient(
             ellipse 90% 50% at 100% 100%,
-            color-mix(in srgb, var(--sidebar-wash) 18%, transparent),
+            color-mix(in srgb, var(--sidebar-wash) 22%, transparent),
             transparent 55%
         ),
         linear-gradient(
             165deg,
-            color-mix(in srgb, var(--sidebar) 92%, var(--sidebar-wash)),
+            color-mix(in srgb, var(--sidebar) 94%, var(--sidebar-wash)),
             var(--sidebar) 48%,
             var(--sidebar-gradient-end)
         );
