@@ -12,6 +12,7 @@ type AdUserShow = {
     lastname: string;
     username: string;
     email: string;
+    department: string | null;
     job: string | null;
     pbx: string | null;
     phone: string | null;
@@ -70,6 +71,10 @@ export default function AdUsersShow({ user }: { user: AdUserShow }) {
                         value={user.username}
                     />
                     <DetailField label={t('common.email')} value={user.email} />
+                    <DetailField
+                        label={t('common.department')}
+                        value={user.department}
+                    />
                     <DetailField label={t('common.job')} value={user.job} />
                     <DetailField label={t('common.pbx')} value={user.pbx} />
                     <DetailField label={t('common.phone')} value={user.phone} />

@@ -6,11 +6,14 @@ import { useTranslations } from '@/hooks/use-locale';
 
 const EMAIL_DOMAIN = 'mov.gov.af';
 
+export type DepartmentOption = { id: number; name: string };
+
 export type AdUserFormValues = {
     name?: string;
     lastname?: string;
     username?: string;
     email?: string;
+    department_id?: number | string | null;
     job?: string | null;
     pbx?: string | null;
     phone?: string | null;
@@ -25,14 +28,19 @@ function emailFromUsername(username: string): string {
 export default function AdUserFormFields({
     values = {},
     errors = {},
+    departments = [],
 }: {
     values?: AdUserFormValues;
     errors?: Partial<Record<keyof AdUserFormValues, string>>;
+    departments?: DepartmentOption[];
 }) {
     const { t } = useTranslations();
     const [username, setUsername] = useState(values.username ?? '');
     const [email, setEmail] = useState(
         values.email ?? emailFromUsername(values.username ?? ''),
+    );
+    const [departmentId, setDepartmentId] = useState(
+        values.department_id ? String(values.department_id) : '',
     );
 
     return (
@@ -95,6 +103,25 @@ export default function AdUserFormFields({
                     autoComplete="email"
                 />
                 <InputError message={errors.email} />
+            </div>
+
+            <div className="grid gap-2">
+                <Label htmlFor="department_id">{t('common.department')}</Label>
+                <select
+                    id="department_id"
+                    name="department_id"
+                    value={departmentId}
+                    onChange={(event) => setDepartmentId(event.target.value)}
+                    className="border-input bg-background h-9 w-full rounded-md border px-3 text-sm shadow-xs"
+                >
+                    <option value="">{t('adUsers.selectDepartment')}</option>
+                    {departments.map((department) => (
+                        <option key={department.id} value={department.id}>
+                            {department.name}
+                        </option>
+                    ))}
+                </select>
+                <InputError message={errors.department_id} />
             </div>
 
             <div className="grid gap-2">

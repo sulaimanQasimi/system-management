@@ -17,6 +17,7 @@ class StoreActiveDirectoryUserRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $username = trim((string) $this->input('username', ''));
+        $departmentId = $this->input('department_id');
 
         $this->merge([
             'username' => $username,
@@ -24,6 +25,7 @@ class StoreActiveDirectoryUserRequest extends FormRequest
                 ? $username.'@'.self::EMAIL_DOMAIN
                 : null,
             'date' => now()->toDateString(),
+            'department_id' => filled($departmentId) ? $departmentId : null,
         ]);
     }
 
@@ -37,6 +39,7 @@ class StoreActiveDirectoryUserRequest extends FormRequest
             'lastname' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', 'unique:active_directory_users,username'],
             'email' => ['required', 'email', 'max:255', 'unique:active_directory_users,email'],
+            'department_id' => ['nullable', 'exists:departments,id'],
             'job' => ['nullable', 'string', 'max:255'],
             'pbx' => ['nullable', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:255'],

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ActiveDirectoryUserController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\ItSupportController;
 use App\Http\Controllers\QuickCreateController;
 use App\Http\Controllers\ServerController;
@@ -16,6 +17,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
 
     Route::resource('users', UserController::class);
+
+    Route::resource('departments', DepartmentController::class);
 
     Route::resource('ad-users', ActiveDirectoryUserController::class)
         ->parameters(['ad-users' => 'activeDirectoryUser']);

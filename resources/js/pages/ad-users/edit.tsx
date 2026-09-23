@@ -2,6 +2,7 @@ import { Form, Head, Link } from '@inertiajs/react';
 import ActiveDirectoryUserController from '@/actions/App/Http/Controllers/ActiveDirectoryUserController';
 import AdUserFormFields, {
     type AdUserFormValues,
+    type DepartmentOption,
 } from '@/components/ad-user-form-fields';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
@@ -11,8 +12,10 @@ import { index } from '@/routes/ad-users';
 
 export default function AdUsersEdit({
     user,
+    departments,
 }: {
     user: AdUserFormValues & { id: number };
+    departments: DepartmentOption[];
 }) {
     const { t } = useTranslations();
 
@@ -40,6 +43,7 @@ export default function AdUsersEdit({
                                 <AdUserFormFields
                                     values={user}
                                     errors={errors}
+                                    departments={departments}
                                 />
 
                                 <div className="flex items-center gap-3">

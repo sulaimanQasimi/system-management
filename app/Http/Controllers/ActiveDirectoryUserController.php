@@ -6,6 +6,7 @@ use App\Http\Controllers\Concerns\HasModelPermissionMiddleware;
 use App\Http\Requests\StoreActiveDirectoryUserRequest;
 use App\Http\Requests\UpdateActiveDirectoryUserRequest;
 use App\Models\ActiveDirectoryUser;
+use App\Models\Department;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -43,6 +44,7 @@ class ActiveDirectoryUserController extends Controller implements HasMiddleware
         $filters = $request->validate([
             'search' => ['nullable', 'string', 'max:255'],
             'job' => ['nullable', 'string', 'max:255'],
+            'department_id' => ['nullable', 'integer', 'exists:departments,id'],
             'date_from' => ['nullable', 'date'],
             'date_to' => ['nullable', 'date', 'after_or_equal:date_from'],
             'sort' => ['nullable', 'string', Rule::in(self::SORTABLE)],
@@ -52,6 +54,7 @@ class ActiveDirectoryUserController extends Controller implements HasMiddleware
 
         $search = $filters['search'] ?? null;
         $job = $filters['job'] ?? null;
+        $departmentId = $filters['department_id'] ?? null;
         $dateFrom = $filters['date_from'] ?? null;
         $dateTo = $filters['date_to'] ?? null;
         $sort = $filters['sort'] ?? 'created_at';
@@ -59,9 +62,10 @@ class ActiveDirectoryUserController extends Controller implements HasMiddleware
         $perPage = (int) ($filters['per_page'] ?? 15);
 
         $users = ActiveDirectoryUser::query()
-            ->with('creator:id,name')
+            ->with(['creator:id,name', 'department:id,name'])
             ->search($search)
             ->when($job, fn ($query) => $query->whereLike('job', '%'.$job.'%'))
+            ->when($departmentId, fn ($query) => $query->where('department_id', $departmentId))
             ->when($dateFrom, fn ($query) => $query->whereDate('date', '>=', $dateFrom))
             ->when($dateTo, fn ($query) => $query->whereDate('date', '<=', $dateTo))
             ->orderBy($sort, $direction)
@@ -73,6 +77,7 @@ class ActiveDirectoryUserController extends Controller implements HasMiddleware
                 'lastname' => $user->lastname,
                 'username' => $user->username,
                 'email' => $user->email,
+                'department' => $user->department?->name,
                 'job' => $user->job,
                 'pbx' => $user->pbx,
                 'phone' => $user->phone,
@@ -86,6 +91,7 @@ class ActiveDirectoryUserController extends Controller implements HasMiddleware
             'filters' => [
                 'search' => $search ?? '',
                 'job' => $job ?? '',
+                'department_id' => $departmentId ? (string) $departmentId : '',
                 'date_from' => $dateFrom ?? '',
                 'date_to' => $dateTo ?? '',
                 'sort' => $sort,
@@ -93,12 +99,15 @@ class ActiveDirectoryUserController extends Controller implements HasMiddleware
                 'per_page' => $perPage,
             ],
             'perPageOptions' => self::PER_PAGE_OPTIONS,
+            'departments' => Department::query()->orderBy('name')->get(['id', 'name']),
         ]);
     }
 
     public function create(): Response
     {
-        return Inertia::render('ad-users/create');
+        return Inertia::render('ad-users/create', [
+            'departments' => Department::query()->orderBy('name')->get(['id', 'name']),
+        ]);
     }
 
     public function store(StoreActiveDirectoryUserRequest $request): RedirectResponse
@@ -118,7 +127,7 @@ class ActiveDirectoryUserController extends Controller implements HasMiddleware
 
     public function show(ActiveDirectoryUser $activeDirectoryUser): Response
     {
-        $activeDirectoryUser->load('creator:id,name');
+        $activeDirectoryUser->load(['creator:id,name', 'department:id,name']);
 
         return Inertia::render('ad-users/show', [
             'user' => [
@@ -127,6 +136,7 @@ class ActiveDirectoryUserController extends Controller implements HasMiddleware
                 'lastname' => $activeDirectoryUser->lastname,
                 'username' => $activeDirectoryUser->username,
                 'email' => $activeDirectoryUser->email,
+                'department' => $activeDirectoryUser->department?->name,
                 'job' => $activeDirectoryUser->job,
                 'pbx' => $activeDirectoryUser->pbx,
                 'phone' => $activeDirectoryUser->phone,
@@ -147,10 +157,12 @@ class ActiveDirectoryUserController extends Controller implements HasMiddleware
                 'lastname' => $activeDirectoryUser->lastname,
                 'username' => $activeDirectoryUser->username,
                 'email' => $activeDirectoryUser->email,
+                'department_id' => $activeDirectoryUser->department_id,
                 'job' => $activeDirectoryUser->job,
                 'pbx' => $activeDirectoryUser->pbx,
                 'phone' => $activeDirectoryUser->phone,
             ],
+            'departments' => Department::query()->orderBy('name')->get(['id', 'name']),
         ]);
     }
 

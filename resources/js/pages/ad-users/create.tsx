@@ -1,13 +1,19 @@
 import { Form, Head, Link } from '@inertiajs/react';
 import ActiveDirectoryUserController from '@/actions/App/Http/Controllers/ActiveDirectoryUserController';
-import AdUserFormFields from '@/components/ad-user-form-fields';
+import AdUserFormFields, {
+    type DepartmentOption,
+} from '@/components/ad-user-form-fields';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { useTranslations } from '@/hooks/use-locale';
 import { create, index } from '@/routes/ad-users';
 
-export default function AdUsersCreate() {
+export default function AdUsersCreate({
+    departments,
+}: {
+    departments: DepartmentOption[];
+}) {
     const { t } = useTranslations();
 
     return (
@@ -27,7 +33,10 @@ export default function AdUsersCreate() {
                     >
                         {({ processing, errors }) => (
                             <>
-                                <AdUserFormFields errors={errors} />
+                                <AdUserFormFields
+                                    errors={errors}
+                                    departments={departments}
+                                />
 
                                 <div className="flex items-center gap-3">
                                     <Button disabled={processing}>

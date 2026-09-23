@@ -18,12 +18,14 @@ class UpdateActiveDirectoryUserRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $username = trim((string) $this->input('username', ''));
+        $departmentId = $this->input('department_id');
 
         $this->merge([
             'username' => $username,
             'email' => $username !== ''
                 ? $username.'@'.self::EMAIL_DOMAIN
                 : null,
+            'department_id' => filled($departmentId) ? $departmentId : null,
         ]);
     }
 
@@ -49,6 +51,7 @@ class UpdateActiveDirectoryUserRequest extends FormRequest
                 'max:255',
                 Rule::unique('active_directory_users', 'email')->ignore($activeDirectoryUser),
             ],
+            'department_id' => ['nullable', 'exists:departments,id'],
             'job' => ['nullable', 'string', 'max:255'],
             'pbx' => ['nullable', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:255'],
