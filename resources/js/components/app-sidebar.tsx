@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
 import {
+    Building2,
     HardDrive,
     Headset,
     LayoutGrid,
@@ -28,6 +29,7 @@ import { useCurrentUrl } from '@/hooks/use-current-url';
 import { useLocale } from '@/hooks/use-locale';
 import { dashboard } from '@/routes';
 import { index as adUsers } from '@/routes/ad-users';
+import { index as departments } from '@/routes/departments';
 import { index as itSupport } from '@/routes/it-support';
 import { index as serverModels } from '@/routes/server-models';
 import { index as serverServices } from '@/routes/server-services';
@@ -94,6 +96,12 @@ export function AppSidebar() {
             href: adUsers(),
             icon: Users,
             permission: 'ad_user.view',
+        },
+        {
+            title: t('nav.departments'),
+            href: departments(),
+            icon: Building2,
+            permission: 'department.view',
         },
     ];
 

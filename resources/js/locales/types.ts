@@ -118,6 +118,29 @@ export type TranslationDictionary = {
         placeholderJobTitle: string;
         placeholderPbxExtension: string;
         placeholderPhoneNumber: string;
+        selectDepartment: string;
+    };
+    departments: {
+        title: string;
+        description: string;
+        addDepartment: string;
+        searchPlaceholder: string;
+        noResults: string;
+        deleteConfirm: string;
+        breadcrumbAdd: string;
+        breadcrumbEdit: string;
+        breadcrumbDetails: string;
+        backToDepartments: string;
+        addTitle: string;
+        addDescription: string;
+        headAdd: string;
+        createDepartment: string;
+        editTitle: string;
+        editDescription: string;
+        headEdit: string;
+        departmentSubtitle: string;
+        departmentDetails: string;
+        placeholderName: string;
     };
     servers: {
         title: string;
@@ -272,6 +295,7 @@ export type TranslationDictionary = {
         administration: string;
         dashboard: string;
         adUsers: string;
+        departments: string;
         servers: string;
         serverModels: string;
         serverServices: string;
@@ -375,6 +399,7 @@ export type TranslationDictionary = {
     pages: {
         users: string;
         adUsers: string;
+        departments: string;
         servers: string;
         serverModels: string;
         serverServices: string;

@@ -27,6 +27,7 @@ type AdUserRow = {
     lastname: string;
     username: string;
     email: string;
+    department: string | null;
     job: string | null;
     pbx: string | null;
     phone: string | null;
@@ -46,6 +47,7 @@ type PaginatedUsers = {
 type Filters = {
     search: string;
     job: string;
+    department_id: string;
     date_from: string;
     date_to: string;
     sort: string;
@@ -73,6 +75,9 @@ function applyFilters(next: Partial<Filters>, current: Filters) {
     }
     if (merged.job) {
         params.job = merged.job;
+    }
+    if (merged.department_id) {
+        params.department_id = merged.department_id;
     }
     if (merged.date_from) {
         params.date_from = merged.date_from;
@@ -146,15 +151,18 @@ export default function AdUsersIndex({
     users,
     filters,
     perPageOptions,
+    departments,
 }: {
     users: PaginatedUsers;
     filters: Filters;
     perPageOptions: number[];
+    departments: { id: number; name: string }[];
 }) {
     const { can } = useCan();
     const { t } = useTranslations();
     const [search, setSearch] = useState(filters.search);
     const [job, setJob] = useState(filters.job);
+    const [departmentId, setDepartmentId] = useState(filters.department_id);
     const [dateFrom, setDateFrom] = useState(filters.date_from);
     const [dateTo, setDateTo] = useState(filters.date_to);
     const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -162,6 +170,7 @@ export default function AdUsersIndex({
     useEffect(() => {
         setSearch(filters.search);
         setJob(filters.job);
+        setDepartmentId(filters.department_id);
         setDateFrom(filters.date_from);
         setDateTo(filters.date_to);
     }, [filters]);
@@ -177,6 +186,7 @@ export default function AdUsersIndex({
     const hasActiveFilters = Boolean(
         filters.search ||
             filters.job ||
+            filters.department_id ||
             filters.date_from ||
             filters.date_to ||
             filters.sort !== 'created_at' ||
@@ -216,7 +226,7 @@ export default function AdUsersIndex({
                 />
 
                 <div className="border-border/80 bg-card rounded-lg border p-4 shadow-regal">
-                    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+                    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-6">
                         <div className="grid gap-2 xl:col-span-2">
                             <Label htmlFor="search">{t('common.search')}</Label>
                             <div className="relative">
@@ -231,6 +241,37 @@ export default function AdUsersIndex({
                                     className="ps-9"
                                 />
                             </div>
+                        </div>
+
+                        <div className="grid gap-2">
+                            <Label htmlFor="department_id">
+                                {t('common.department')}
+                            </Label>
+                            <select
+                                id="department_id"
+                                className="border-input bg-background h-9 w-full rounded-md border px-3 text-sm shadow-xs"
+                                value={departmentId}
+                                onChange={(event) => {
+                                    const value = event.target.value;
+                                    setDepartmentId(value);
+                                    applyFilters(
+                                        { department_id: value },
+                                        filters,
+                                    );
+                                }}
+                            >
+                                <option value="">
+                                    {t('servers.allDepartments')}
+                                </option>
+                                {departments.map((department) => (
+                                    <option
+                                        key={department.id}
+                                        value={department.id}
+                                    >
+                                        {department.name}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
 
                         <div className="grid gap-2">
@@ -381,6 +422,9 @@ export default function AdUsersIndex({
                                             filters={filters}
                                         />
                                     </th>
+                                    <th className="px-4 py-3 font-medium">
+                                        {t('common.department')}
+                                    </th>
                                     <th className="px-4 py-3">
                                         <SortButton
                                             label={t('common.job')}
@@ -421,7 +465,7 @@ export default function AdUsersIndex({
                                 {users.data.length === 0 ? (
                                     <tr>
                                         <td
-                                            colSpan={10}
+                                            colSpan={11}
                                             className="text-muted-foreground px-4 py-10 text-center"
                                         >
                                             {t('adUsers.noResults')}
@@ -444,6 +488,9 @@ export default function AdUsersIndex({
                                             </td>
                                             <td className="px-4 py-3">
                                                 {user.email}
+                                            </td>
+                                            <td className="px-4 py-3">
+                                                {user.department ?? '—'}
                                             </td>
                                             <td className="px-4 py-3">
                                                 {user.job ?? '—'}
