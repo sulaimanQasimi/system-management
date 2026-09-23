@@ -24,11 +24,12 @@ import { index as serverServices } from '@/routes/server-services';
 import { index as users } from '@/routes/users';
 
 const serviceTones: StatTone[] = [
-    'primary',
+    'orange',
+    'teal',
     'info',
-    'secondary',
-    'success',
+    'violet',
     'warning',
+    'indigo',
 ];
 
 type DashboardStat = {
