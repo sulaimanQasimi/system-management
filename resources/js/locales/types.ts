@@ -142,6 +142,35 @@ export type TranslationDictionary = {
         departmentDetails: string;
         placeholderName: string;
     };
+    roles: {
+        title: string;
+        description: string;
+        addRole: string;
+        searchPlaceholder: string;
+        noResults: string;
+        deleteConfirm: string;
+        breadcrumbAdd: string;
+        breadcrumbEdit: string;
+        breadcrumbDetails: string;
+        backToRoles: string;
+        addTitle: string;
+        addDescription: string;
+        headAdd: string;
+        createRole: string;
+        editTitle: string;
+        editDescription: string;
+        headEdit: string;
+        roleSubtitle: string;
+        roleDetails: string;
+        sectionDetails: string;
+        sectionPermissions: string;
+        sectionPermissionsDesc: string;
+        placeholderName: string;
+        users: string;
+        permissions: string;
+        protected: string;
+        superAdminNameLocked: string;
+    };
     servers: {
         title: string;
         description: string;
@@ -296,6 +325,7 @@ export type TranslationDictionary = {
         dashboard: string;
         adUsers: string;
         departments: string;
+        roles: string;
         servers: string;
         serverModels: string;
         serverServices: string;
@@ -400,6 +430,7 @@ export type TranslationDictionary = {
         users: string;
         adUsers: string;
         departments: string;
+        roles: string;
         servers: string;
         serverModels: string;
         serverServices: string;

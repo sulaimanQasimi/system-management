@@ -31,7 +31,7 @@ class RoleAndPermissionSeeder extends Seeder
         $admin->syncPermissions($all);
 
         $operatorPermissions = collect(AppPermissions::MODELS)
-            ->reject(fn (string $model) => $model === 'user')
+            ->reject(fn (string $model) => in_array($model, ['user', 'role'], true))
             ->flatMap(fn (string $model) => [
                 AppPermissions::name($model, 'view'),
                 AppPermissions::name($model, 'create'),

@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\ItSupportController;
 use App\Http\Controllers\QuickCreateController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ServerController;
 use App\Http\Controllers\ServerModelController;
 use App\Http\Controllers\ServerServiceController;
@@ -17,6 +18,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
 
     Route::resource('users', UserController::class);
+
+    Route::resource('roles', RoleController::class);
 
     Route::resource('departments', DepartmentController::class);
 

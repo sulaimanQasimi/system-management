@@ -11,6 +11,7 @@ final class AppPermissions
      */
     public const MODELS = [
         'user',
+        'role',
         'department',
         'ad_user',
         'server',
@@ -72,6 +73,7 @@ final class AppPermissions
     {
         return match ($model) {
             'user' => 'Users',
+            'role' => 'Roles',
             'department' => 'Departments',
             'ad_user' => 'AD Users',
             'server' => 'Servers',

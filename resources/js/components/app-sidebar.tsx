@@ -6,6 +6,7 @@ import {
     LayoutGrid,
     Server,
     ServerCog,
+    Shield,
     UserRound,
     Users,
 } from 'lucide-react';
@@ -31,6 +32,7 @@ import { dashboard } from '@/routes';
 import { index as adUsers } from '@/routes/ad-users';
 import { index as departments } from '@/routes/departments';
 import { index as itSupport } from '@/routes/it-support';
+import { index as roles } from '@/routes/roles';
 import { index as serverModels } from '@/routes/server-models';
 import { index as serverServices } from '@/routes/server-services';
 import { index as servers } from '@/routes/servers';
@@ -141,6 +143,12 @@ export function AppSidebar() {
             href: users(),
             icon: UserRound,
             permission: 'user.view',
+        },
+        {
+            title: t('nav.roles'),
+            href: roles(),
+            icon: Shield,
+            permission: 'role.view',
         },
     ];
 

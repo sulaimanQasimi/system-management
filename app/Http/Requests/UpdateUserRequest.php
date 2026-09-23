@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Support\AppPermissions;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -32,15 +31,7 @@ class UpdateUserRequest extends FormRequest
             ],
             'password' => ['nullable', 'confirmed', Password::defaults()],
             'roles' => ['nullable', 'array'],
-            'roles.*' => [
-                'string',
-                Rule::in([
-                    AppPermissions::ROLE_SUPER_ADMIN,
-                    AppPermissions::ROLE_ADMIN,
-                    AppPermissions::ROLE_OPERATOR,
-                    AppPermissions::ROLE_VIEWER,
-                ]),
-            ],
+            'roles.*' => ['string', 'exists:roles,name'],
         ];
     }
 }
