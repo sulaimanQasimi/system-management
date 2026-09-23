@@ -9,6 +9,7 @@ import ServerFormFields, {
 } from '@/components/server-form-fields';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
+import { useTranslations } from '@/hooks/use-locale';
 import { create, index } from '@/routes/servers';
 
 export default function ServersCreate({
@@ -24,18 +25,20 @@ export default function ServersCreate({
     itSupports: ItSupportOption[];
     statusOptions: StatusOption[];
 }) {
+    const { t } = useTranslations();
+
     return (
         <>
-            <Head title="Add Server" />
+            <Head title={t('servers.headAdd')} />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-4 md:p-6">
                 <PageHeader
-                    title="Add server"
-                    description="Full inventory record with network, services, support, and iDRAC details."
+                    title={t('servers.addTitle')}
+                    description={t('servers.addDescription')}
                     icon={HardDrive}
                     action={
                         <Button variant="outline" asChild>
-                            <Link href={index()}>Back to servers</Link>
+                            <Link href={index()}>{t('servers.backToServers')}</Link>
                         </Button>
                     }
                 />
@@ -58,10 +61,10 @@ export default function ServersCreate({
                             <div className="border-border/60 bg-background/95 sticky bottom-0 z-[1] -mx-4 flex flex-wrap items-center gap-3 border-t px-4 py-4 backdrop-blur md:-mx-6 md:px-6">
                                 <Button disabled={processing}>
                                     {processing && <Spinner />}
-                                    Create server
+                                    {t('servers.createServer')}
                                 </Button>
                                 <Button variant="outline" asChild>
-                                    <Link href={index()}>Cancel</Link>
+                                    <Link href={index()}>{t('common.cancel')}</Link>
                                 </Button>
                             </div>
                         </>
@@ -75,11 +78,11 @@ export default function ServersCreate({
 ServersCreate.layout = {
     breadcrumbs: [
         {
-            title: 'Servers',
+            title: 'servers.title',
             href: index(),
         },
         {
-            title: 'Add server',
+            title: 'servers.breadcrumbAdd',
             href: create(),
         },
     ],

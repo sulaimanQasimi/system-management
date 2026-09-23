@@ -19,5 +19,9 @@
     "Server service deleted.": "Server service deleted.",
     "IT Support contact created.": "IT Support contact created.",
     "IT Support contact updated.": "IT Support contact updated.",
-    "IT Support contact deleted.": "IT Support contact deleted."
+    "IT Support contact deleted.": "IT Support contact deleted.",
+    "Active": "Active",
+    "Inactive": "Inactive",
+    "Maintenance": "Maintenance",
+    "Decommissioned": "Decommissioned"
 }

@@ -4,17 +4,20 @@ import AdUserFormFields from '@/components/ad-user-form-fields';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
+import { useTranslations } from '@/hooks/use-locale';
 import { create, index } from '@/routes/ad-users';
 
 export default function AdUsersCreate() {
+    const { t } = useTranslations();
+
     return (
         <>
-            <Head title="Add AD User" />
+            <Head title={t('adUsers.headAdd')} />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-4 md:p-6">
                 <Heading
-                    title="Add Active Directory user"
-                    description="Create a new directory account record."
+                    title={t('adUsers.addTitle')}
+                    description={t('adUsers.addDescription')}
                 />
 
                 <div className="border-border/80 bg-card w-full rounded-lg border shadow-regal p-4 md:p-6">
@@ -29,10 +32,12 @@ export default function AdUsersCreate() {
                                 <div className="flex items-center gap-3">
                                     <Button disabled={processing}>
                                         {processing && <Spinner />}
-                                        Create user
+                                        {t('adUsers.createUser')}
                                     </Button>
                                     <Button variant="outline" asChild>
-                                        <Link href={index()}>Cancel</Link>
+                                        <Link href={index()}>
+                                            {t('common.cancel')}
+                                        </Link>
                                     </Button>
                                 </div>
                             </>
@@ -47,11 +52,11 @@ export default function AdUsersCreate() {
 AdUsersCreate.layout = {
     breadcrumbs: [
         {
-            title: 'Active Directory Users',
+            title: 'adUsers.title',
             href: index(),
         },
         {
-            title: 'Add user',
+            title: 'adUsers.breadcrumbAdd',
             href: create(),
         },
     ],

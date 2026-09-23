@@ -19,6 +19,8 @@ import { Input } from '@/components/ui/input';
 import IpInput from '@/components/ui/ip-input';
 import { Label } from '@/components/ui/label';
 import { useCan } from '@/hooks/use-can';
+import { useTranslations } from '@/hooks/use-locale';
+import { statusLabel } from '@/lib/status-label';
 
 export type Option = { id: number; name: string };
 export type ItSupportOption = {
@@ -128,6 +130,7 @@ export default function ServerFormFields({
     isEdit?: boolean;
 }) {
     const { can } = useCan();
+    const { t } = useTranslations();
     const [departmentOptions, setDepartmentOptions] =
         useState<Option[]>(departments);
     const [modelOptions, setModelOptions] = useState<Option[]>(serverModels);
@@ -210,7 +213,7 @@ export default function ServerFormFields({
     return (
         <div className="space-y-6">
             <Section
-                title="Identity"
+                title={t('servers.sectionIdentity')}
                 icon={<HardDrive className="size-5" />}
             >
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -219,14 +222,14 @@ export default function ServerFormFields({
                             htmlFor="site_name"
                             icon={<Building2 className="size-3.5" />}
                         >
-                            Site name
+                            {t('servers.siteName')}
                         </FieldIconLabel>
                         <Input
                             id="site_name"
                             name="site_name"
                             required
                             defaultValue={values.site_name ?? ''}
-                            placeholder="e.g. HQ Data Center"
+                            placeholder={t('servers.placeholderSiteName')}
                         />
                         <InputError message={errors.site_name} />
                     </div>
@@ -236,14 +239,14 @@ export default function ServerFormFields({
                             htmlFor="name"
                             icon={<Server className="size-3.5" />}
                         >
-                            Server name
+                            {t('servers.serverName')}
                         </FieldIconLabel>
                         <Input
                             id="name"
                             name="name"
                             required
                             defaultValue={values.name ?? ''}
-                            placeholder="e.g. DC01-APP"
+                            placeholder={t('servers.placeholderServerName')}
                         />
                         <InputError message={errors.name} />
                     </div>
@@ -254,7 +257,7 @@ export default function ServerFormFields({
                                 htmlFor="department_id"
                                 icon={<Building2 className="size-3.5" />}
                             >
-                                Department
+                                {t('common.department')}
                             </FieldIconLabel>
                             {can('department.create') && (
                                 <Button
@@ -266,7 +269,7 @@ export default function ServerFormFields({
                                     }
                                 >
                                     <Plus />
-                                    New
+                                    {t('common.newItem')}
                                 </Button>
                             )}
                         </div>
@@ -281,7 +284,7 @@ export default function ServerFormFields({
                             className="border-input bg-background h-9 w-full rounded-md border px-3 text-sm shadow-xs"
                         >
                             <option value="" disabled>
-                                Select department
+                                {t('servers.selectDepartment')}
                             </option>
                             {departmentOptions.map((department) => (
                                 <option
@@ -301,7 +304,7 @@ export default function ServerFormFields({
                                 htmlFor="server_model_id"
                                 icon={<Server className="size-3.5" />}
                             >
-                                Server model
+                                {t('servers.serverModel')}
                             </FieldIconLabel>
                             {can('server_model.create') && (
                                 <Button
@@ -311,7 +314,7 @@ export default function ServerFormFields({
                                     onClick={() => setModelDialogOpen(true)}
                                 >
                                     <Plus />
-                                    New
+                                    {t('common.newItem')}
                                 </Button>
                             )}
                         </div>
@@ -326,7 +329,7 @@ export default function ServerFormFields({
                             className="border-input bg-background h-9 w-full rounded-md border px-3 text-sm shadow-xs"
                         >
                             <option value="" disabled>
-                                Select server model
+                                {t('servers.selectServerModel')}
                             </option>
                             {modelOptions.map((model) => (
                                 <option key={model.id} value={model.id}>
@@ -342,7 +345,7 @@ export default function ServerFormFields({
                             htmlFor="status"
                             icon={<Activity className="size-3.5" />}
                         >
-                            Status
+                            {t('common.status')}
                         </FieldIconLabel>
                         <select
                             id="status"
@@ -356,7 +359,11 @@ export default function ServerFormFields({
                                     key={status.value}
                                     value={status.value}
                                 >
-                                    {status.label}
+                                    {statusLabel(
+                                        t,
+                                        status.value,
+                                        status.label,
+                                    )}
                                 </option>
                             ))}
                         </select>
@@ -368,7 +375,7 @@ export default function ServerFormFields({
                             <span className="text-muted-foreground">
                                 <ServerCog className="size-3.5" />
                             </span>
-                            Virtual machine
+                            {t('common.virtualMachine')}
                         </Label>
                         <input
                             type="hidden"
@@ -388,8 +395,8 @@ export default function ServerFormFields({
                             />
                             <span>
                                 {isVm
-                                    ? 'This is a VM (no iDRAC / IT Support)'
-                                    : 'Mark as virtual machine'}
+                                    ? t('servers.vmChecked')
+                                    : t('servers.vmUnchecked')}
                             </span>
                         </label>
                         <InputError message={errors.is_vm} />
@@ -398,7 +405,7 @@ export default function ServerFormFields({
             </Section>
 
             <Section
-                title="Network"
+                title={t('servers.sectionNetwork')}
                 icon={<Network className="size-5" />}
             >
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -407,7 +414,7 @@ export default function ServerFormFields({
                             htmlFor="ip_address"
                             icon={<Network className="size-3.5" />}
                         >
-                            Server IP address
+                            {t('servers.serverIpAddress')}
                         </FieldIconLabel>
                         <IpInput
                             id="ip_address"
@@ -418,7 +425,9 @@ export default function ServerFormFields({
                         <InputError message={errors.ip_address} />
                     </div>
                     <div className="grid gap-2">
-                        <Label htmlFor="subnet_mask">Subnet mask</Label>
+                        <Label htmlFor="subnet_mask">
+                            {t('servers.subnetMask')}
+                        </Label>
                         <IpInput
                             id="subnet_mask"
                             name="subnet_mask"
@@ -427,7 +436,9 @@ export default function ServerFormFields({
                         <InputError message={errors.subnet_mask} />
                     </div>
                     <div className="grid gap-2 sm:col-span-2 lg:col-span-1">
-                        <Label htmlFor="default_gateway">Default gateway</Label>
+                        <Label htmlFor="default_gateway">
+                            {t('servers.defaultGateway')}
+                        </Label>
                         <IpInput
                             id="default_gateway"
                             name="default_gateway"
@@ -439,7 +450,7 @@ export default function ServerFormFields({
             </Section>
 
             <Section
-                title="Running services"
+                title={t('servers.sectionRunningServices')}
                 icon={<ServerCog className="size-5" />}
                 action={
                     can('server_service.create') ? (
@@ -450,7 +461,7 @@ export default function ServerFormFields({
                             onClick={() => setServiceDialogOpen(true)}
                         >
                             <Plus />
-                            New service
+                            {t('servers.newService')}
                         </Button>
                     ) : undefined
                 }
@@ -458,7 +469,7 @@ export default function ServerFormFields({
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                     {serviceOptions.length === 0 ? (
                         <p className="text-muted-foreground text-sm sm:col-span-2 lg:col-span-3">
-                            No services yet. Create one with the button above.
+                            {t('servers.noServicesYet')}
                         </p>
                     ) : (
                         serviceOptions.map((service) => {
@@ -502,7 +513,7 @@ export default function ServerFormFields({
             {!isVm && (
                 <>
                     <Section
-                        title="IT Support"
+                        title={t('servers.sectionItSupport')}
                         icon={<Headset className="size-5" />}
                         action={
                             can('it_support.create') ? (
@@ -513,7 +524,7 @@ export default function ServerFormFields({
                                     onClick={() => setItSupportDialogOpen(true)}
                                 >
                                     <Plus />
-                                    New
+                                    {t('common.newItem')}
                                 </Button>
                             ) : undefined
                         }
@@ -524,7 +535,7 @@ export default function ServerFormFields({
                                     htmlFor="it_support_id"
                                     icon={<Headset className="size-3.5" />}
                                 >
-                                    IT Support name
+                                    {t('servers.itSupportName')}
                                 </FieldIconLabel>
                                 <select
                                     id="it_support_id"
@@ -535,7 +546,9 @@ export default function ServerFormFields({
                                     }
                                     className="border-input bg-background h-9 w-full rounded-md border px-3 text-sm shadow-xs"
                                 >
-                                    <option value="">Select contact</option>
+                                    <option value="">
+                                        {t('servers.selectContact')}
+                                    </option>
                                     {itSupportOptions.map((contact) => (
                                         <option
                                             key={contact.id}
@@ -549,7 +562,7 @@ export default function ServerFormFields({
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="it_support_phone">
-                                    IT Support phone no
+                                    {t('servers.itSupportPhone')}
                                 </Label>
                                 <Input
                                     id="it_support_phone"
@@ -558,7 +571,9 @@ export default function ServerFormFields({
                                     onChange={(event) =>
                                         setItSupportPhone(event.target.value)
                                     }
-                                    placeholder="PBX / phone"
+                                    placeholder={t(
+                                        'servers.placeholderItSupportPhone',
+                                    )}
                                 />
                                 <InputError message={errors.it_support_phone} />
                             </div>
@@ -566,13 +581,13 @@ export default function ServerFormFields({
                     </Section>
 
                     <Section
-                        title="iDRAC / Out-of-band"
+                        title={t('servers.sectionIdrac')}
                         icon={<KeyRound className="size-5" />}
                     >
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div className="grid gap-2">
                                 <Label htmlFor="idrac_ip_address">
-                                    iDRAC IP address
+                                    {t('servers.idracIpAddress')}
                                 </Label>
                                 <IpInput
                                     id="idrac_ip_address"
@@ -583,7 +598,7 @@ export default function ServerFormFields({
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="idrac_subnet_mask">
-                                    Subnet mask
+                                    {t('servers.subnetMask')}
                                 </Label>
                                 <IpInput
                                     id="idrac_subnet_mask"
@@ -598,7 +613,7 @@ export default function ServerFormFields({
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="idrac_default_gateway">
-                                    Default gateway
+                                    {t('servers.defaultGateway')}
                                 </Label>
                                 <IpInput
                                     id="idrac_default_gateway"
@@ -616,7 +631,7 @@ export default function ServerFormFields({
                                     htmlFor="username"
                                     icon={<KeyRound className="size-3.5" />}
                                 >
-                                    Username
+                                    {t('common.username')}
                                 </FieldIconLabel>
                                 <Input
                                     id="username"
@@ -627,15 +642,17 @@ export default function ServerFormFields({
                                 <InputError message={errors.username} />
                             </div>
                             <div className="grid gap-2 sm:col-span-2">
-                                <Label htmlFor="password">Password</Label>
+                                <Label htmlFor="password">
+                                    {t('common.password')}
+                                </Label>
                                 <Input
                                     id="password"
                                     name="password"
                                     type="password"
                                     placeholder={
                                         isEdit && values.has_password
-                                            ? 'Leave blank to keep current password'
-                                            : 'Enter password'
+                                            ? t('servers.leavePasswordBlank')
+                                            : t('servers.enterPassword')
                                     }
                                     autoComplete="new-password"
                                 />
@@ -647,18 +664,18 @@ export default function ServerFormFields({
             )}
 
             <Section
-                title="Description"
+                title={t('servers.sectionDescription')}
                 icon={<HardDrive className="size-5" />}
             >
                 <div className="grid gap-2">
-                    <Label htmlFor="description">Notes</Label>
+                    <Label htmlFor="description">{t('common.notes')}</Label>
                     <textarea
                         id="description"
                         name="description"
                         rows={5}
                         defaultValue={values.description ?? ''}
                         className="border-input bg-background focus-visible:border-ring focus-visible:ring-ring/50 w-full rounded-md border px-3 py-2 text-sm shadow-xs outline-none focus-visible:ring-[3px]"
-                        placeholder="Role, dependencies, maintenance notes…"
+                        placeholder={t('servers.placeholderNotes')}
                     />
                     <InputError message={errors.description} />
                 </div>
@@ -667,10 +684,10 @@ export default function ServerFormFields({
             <QuickCreateNameDialog
                 open={departmentDialogOpen}
                 onOpenChange={setDepartmentDialogOpen}
-                title="Create department"
-                description="Add a department without leaving this form."
+                title={t('servers.quickCreateDepartmentTitle')}
+                description={t('servers.quickCreateDepartmentDescription')}
                 endpoint="/quick-create/departments"
-                placeholder="e.g. Network Section"
+                placeholder={t('servers.quickCreateDepartmentPlaceholder')}
                 icon={<Building2 className="size-4" />}
                 onCreated={(option) => {
                     setDepartmentOptions((current) =>
@@ -685,10 +702,10 @@ export default function ServerFormFields({
             <QuickCreateNameDialog
                 open={modelDialogOpen}
                 onOpenChange={setModelDialogOpen}
-                title="Create server model"
-                description="Register a hardware model for immediate selection."
+                title={t('servers.quickCreateModelTitle')}
+                description={t('servers.quickCreateModelDescription')}
                 endpoint="/quick-create/server-models"
-                placeholder="e.g. Dell PowerEdge R760"
+                placeholder={t('servers.quickCreateModelPlaceholder')}
                 icon={<Server className="size-4" />}
                 onCreated={(option) => {
                     setModelOptions((current) =>
@@ -703,10 +720,10 @@ export default function ServerFormFields({
             <QuickCreateNameDialog
                 open={serviceDialogOpen}
                 onOpenChange={setServiceDialogOpen}
-                title="Create server service"
-                description="Add a running service and select it on this server."
+                title={t('servers.quickCreateServiceTitle')}
+                description={t('servers.quickCreateServiceDescription')}
                 endpoint="/quick-create/server-services"
-                placeholder="e.g. DNS, DHCP, Active Directory"
+                placeholder={t('servers.quickCreateServicePlaceholder')}
                 icon={<ServerCog className="size-4" />}
                 onCreated={(option) => {
                     setServiceOptions((current) =>

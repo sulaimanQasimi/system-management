@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useCan } from '@/hooks/use-can';
+import { useTranslations } from '@/hooks/use-locale';
 import { create, edit, index, show } from '@/routes/ad-users';
 
 type AdUserRow = {
@@ -151,6 +152,7 @@ export default function AdUsersIndex({
     perPageOptions: number[];
 }) {
     const { can } = useCan();
+    const { t } = useTranslations();
     const [search, setSearch] = useState(filters.search);
     const [job, setJob] = useState(filters.job);
     const [dateFrom, setDateFrom] = useState(filters.date_from);
@@ -194,19 +196,19 @@ export default function AdUsersIndex({
 
     return (
         <>
-            <Head title="Active Directory Users" />
+            <Head title={t('adUsers.title')} />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-4 md:p-6">
                 <PageHeader
-                    title="Active Directory Users"
-                    description="Manage directory accounts for the Network Section."
+                    title={t('adUsers.title')}
+                    description={t('adUsers.description')}
                     icon={Users}
                     action={
                         can('ad_user.create') ? (
                             <Button asChild>
                                 <Link href={create()}>
                                     <Plus />
-                                    Add user
+                                    {t('adUsers.addUser')}
                                 </Link>
                             </Button>
                         ) : undefined
@@ -216,23 +218,23 @@ export default function AdUsersIndex({
                 <div className="border-border/80 bg-card rounded-lg border p-4 shadow-regal">
                     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
                         <div className="grid gap-2 xl:col-span-2">
-                            <Label htmlFor="search">Search</Label>
+                            <Label htmlFor="search">{t('common.search')}</Label>
                             <div className="relative">
-                                <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+                                <Search className="text-muted-foreground absolute top-1/2 start-3 size-4 -translate-y-1/2" />
                                 <Input
                                     id="search"
                                     value={search}
                                     onChange={(event) =>
                                         onSearchChange(event.target.value)
                                     }
-                                    placeholder="Name, username, email, phone…"
-                                    className="pl-9"
+                                    placeholder={t('adUsers.searchPlaceholder')}
+                                    className="ps-9"
                                 />
                             </div>
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="job">Job</Label>
+                            <Label htmlFor="job">{t('common.job')}</Label>
                             <Input
                                 id="job"
                                 value={job}
@@ -245,12 +247,12 @@ export default function AdUsersIndex({
                                         applyFilters({ job }, filters);
                                     }
                                 }}
-                                placeholder="Filter by job"
+                                placeholder={t('adUsers.filterByJob')}
                             />
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="date_from">Date from</Label>
+                            <Label htmlFor="date_from">{t('common.dateFrom')}</Label>
                             <Input
                                 id="date_from"
                                 type="date"
@@ -267,7 +269,7 @@ export default function AdUsersIndex({
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="date_to">Date to</Label>
+                            <Label htmlFor="date_to">{t('common.dateTo')}</Label>
                             <Input
                                 id="date_to"
                                 type="date"
@@ -283,8 +285,11 @@ export default function AdUsersIndex({
 
                     <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
                         <p className="text-muted-foreground text-sm">
-                            Showing {users.from ?? 0}–{users.to ?? 0} of{' '}
-                            {users.total}
+                            {t('common.showingRange', {
+                                from: users.from ?? 0,
+                                to: users.to ?? 0,
+                                total: users.total,
+                            })}
                         </p>
 
                         <div className="flex flex-wrap items-center gap-3">
@@ -293,7 +298,7 @@ export default function AdUsersIndex({
                                     htmlFor="per_page"
                                     className="text-muted-foreground whitespace-nowrap"
                                 >
-                                    Per page
+                                    {t('common.perPage')}
                                 </Label>
                                 <select
                                     id="per_page"
@@ -336,7 +341,7 @@ export default function AdUsersIndex({
                                     }
                                 >
                                     <X />
-                                    Clear filters
+                                    {t('common.clearFilters')}
                                 </Button>
                             )}
                         </div>
@@ -345,70 +350,70 @@ export default function AdUsersIndex({
 
                 <div className="border-border/80 bg-card overflow-hidden rounded-lg border shadow-regal">
                     <div className="overflow-x-auto">
-                        <table className="w-full min-w-[1100px] text-left text-sm">
+                        <table className="w-full min-w-[1100px] text-start text-sm">
                             <thead className="bg-muted/50 border-b">
                                 <tr className="text-muted-foreground">
                                     <th className="px-4 py-3">
                                         <SortButton
-                                            label="Name"
+                                            label={t('common.name')}
                                             column="name"
                                             filters={filters}
                                         />
                                     </th>
                                     <th className="px-4 py-3">
                                         <SortButton
-                                            label="Last name"
+                                            label={t('common.lastName')}
                                             column="lastname"
                                             filters={filters}
                                         />
                                     </th>
                                     <th className="px-4 py-3">
                                         <SortButton
-                                            label="Username"
+                                            label={t('common.username')}
                                             column="username"
                                             filters={filters}
                                         />
                                     </th>
                                     <th className="px-4 py-3">
                                         <SortButton
-                                            label="Email"
+                                            label={t('common.email')}
                                             column="email"
                                             filters={filters}
                                         />
                                     </th>
                                     <th className="px-4 py-3">
                                         <SortButton
-                                            label="Job"
+                                            label={t('common.job')}
                                             column="job"
                                             filters={filters}
                                         />
                                     </th>
                                     <th className="px-4 py-3">
                                         <SortButton
-                                            label="PBX"
+                                            label={t('common.pbx')}
                                             column="pbx"
                                             filters={filters}
                                         />
                                     </th>
                                     <th className="px-4 py-3">
                                         <SortButton
-                                            label="Phone"
+                                            label={t('common.phone')}
                                             column="phone"
                                             filters={filters}
                                         />
                                     </th>
                                     <th className="px-4 py-3">
                                         <SortButton
-                                            label="Date"
+                                            label={t('common.date')}
                                             column="date"
                                             filters={filters}
                                         />
                                     </th>
                                     <th className="px-4 py-3 font-medium">
-                                        Created by
+                                        {t('common.createdBy')}
                                     </th>
-                                    <th className="px-4 py-3 text-right font-medium">
-                                        Actions
+                                    <th className="px-4 py-3 text-end font-medium">
+                                        {t('common.actions')}
                                     </th>
                                 </tr>
                             </thead>
@@ -419,7 +424,7 @@ export default function AdUsersIndex({
                                             colSpan={10}
                                             className="text-muted-foreground px-4 py-10 text-center"
                                         >
-                                            No Active Directory users found.
+                                            {t('adUsers.noResults')}
                                         </td>
                                     </tr>
                                 ) : (
@@ -470,7 +475,7 @@ export default function AdUsersIndex({
                                                             >
                                                                 <Eye />
                                                                 <span className="sr-only">
-                                                                    View
+                                                                    {t('common.view')}
                                                                 </span>
                                                             </Link>
                                                         </Button>
@@ -488,7 +493,7 @@ export default function AdUsersIndex({
                                                             >
                                                                 <Pencil />
                                                                 <span className="sr-only">
-                                                                    Edit
+                                                                    {t('common.edit')}
                                                                 </span>
                                                             </Link>
                                                         </Button>
@@ -506,7 +511,9 @@ export default function AdUsersIndex({
                                                             ) => {
                                                                 if (
                                                                     !confirm(
-                                                                        'Delete this Active Directory user?',
+                                                                        t(
+                                                                            'adUsers.deleteConfirm',
+                                                                        ),
                                                                     )
                                                                 ) {
                                                                     event.preventDefault();
@@ -527,8 +534,8 @@ export default function AdUsersIndex({
                                                                 >
                                                                     <Trash2 />
                                                                     <span className="sr-only">
-                                                                        Delete
-                                                                    </span>
+                                                                    {t('common.delete')}
+                                                                </span>
                                                                 </Button>
                                                             )}
                                                         </Form>
@@ -586,7 +593,7 @@ export default function AdUsersIndex({
 AdUsersIndex.layout = {
     breadcrumbs: [
         {
-            title: 'Active Directory Users',
+            title: 'adUsers.title',
             href: index(),
         },
     ],

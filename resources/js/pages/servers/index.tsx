@@ -17,6 +17,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useCan } from '@/hooks/use-can';
+import { useTranslations } from '@/hooks/use-locale';
+import { statusLabel } from '@/lib/status-label';
 import { create, edit, index, show } from '@/routes/servers';
 
 type Option = { id: number; name: string };
@@ -81,6 +83,7 @@ export default function ServersIndex({
 }) {
     const indexUrl = index.url();
     const { can } = useCan();
+    const { t } = useTranslations();
     const [siteName, setSiteName] = useState(filters.site_name);
     const [status, setStatus] = useState(filters.status);
     const [departmentId, setDepartmentId] = useState(filters.department_id);
@@ -97,19 +100,19 @@ export default function ServersIndex({
 
     return (
         <>
-            <Head title="Servers" />
+            <Head title={t('servers.title')} />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-4 md:p-6">
                 <PageHeader
-                    title="Servers"
-                    description="Inventory of department servers, network details, services, and iDRAC access."
+                    title={t('servers.title')}
+                    description={t('servers.description')}
                     icon={HardDrive}
                     action={
                         can('server.create') ? (
                             <Button asChild>
                                 <Link href={create()}>
                                     <Plus />
-                                    Add server
+                                    {t('servers.addServer')}
                                 </Link>
                             </Button>
                         ) : undefined
@@ -120,11 +123,11 @@ export default function ServersIndex({
                     indexUrl={indexUrl}
                     filters={filters}
                     perPageOptions={perPageOptions}
-                    searchPlaceholder="Search site, name, IP, iDRAC, username…"
+                    searchPlaceholder={t('servers.searchPlaceholder')}
                     extraFields={
                         <>
                             <div className="grid gap-2">
-                                <Label htmlFor="site_name">Site</Label>
+                                <Label htmlFor="site_name">{t('common.site')}</Label>
                                 <Input
                                     id="site_name"
                                     value={siteName}
@@ -147,11 +150,11 @@ export default function ServersIndex({
                                             );
                                         }
                                     }}
-                                    placeholder="Filter by site"
+                                    placeholder={t('servers.filterBySite')}
                                 />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="status">Status</Label>
+                                <Label htmlFor="status">{t('common.status')}</Label>
                                 <select
                                     id="status"
                                     value={status}
@@ -166,20 +169,26 @@ export default function ServersIndex({
                                     }}
                                     className="border-input bg-background h-9 rounded-md border px-2 text-sm shadow-xs"
                                 >
-                                    <option value="">All statuses</option>
+                                    <option value="">
+                                        {t('servers.allStatuses')}
+                                    </option>
                                     {statusOptions.map((option) => (
                                         <option
                                             key={option.value}
                                             value={option.value}
                                         >
-                                            {option.label}
+                                            {statusLabel(
+                                                t,
+                                                option.value,
+                                                option.label,
+                                            )}
                                         </option>
                                     ))}
                                 </select>
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="department_id">
-                                    Department
+                                    {t('common.department')}
                                 </Label>
                                 <select
                                     id="department_id"
@@ -195,7 +204,9 @@ export default function ServersIndex({
                                     }}
                                     className="border-input bg-background h-9 rounded-md border px-2 text-sm shadow-xs"
                                 >
-                                    <option value="">All departments</option>
+                                    <option value="">
+                                        {t('servers.allDepartments')}
+                                    </option>
                                     {departments.map((department) => (
                                         <option
                                             key={department.id}
@@ -208,7 +219,7 @@ export default function ServersIndex({
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="server_model_id">
-                                    Server model
+                                    {t('servers.serverModel')}
                                 </Label>
                                 <select
                                     id="server_model_id"
@@ -224,7 +235,9 @@ export default function ServersIndex({
                                     }}
                                     className="border-input bg-background h-9 rounded-md border px-2 text-sm shadow-xs"
                                 >
-                                    <option value="">All models</option>
+                                    <option value="">
+                                        {t('servers.allModels')}
+                                    </option>
                                     {serverModels.map((model) => (
                                         <option key={model.id} value={model.id}>
                                             {model.name}
@@ -233,7 +246,9 @@ export default function ServersIndex({
                                 </select>
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="service_id">Service</Label>
+                                <Label htmlFor="service_id">
+                                    {t('common.services')}
+                                </Label>
                                 <select
                                     id="service_id"
                                     value={serviceId}
@@ -248,7 +263,9 @@ export default function ServersIndex({
                                     }}
                                     className="border-input bg-background h-9 rounded-md border px-2 text-sm shadow-xs"
                                 >
-                                    <option value="">All services</option>
+                                    <option value="">
+                                        {t('servers.allServices')}
+                                    </option>
                                     {services.map((service) => (
                                         <option
                                             key={service.id}
@@ -271,12 +288,12 @@ export default function ServersIndex({
 
                 <div className="border-border/80 bg-card overflow-hidden rounded-lg border shadow-regal">
                     <div className="overflow-x-auto">
-                        <table className="w-full min-w-[1200px] text-left text-sm">
+                        <table className="w-full min-w-[1200px] text-start text-sm">
                             <thead className="bg-muted/50 border-b">
                                 <tr className="text-muted-foreground">
                                     <th className="px-4 py-3">
                                         <SortHeader
-                                            label="Site"
+                                            label={t('common.site')}
                                             column="site_name"
                                             filters={filters}
                                             indexUrl={indexUrl}
@@ -284,35 +301,35 @@ export default function ServersIndex({
                                     </th>
                                     <th className="px-4 py-3">
                                         <SortHeader
-                                            label="Server"
+                                            label={t('common.server')}
                                             column="name"
                                             filters={filters}
                                             indexUrl={indexUrl}
                                         />
                                     </th>
-                                    <th className="px-4 py-3">Model</th>
+                                    <th className="px-4 py-3">{t('common.model')}</th>
                                     <th className="px-4 py-3">
                                         <SortHeader
-                                            label="IP"
+                                            label={t('common.ip')}
                                             column="ip_address"
                                             filters={filters}
                                             indexUrl={indexUrl}
                                         />
                                     </th>
-                                    <th className="px-4 py-3">Services</th>
-                                    <th className="px-4 py-3">Department</th>
-                                    <th className="px-4 py-3">IT Support</th>
+                                    <th className="px-4 py-3">{t('common.services')}</th>
+                                    <th className="px-4 py-3">{t('common.department')}</th>
+                                    <th className="px-4 py-3">{t('servers.itSupport')}</th>
                                     <th className="px-4 py-3">
                                         <SortHeader
-                                            label="Status"
+                                            label={t('common.status')}
                                             column="status"
                                             filters={filters}
                                             indexUrl={indexUrl}
                                         />
                                     </th>
-                                    <th className="px-4 py-3">Created by</th>
-                                    <th className="px-4 py-3 text-right font-medium">
-                                        Actions
+                                    <th className="px-4 py-3">{t('common.createdBy')}</th>
+                                    <th className="px-4 py-3 text-end font-medium">
+                                        {t('common.actions')}
                                     </th>
                                 </tr>
                             </thead>
@@ -323,7 +340,7 @@ export default function ServersIndex({
                                             colSpan={10}
                                             className="text-muted-foreground px-4 py-10 text-center"
                                         >
-                                            No servers found.
+                                            {t('servers.noResults')}
                                         </td>
                                     </tr>
                                 ) : (
@@ -345,7 +362,7 @@ export default function ServersIndex({
                                                     </Link>
                                                     {server.is_vm && (
                                                         <Badge variant="secondary">
-                                                            VM
+                                                            {t('common.vm')}
                                                         </Badge>
                                                     )}
                                                 </div>
@@ -409,7 +426,11 @@ export default function ServersIndex({
                                                         server.status,
                                                     )}
                                                 >
-                                                    {server.status_label}
+                                                    {statusLabel(
+                                                        t,
+                                                        server.status,
+                                                        server.status_label,
+                                                    )}
                                                 </Badge>
                                             </td>
                                             <td className="px-4 py-3">
@@ -430,7 +451,7 @@ export default function ServersIndex({
                                                             >
                                                                 <Eye />
                                                                 <span className="sr-only">
-                                                                    View
+                                                                    {t('common.view')}
                                                                 </span>
                                                             </Link>
                                                         </Button>
@@ -448,7 +469,7 @@ export default function ServersIndex({
                                                             >
                                                                 <Pencil />
                                                                 <span className="sr-only">
-                                                                    Edit
+                                                                    {t('common.edit')}
                                                                 </span>
                                                             </Link>
                                                         </Button>
@@ -466,7 +487,9 @@ export default function ServersIndex({
                                                             ) => {
                                                                 if (
                                                                     !confirm(
-                                                                        'Delete this server?',
+                                                                        t(
+                                                                            'servers.deleteConfirm',
+                                                                        ),
                                                                     )
                                                                 ) {
                                                                     event.preventDefault();
@@ -487,8 +510,8 @@ export default function ServersIndex({
                                                                 >
                                                                     <Trash2 />
                                                                     <span className="sr-only">
-                                                                        Delete
-                                                                    </span>
+                                                                    {t('common.delete')}
+                                                                </span>
                                                                 </Button>
                                                             )}
                                                         </Form>
@@ -512,7 +535,7 @@ export default function ServersIndex({
 ServersIndex.layout = {
     breadcrumbs: [
         {
-            title: 'Servers',
+            title: 'servers.title',
             href: index(),
         },
     ],

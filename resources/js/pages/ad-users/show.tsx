@@ -3,6 +3,7 @@ import { Pencil, UserRound } from 'lucide-react';
 import { DetailField, DetailSection } from '@/components/detail-fields';
 import { Button } from '@/components/ui/button';
 import { useCan } from '@/hooks/use-can';
+import { useTranslations } from '@/hooks/use-locale';
 import { edit, index } from '@/routes/ad-users';
 
 type AdUserShow = {
@@ -22,6 +23,7 @@ type AdUserShow = {
 
 export default function AdUsersShow({ user }: { user: AdUserShow }) {
     const { can } = useCan();
+    const { t } = useTranslations();
 
     return (
         <>
@@ -44,31 +46,46 @@ export default function AdUsersShow({ user }: { user: AdUserShow }) {
                     </div>
                     <div className="flex flex-wrap gap-2">
                         <Button variant="outline" asChild>
-                            <Link href={index()}>Back to AD users</Link>
+                            <Link href={index()}>{t('adUsers.backToAdUsers')}</Link>
                         </Button>
                         {can('ad_user.update') && (
                             <Button asChild>
                                 <Link href={edit(user.id)}>
                                     <Pencil />
-                                    Edit
+                                    {t('common.edit')}
                                 </Link>
                             </Button>
                         )}
                     </div>
                 </div>
 
-                <DetailSection title="Account details">
-                    <DetailField label="Name" value={user.name} />
-                    <DetailField label="Last name" value={user.lastname} />
-                    <DetailField label="Username" value={user.username} />
-                    <DetailField label="Email" value={user.email} />
-                    <DetailField label="Job" value={user.job} />
-                    <DetailField label="PBX" value={user.pbx} />
-                    <DetailField label="Phone" value={user.phone} />
-                    <DetailField label="Date" value={user.date} />
-                    <DetailField label="Created by" value={user.created_by} />
-                    <DetailField label="Created at" value={user.created_at} />
-                    <DetailField label="Updated at" value={user.updated_at} />
+                <DetailSection title={t('adUsers.accountDetails')}>
+                    <DetailField label={t('common.name')} value={user.name} />
+                    <DetailField
+                        label={t('common.lastName')}
+                        value={user.lastname}
+                    />
+                    <DetailField
+                        label={t('common.username')}
+                        value={user.username}
+                    />
+                    <DetailField label={t('common.email')} value={user.email} />
+                    <DetailField label={t('common.job')} value={user.job} />
+                    <DetailField label={t('common.pbx')} value={user.pbx} />
+                    <DetailField label={t('common.phone')} value={user.phone} />
+                    <DetailField label={t('common.date')} value={user.date} />
+                    <DetailField
+                        label={t('common.createdBy')}
+                        value={user.created_by}
+                    />
+                    <DetailField
+                        label={t('common.createdAt')}
+                        value={user.created_at}
+                    />
+                    <DetailField
+                        label={t('common.updatedAt')}
+                        value={user.updated_at}
+                    />
                 </DetailSection>
             </div>
         </>
@@ -77,7 +94,7 @@ export default function AdUsersShow({ user }: { user: AdUserShow }) {
 
 AdUsersShow.layout = {
     breadcrumbs: [
-        { title: 'Active Directory Users', href: index() },
-        { title: 'Details', href: '#' },
+        { title: 'adUsers.title', href: index() },
+        { title: 'adUsers.breadcrumbDetails', href: '#' },
     ],
 };

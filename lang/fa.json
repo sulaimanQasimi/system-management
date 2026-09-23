@@ -19,5 +19,9 @@
     "Server service deleted.": "خدمت سرور حذف شد.",
     "IT Support contact created.": "مخاطب پشتیبانی IT ایجاد شد.",
     "IT Support contact updated.": "مخاطب پشتیبانی IT به‌روزرسانی شد.",
-    "IT Support contact deleted.": "مخاطب پشتیبانی IT حذف شد."
+    "IT Support contact deleted.": "مخاطب پشتیبانی IT حذف شد.",
+    "Active": "فعال",
+    "Inactive": "غیرفعال",
+    "Maintenance": "تعمیر و نگهداری",
+    "Decommissioned": "خارج از سرویس"
 }

@@ -6,17 +6,20 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
+import { useTranslations } from '@/hooks/use-locale';
 import { create, index } from '@/routes/server-models';
 
 export default function ServerModelsCreate() {
+    const { t } = useTranslations();
+
     return (
         <>
-            <Head title="Add Server Model" />
+            <Head title={t('serverModels.headAdd')} />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-4 md:p-6">
                 <Heading
-                    title="Add server model"
-                    description="Register a new server model type."
+                    title={t('serverModels.addTitle')}
+                    description={t('serverModels.addDescription')}
                 />
 
                 <div className="border-border/80 bg-card w-full rounded-lg border shadow-regal p-4 md:p-6">
@@ -27,12 +30,14 @@ export default function ServerModelsCreate() {
                         {({ processing, errors }) => (
                             <>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="name">Name</Label>
+                                    <Label htmlFor="name">{t('common.name')}</Label>
                                     <Input
                                         id="name"
                                         name="name"
                                         required
-                                        placeholder="e.g. Dell PowerEdge R760"
+                                        placeholder={t(
+                                            'serverModels.placeholderName',
+                                        )}
                                         autoFocus
                                     />
                                     <InputError message={errors.name} />
@@ -41,10 +46,12 @@ export default function ServerModelsCreate() {
                                 <div className="flex items-center gap-3">
                                     <Button disabled={processing}>
                                         {processing && <Spinner />}
-                                        Create model
+                                        {t('serverModels.createModel')}
                                     </Button>
                                     <Button variant="outline" asChild>
-                                        <Link href={index()}>Cancel</Link>
+                                        <Link href={index()}>
+                                            {t('common.cancel')}
+                                        </Link>
                                     </Button>
                                 </div>
                             </>
@@ -59,11 +66,11 @@ export default function ServerModelsCreate() {
 ServerModelsCreate.layout = {
     breadcrumbs: [
         {
-            title: 'Server Models',
+            title: 'serverModels.title',
             href: index(),
         },
         {
-            title: 'Add model',
+            title: 'serverModels.breadcrumbAdd',
             href: create(),
         },
     ],

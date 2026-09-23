@@ -3,6 +3,7 @@ import { Pencil, Server } from 'lucide-react';
 import { DetailField, DetailSection } from '@/components/detail-fields';
 import { Button } from '@/components/ui/button';
 import { useCan } from '@/hooks/use-can';
+import { useTranslations } from '@/hooks/use-locale';
 import { edit, index } from '@/routes/server-models';
 
 type ModelShow = {
@@ -14,6 +15,7 @@ type ModelShow = {
 
 export default function ServerModelsShow({ model }: { model: ModelShow }) {
     const { can } = useCan();
+    const { t } = useTranslations();
 
     return (
         <>
@@ -30,29 +32,37 @@ export default function ServerModelsShow({ model }: { model: ModelShow }) {
                                 {model.name}
                             </h1>
                             <p className="text-muted-foreground text-sm">
-                                Server model
+                                {t('serverModels.modelSubtitle')}
                             </p>
                         </div>
                     </div>
                     <div className="flex flex-wrap gap-2">
                         <Button variant="outline" asChild>
-                            <Link href={index()}>Back to models</Link>
+                            <Link href={index()}>
+                                {t('serverModels.backToModels')}
+                            </Link>
                         </Button>
                         {can('server_model.update') && (
                             <Button asChild>
                                 <Link href={edit(model.id)}>
                                     <Pencil />
-                                    Edit
+                                    {t('common.edit')}
                                 </Link>
                             </Button>
                         )}
                     </div>
                 </div>
 
-                <DetailSection title="Model details">
-                    <DetailField label="Name" value={model.name} />
-                    <DetailField label="Created at" value={model.created_at} />
-                    <DetailField label="Updated at" value={model.updated_at} />
+                <DetailSection title={t('serverModels.modelDetails')}>
+                    <DetailField label={t('common.name')} value={model.name} />
+                    <DetailField
+                        label={t('common.createdAt')}
+                        value={model.created_at}
+                    />
+                    <DetailField
+                        label={t('common.updatedAt')}
+                        value={model.updated_at}
+                    />
                 </DetailSection>
             </div>
         </>
@@ -61,7 +71,7 @@ export default function ServerModelsShow({ model }: { model: ModelShow }) {
 
 ServerModelsShow.layout = {
     breadcrumbs: [
-        { title: 'Server Models', href: index() },
-        { title: 'Details', href: '#' },
+        { title: 'serverModels.title', href: index() },
+        { title: 'serverModels.breadcrumbDetails', href: '#' },
     ],
 };

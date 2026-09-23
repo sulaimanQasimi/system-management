@@ -13,6 +13,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
+import { useTranslations } from '@/hooks/use-locale';
 import { postJson } from '@/lib/post-json';
 
 type CreatedOption = { id: number; name: string };
@@ -36,6 +37,7 @@ export default function QuickCreateNameDialog({
     icon: ReactNode;
     onCreated: (option: CreatedOption) => void;
 }) {
+    const { t } = useTranslations();
     const [name, setName] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [processing, setProcessing] = useState(false);
@@ -61,13 +63,13 @@ export default function QuickCreateNameDialog({
         }
 
         if (!result.data) {
-            setError(result.message ?? 'Unable to save.');
-            toast.error(result.message ?? 'Unable to save.');
+            setError(result.message ?? t('common.unableToSave'));
+            toast.error(result.message ?? t('common.unableToSave'));
             return;
         }
 
         onCreated(result.data);
-        toast.success(`${title} created.`);
+        toast.success(t('servers.quickCreateCreated', { title }));
         reset();
         onOpenChange(false);
     };
@@ -95,7 +97,9 @@ export default function QuickCreateNameDialog({
 
                 <form onSubmit={submit} className="space-y-4">
                     <div className="grid gap-2">
-                        <Label htmlFor="quick-create-name">Name</Label>
+                        <Label htmlFor="quick-create-name">
+                            {t('common.name')}
+                        </Label>
                         <Input
                             id="quick-create-name"
                             value={name}
@@ -115,11 +119,11 @@ export default function QuickCreateNameDialog({
                             variant="outline"
                             onClick={() => onOpenChange(false)}
                         >
-                            Cancel
+                            {t('common.cancel')}
                         </Button>
                         <Button type="submit" disabled={processing || !name.trim()}>
                             {processing ? <Spinner /> : <Plus />}
-                            Create
+                            {t('common.create')}
                         </Button>
                     </DialogFooter>
                 </form>

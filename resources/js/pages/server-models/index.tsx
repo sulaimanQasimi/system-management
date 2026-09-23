@@ -12,6 +12,7 @@ import {
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
 import { useCan } from '@/hooks/use-can';
+import { useTranslations } from '@/hooks/use-locale';
 import { create, edit, index, show } from '@/routes/server-models';
 
 type ServerModelRow = {
@@ -32,22 +33,23 @@ export default function ServerModelsIndex({
 }) {
     const indexUrl = index.url();
     const { can } = useCan();
+    const { t } = useTranslations();
 
     return (
         <>
-            <Head title="Server Models" />
+            <Head title={t('serverModels.title')} />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-4 md:p-6">
                 <PageHeader
-                    title="Server Models"
-                    description="Catalog of server model types used by the Network Section."
+                    title={t('serverModels.title')}
+                    description={t('serverModels.description')}
                     icon={Server}
                     action={
                         can('server_model.create') ? (
                             <Button asChild>
                                 <Link href={create()}>
                                     <Plus />
-                                    Add model
+                                    {t('serverModels.addModel')}
                                 </Link>
                             </Button>
                         ) : undefined
@@ -58,7 +60,7 @@ export default function ServerModelsIndex({
                     indexUrl={indexUrl}
                     filters={filters}
                     perPageOptions={perPageOptions}
-                    searchPlaceholder="Search by model name…"
+                    searchPlaceholder={t('serverModels.searchPlaceholder')}
                 />
 
                 <div className="flex items-center justify-between">
@@ -71,12 +73,12 @@ export default function ServerModelsIndex({
 
                 <div className="border-border/80 bg-card overflow-hidden rounded-lg border shadow-regal">
                     <div className="overflow-x-auto">
-                        <table className="w-full min-w-[640px] text-left text-sm">
+                        <table className="w-full min-w-[640px] text-start text-sm">
                             <thead className="bg-muted/50 border-b">
                                 <tr className="text-muted-foreground">
                                     <th className="px-4 py-3">
                                         <SortHeader
-                                            label="Name"
+                                            label={t('common.name')}
                                             column="name"
                                             filters={filters}
                                             indexUrl={indexUrl}
@@ -84,7 +86,7 @@ export default function ServerModelsIndex({
                                     </th>
                                     <th className="px-4 py-3">
                                         <SortHeader
-                                            label="Created"
+                                            label={t('common.created')}
                                             column="created_at"
                                             filters={filters}
                                             indexUrl={indexUrl}
@@ -92,14 +94,14 @@ export default function ServerModelsIndex({
                                     </th>
                                     <th className="px-4 py-3">
                                         <SortHeader
-                                            label="Updated"
+                                            label={t('common.updated')}
                                             column="updated_at"
                                             filters={filters}
                                             indexUrl={indexUrl}
                                         />
                                     </th>
-                                    <th className="px-4 py-3 text-right font-medium">
-                                        Actions
+                                    <th className="px-4 py-3 text-end font-medium">
+                                        {t('common.actions')}
                                     </th>
                                 </tr>
                             </thead>
@@ -110,7 +112,7 @@ export default function ServerModelsIndex({
                                             colSpan={4}
                                             className="text-muted-foreground px-4 py-10 text-center"
                                         >
-                                            No server models found.
+                                            {t('serverModels.noResults')}
                                         </td>
                                     </tr>
                                 ) : (
@@ -145,7 +147,7 @@ export default function ServerModelsIndex({
                                                             >
                                                                 <Eye />
                                                                 <span className="sr-only">
-                                                                    View
+                                                                    {t('common.view')}
                                                                 </span>
                                                             </Link>
                                                         </Button>
@@ -165,7 +167,7 @@ export default function ServerModelsIndex({
                                                             >
                                                                 <Pencil />
                                                                 <span className="sr-only">
-                                                                    Edit
+                                                                    {t('common.edit')}
                                                                 </span>
                                                             </Link>
                                                         </Button>
@@ -185,7 +187,9 @@ export default function ServerModelsIndex({
                                                             ) => {
                                                                 if (
                                                                     !confirm(
-                                                                        'Delete this server model?',
+                                                                        t(
+                                                                            'serverModels.deleteConfirm',
+                                                                        ),
                                                                     )
                                                                 ) {
                                                                     event.preventDefault();
@@ -206,7 +210,7 @@ export default function ServerModelsIndex({
                                                                 >
                                                                     <Trash2 />
                                                                     <span className="sr-only">
-                                                                        Delete
+                                                                        {t('common.delete')}
                                                                     </span>
                                                                 </Button>
                                                             )}
@@ -231,7 +235,7 @@ export default function ServerModelsIndex({
 ServerModelsIndex.layout = {
     breadcrumbs: [
         {
-            title: 'Server Models',
+            title: 'serverModels.title',
             href: index(),
         },
     ],

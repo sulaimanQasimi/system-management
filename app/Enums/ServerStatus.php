@@ -12,10 +12,10 @@ enum ServerStatus: string
     public function label(): string
     {
         return match ($this) {
-            self::Active => 'Active',
-            self::Inactive => 'Inactive',
-            self::Maintenance => 'Maintenance',
-            self::Decommissioned => 'Decommissioned',
+            self::Active => __('Active'),
+            self::Inactive => __('Inactive'),
+            self::Maintenance => __('Maintenance'),
+            self::Decommissioned => __('Decommissioned'),
         };
     }
 

@@ -12,6 +12,8 @@ import { DetailField, DetailSection } from '@/components/detail-fields';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useCan } from '@/hooks/use-can';
+import { useTranslations } from '@/hooks/use-locale';
+import { statusLabel } from '@/lib/status-label';
 import { edit, index } from '@/routes/servers';
 
 type ServerShow = {
@@ -57,6 +59,12 @@ function statusVariant(status: string) {
 
 export default function ServersShow({ server }: { server: ServerShow }) {
     const { can } = useCan();
+    const { t } = useTranslations();
+    const translatedStatus = statusLabel(
+        t,
+        server.status,
+        server.status_label,
+    );
 
     return (
         <>
@@ -74,10 +82,12 @@ export default function ServersShow({ server }: { server: ServerShow }) {
                                     {server.name}
                                 </h1>
                                 <Badge variant={statusVariant(server.status)}>
-                                    {server.status_label}
+                                    {translatedStatus}
                                 </Badge>
                                 {server.is_vm && (
-                                    <Badge variant="secondary">VM</Badge>
+                                    <Badge variant="secondary">
+                                        {t('common.vm')}
+                                    </Badge>
                                 )}
                             </div>
                             <p className="text-muted-foreground text-sm">
@@ -87,13 +97,13 @@ export default function ServersShow({ server }: { server: ServerShow }) {
                     </div>
                     <div className="flex flex-wrap gap-2">
                         <Button variant="outline" asChild>
-                            <Link href={index()}>Back to servers</Link>
+                            <Link href={index()}>{t('servers.backToServers')}</Link>
                         </Button>
                         {can('server.update') && (
                             <Button asChild>
                                 <Link href={edit(server.id)}>
                                     <Pencil />
-                                    Edit
+                                    {t('common.edit')}
                                 </Link>
                             </Button>
                         )}
@@ -102,53 +112,60 @@ export default function ServersShow({ server }: { server: ServerShow }) {
 
                 <div className="space-y-6">
                     <DetailSection
-                        title="Identity"
-                        description="Site, department, model, and status."
+                        title={t('servers.sectionIdentity')}
+                        description={t('servers.sectionIdentityDesc')}
                         icon={<HardDrive className="size-5" />}
                     >
-                        <DetailField label="Site" value={server.site_name} />
-                        <DetailField label="Server name" value={server.name} />
+                        <DetailField label={t('common.site')} value={server.site_name} />
                         <DetailField
-                            label="Status"
+                            label={t('servers.serverName')}
+                            value={server.name}
+                        />
+                        <DetailField
+                            label={t('common.status')}
                             value={
                                 <Badge variant={statusVariant(server.status)}>
-                                    {server.status_label}
+                                    {translatedStatus}
                                 </Badge>
                             }
                         />
                         <DetailField
-                            label="Type"
-                            value={server.is_vm ? 'Virtual machine' : 'Physical'}
+                            label={t('common.type')}
+                            value={
+                                server.is_vm
+                                    ? t('common.virtualMachine')
+                                    : t('common.physical')
+                            }
                         />
                         <DetailField
-                            label="Department"
+                            label={t('common.department')}
                             value={server.department}
                         />
                         <DetailField
-                            label="Server model"
+                            label={t('servers.serverModel')}
                             value={server.server_model}
                         />
                         <DetailField
-                            label="Created by"
+                            label={t('common.createdBy')}
                             value={server.created_by}
                         />
                         <DetailField
-                            label="Created at"
+                            label={t('common.createdAt')}
                             value={server.created_at}
                         />
                         <DetailField
-                            label="Updated at"
+                            label={t('common.updatedAt')}
                             value={server.updated_at}
                         />
                     </DetailSection>
 
                     <DetailSection
-                        title="Network"
-                        description="Primary network addressing."
+                        title={t('servers.sectionNetwork')}
+                        description={t('servers.sectionNetworkDesc')}
                         icon={<Network className="size-5" />}
                     >
                         <DetailField
-                            label="IP address"
+                            label={t('servers.serverIpAddress')}
                             value={
                                 <span className="font-mono text-xs">
                                     {server.ip_address}
@@ -156,7 +173,7 @@ export default function ServersShow({ server }: { server: ServerShow }) {
                             }
                         />
                         <DetailField
-                            label="Subnet mask"
+                            label={t('servers.subnetMask')}
                             value={
                                 server.subnet_mask ? (
                                     <span className="font-mono text-xs">
@@ -166,7 +183,7 @@ export default function ServersShow({ server }: { server: ServerShow }) {
                             }
                         />
                         <DetailField
-                            label="Default gateway"
+                            label={t('servers.defaultGateway')}
                             value={
                                 server.default_gateway ? (
                                     <span className="font-mono text-xs">
@@ -178,12 +195,12 @@ export default function ServersShow({ server }: { server: ServerShow }) {
                     </DetailSection>
 
                     <DetailSection
-                        title="Running services"
-                        description="Services hosted on this server."
+                        title={t('servers.sectionRunningServices')}
+                        description={t('servers.sectionRunningServicesDesc')}
                         icon={<ServerCog className="size-5" />}
                     >
                         <DetailField
-                            label="Services"
+                            label={t('common.services')}
                             className="md:col-span-2 xl:col-span-3"
                             value={
                                 server.services.length > 0 ? (
@@ -205,27 +222,27 @@ export default function ServersShow({ server }: { server: ServerShow }) {
                     {!server.is_vm && (
                         <>
                             <DetailSection
-                                title="IT Support"
-                                description="Assigned support contact."
+                                title={t('servers.sectionItSupport')}
+                                description={t('servers.sectionItSupportDesc')}
                                 icon={<Headset className="size-5" />}
                             >
                                 <DetailField
-                                    label="Contact"
+                                    label={t('common.contact')}
                                     value={server.it_support}
                                 />
                                 <DetailField
-                                    label="Phone / PBX"
+                                    label={t('servers.phonePbx')}
                                     value={server.it_support_phone}
                                 />
                             </DetailSection>
 
                             <DetailSection
-                                title="iDRAC / Out-of-band"
-                                description="Management network and credentials."
+                                title={t('servers.sectionIdrac')}
+                                description={t('servers.sectionIdracDesc')}
                                 icon={<KeyRound className="size-5" />}
                             >
                                 <DetailField
-                                    label="iDRAC IP"
+                                    label={t('servers.idracIpAddress')}
                                     value={
                                         server.idrac_ip_address ? (
                                             <span className="font-mono text-xs">
@@ -235,7 +252,7 @@ export default function ServersShow({ server }: { server: ServerShow }) {
                                     }
                                 />
                                 <DetailField
-                                    label="Subnet mask"
+                                    label={t('servers.subnetMask')}
                                     value={
                                         server.idrac_subnet_mask ? (
                                             <span className="font-mono text-xs">
@@ -245,7 +262,7 @@ export default function ServersShow({ server }: { server: ServerShow }) {
                                     }
                                 />
                                 <DetailField
-                                    label="Default gateway"
+                                    label={t('servers.defaultGateway')}
                                     value={
                                         server.idrac_default_gateway ? (
                                             <span className="font-mono text-xs">
@@ -255,14 +272,14 @@ export default function ServersShow({ server }: { server: ServerShow }) {
                                     }
                                 />
                                 <DetailField
-                                    label="Username"
+                                    label={t('common.username')}
                                     value={server.username}
                                 />
                                 <DetailField
-                                    label="Password"
+                                    label={t('common.password')}
                                     value={
                                         server.has_password
-                                            ? '••••••••'
+                                            ? t('common.passwordMasked')
                                             : null
                                     }
                                 />
@@ -271,12 +288,12 @@ export default function ServersShow({ server }: { server: ServerShow }) {
                     )}
 
                     <DetailSection
-                        title="Description"
-                        description="Role, dependencies, and maintenance notes."
+                        title={t('servers.sectionDescription')}
+                        description={t('servers.sectionDescriptionDesc')}
                         icon={<Activity className="size-5" />}
                     >
                         <DetailField
-                            label="Notes"
+                            label={t('common.notes')}
                             className="md:col-span-2 xl:col-span-3"
                             value={
                                 server.description ? (
@@ -296,11 +313,11 @@ export default function ServersShow({ server }: { server: ServerShow }) {
 ServersShow.layout = {
     breadcrumbs: [
         {
-            title: 'Servers',
+            title: 'servers.title',
             href: index(),
         },
         {
-            title: 'Details',
+            title: 'servers.breadcrumbDetails',
             href: '#',
         },
     ],

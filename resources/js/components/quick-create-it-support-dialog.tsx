@@ -13,6 +13,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
+import { useTranslations } from '@/hooks/use-locale';
 import { postJson } from '@/lib/post-json';
 
 export type CreatedItSupport = {
@@ -30,6 +31,7 @@ export default function QuickCreateItSupportDialog({
     onOpenChange: (open: boolean) => void;
     onCreated: (contact: CreatedItSupport) => void;
 }) {
+    const { t } = useTranslations();
     const [name, setName] = useState('');
     const [lastname, setLastname] = useState('');
     const [pbx, setPbx] = useState('');
@@ -63,19 +65,19 @@ export default function QuickCreateItSupportDialog({
         if (result.errors) {
             const mapped: Record<string, string> = {};
             Object.entries(result.errors).forEach(([key, messages]) => {
-                mapped[key] = messages[0] ?? 'Invalid value.';
+                mapped[key] = messages[0] ?? t('common.invalidValue');
             });
             setErrors(mapped);
             return;
         }
 
         if (!result.data) {
-            toast.error(result.message ?? 'Unable to save.');
+            toast.error(result.message ?? t('common.unableToSave'));
             return;
         }
 
         onCreated(result.data);
-        toast.success('IT Support contact created.');
+        toast.success(t('servers.quickCreateItSupportSuccess'));
         reset();
         onOpenChange(false);
     };
@@ -96,24 +98,28 @@ export default function QuickCreateItSupportDialog({
                         <span className="bg-primary-light text-primary flex size-8 items-center justify-center rounded-md">
                             <Headset className="size-4" />
                         </span>
-                        Create IT Support
+                        {t('servers.quickCreateItSupportTitle')}
                     </DialogTitle>
                     <DialogDescription>
-                        Add a support contact without leaving this form.
+                        {t('servers.quickCreateItSupportDescription')}
                     </DialogDescription>
                 </DialogHeader>
 
                 <form onSubmit={submit} className="space-y-4">
                     <div className="grid gap-4 sm:grid-cols-2">
                         <div className="grid gap-2">
-                            <Label htmlFor="it-support-name">Name</Label>
+                            <Label htmlFor="it-support-name">
+                                {t('common.firstName')}
+                            </Label>
                             <Input
                                 id="it-support-name"
                                 value={name}
                                 onChange={(event) =>
                                     setName(event.target.value)
                                 }
-                                placeholder="First name"
+                                placeholder={t(
+                                    'servers.quickCreateItSupportPlaceholderFirstName',
+                                )}
                                 autoFocus
                                 required
                             />
@@ -125,7 +131,7 @@ export default function QuickCreateItSupportDialog({
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="it-support-lastname">
-                                Last name
+                                {t('common.lastName')}
                             </Label>
                             <Input
                                 id="it-support-lastname"
@@ -133,7 +139,9 @@ export default function QuickCreateItSupportDialog({
                                 onChange={(event) =>
                                     setLastname(event.target.value)
                                 }
-                                placeholder="Last name"
+                                placeholder={t(
+                                    'servers.quickCreateItSupportPlaceholderLastName',
+                                )}
                                 required
                             />
                             {errors.lastname && (
@@ -143,12 +151,16 @@ export default function QuickCreateItSupportDialog({
                             )}
                         </div>
                         <div className="grid gap-2 sm:col-span-2">
-                            <Label htmlFor="it-support-pbx">PBX / Phone</Label>
+                            <Label htmlFor="it-support-pbx">
+                                {t('servers.phonePbx')}
+                            </Label>
                             <Input
                                 id="it-support-pbx"
                                 value={pbx}
                                 onChange={(event) => setPbx(event.target.value)}
-                                placeholder="Extension or phone"
+                                placeholder={t(
+                                    'servers.quickCreateItSupportPlaceholderPbx',
+                                )}
                             />
                             {errors.pbx && (
                                 <p className="text-destructive text-sm">
@@ -164,7 +176,7 @@ export default function QuickCreateItSupportDialog({
                             variant="outline"
                             onClick={() => onOpenChange(false)}
                         >
-                            Cancel
+                            {t('common.cancel')}
                         </Button>
                         <Button
                             type="submit"
@@ -173,7 +185,7 @@ export default function QuickCreateItSupportDialog({
                             }
                         >
                             {processing ? <Spinner /> : <Plus />}
-                            Create
+                            {t('common.create')}
                         </Button>
                     </DialogFooter>
                 </form>

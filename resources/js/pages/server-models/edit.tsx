@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
+import { useTranslations } from '@/hooks/use-locale';
 import { index } from '@/routes/server-models';
 
 export default function ServerModelsEdit({
@@ -13,14 +14,20 @@ export default function ServerModelsEdit({
 }: {
     model: { id: number; name: string };
 }) {
+    const { t } = useTranslations();
+
     return (
         <>
-            <Head title={`Edit ${model.name}`} />
+            <Head
+                title={t('serverModels.headEdit', { name: model.name })}
+            />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-4 md:p-6">
                 <Heading
-                    title="Edit server model"
-                    description={`Update details for ${model.name}.`}
+                    title={t('serverModels.editTitle')}
+                    description={t('serverModels.editDescription', {
+                        name: model.name,
+                    })}
                 />
 
                 <div className="border-border/80 bg-card w-full rounded-lg border shadow-regal p-4 md:p-6">
@@ -31,7 +38,7 @@ export default function ServerModelsEdit({
                         {({ processing, errors }) => (
                             <>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="name">Name</Label>
+                                    <Label htmlFor="name">{t('common.name')}</Label>
                                     <Input
                                         id="name"
                                         name="name"
@@ -45,10 +52,12 @@ export default function ServerModelsEdit({
                                 <div className="flex items-center gap-3">
                                     <Button disabled={processing}>
                                         {processing && <Spinner />}
-                                        Save changes
+                                        {t('common.saveChanges')}
                                     </Button>
                                     <Button variant="outline" asChild>
-                                        <Link href={index()}>Cancel</Link>
+                                        <Link href={index()}>
+                                            {t('common.cancel')}
+                                        </Link>
                                     </Button>
                                 </div>
                             </>
@@ -63,11 +72,11 @@ export default function ServerModelsEdit({
 ServerModelsEdit.layout = {
     breadcrumbs: [
         {
-            title: 'Server Models',
+            title: 'serverModels.title',
             href: index(),
         },
         {
-            title: 'Edit model',
+            title: 'serverModels.breadcrumbEdit',
             href: '#',
         },
     ],
