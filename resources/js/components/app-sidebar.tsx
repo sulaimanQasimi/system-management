@@ -25,6 +25,7 @@ import {
 } from '@/components/ui/sidebar';
 import { useCan } from '@/hooks/use-can';
 import { useCurrentUrl } from '@/hooks/use-current-url';
+import { useLocale } from '@/hooks/use-locale';
 import { dashboard } from '@/routes';
 import { index as adUsers } from '@/routes/ad-users';
 import { index as itSupport } from '@/routes/it-support';
@@ -33,14 +34,6 @@ import { index as serverServices } from '@/routes/server-services';
 import { index as servers } from '@/routes/servers';
 import { index as users } from '@/routes/users';
 import type { NavItem } from '@/types';
-
-const platformItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-];
 
 function NavSection({
     label,
@@ -85,9 +78,19 @@ function NavSection({
 const footerNavItems: NavItem[] = [];
 
 export function AppSidebar() {
+    const { t, isRtl } = useLocale();
+
+    const platformItems: NavItem[] = [
+        {
+            title: t('nav.dashboard'),
+            href: dashboard(),
+            icon: LayoutGrid,
+        },
+    ];
+
     const directoryItems = [
         {
-            title: 'AD Users',
+            title: t('nav.adUsers'),
             href: adUsers(),
             icon: Users,
             permission: 'ad_user.view',
@@ -96,19 +99,19 @@ export function AppSidebar() {
 
     const infrastructureItems = [
         {
-            title: 'Servers',
+            title: t('nav.servers'),
             href: servers(),
             icon: HardDrive,
             permission: 'server.view',
         },
         {
-            title: 'Server Models',
+            title: t('nav.serverModels'),
             href: serverModels(),
             icon: Server,
             permission: 'server_model.view',
         },
         {
-            title: 'Server Services',
+            title: t('nav.serverServices'),
             href: serverServices(),
             icon: ServerCog,
             permission: 'server_service.view',
@@ -117,7 +120,7 @@ export function AppSidebar() {
 
     const supportItems = [
         {
-            title: 'IT Support',
+            title: t('nav.itSupport'),
             href: itSupport(),
             icon: Headset,
             permission: 'it_support.view',
@@ -126,7 +129,7 @@ export function AppSidebar() {
 
     const adminItems = [
         {
-            title: 'Users',
+            title: t('nav.users'),
             href: users(),
             icon: UserRound,
             permission: 'user.view',
@@ -134,7 +137,11 @@ export function AppSidebar() {
     ];
 
     return (
-        <Sidebar collapsible="icon" variant="inset">
+        <Sidebar
+            collapsible="icon"
+            variant="inset"
+            side={isRtl ? 'right' : 'left'}
+        >
             <SidebarHeader className="pb-3">
                 <SidebarMenu>
                     <SidebarMenuItem>
@@ -148,14 +155,17 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent className="gap-3 px-1">
-                <NavMain items={platformItems} />
-                <NavSection label="Directory" items={directoryItems} />
+                <NavMain items={platformItems} label={t('nav.platform')} />
+                <NavSection label={t('nav.directory')} items={directoryItems} />
                 <NavSection
-                    label="Infrastructure"
+                    label={t('nav.infrastructure')}
                     items={infrastructureItems}
                 />
-                <NavSection label="Support" items={supportItems} />
-                <NavSection label="Administration" items={adminItems} />
+                <NavSection label={t('nav.support')} items={supportItems} />
+                <NavSection
+                    label={t('nav.administration')}
+                    items={adminItems}
+                />
             </SidebarContent>
 
             <SidebarFooter className="pt-3">

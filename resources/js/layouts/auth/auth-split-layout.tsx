@@ -1,4 +1,6 @@
 import { Link, usePage } from '@inertiajs/react';
+import { LocaleSwitcher } from '@/components/locale-switcher';
+import { useTranslations } from '@/hooks/use-locale';
 import { home } from '@/routes';
 import type { AuthLayoutProps } from '@/types';
 
@@ -8,6 +10,10 @@ export default function AuthSplitLayout({
     description,
 }: AuthLayoutProps) {
     const { name } = usePage().props;
+    const { t } = useTranslations();
+
+    const resolvedTitle = title ? t(title) : '';
+    const resolvedDescription = description ? t(description) : '';
 
     return (
         <div className="relative grid min-h-svh lg:grid-cols-2">
@@ -46,7 +52,7 @@ export default function AuthSplitLayout({
                     }}
                 />
 
-                <div className="relative z-10 flex h-full flex-col items-center justify-center p-10 xl:p-12">
+                <div className="relative z-10 flex h-full flex-col items-center justify-center p-10 text-center xl:p-12">
                     <Link href={home()} className="inline-flex">
                         <img
                             src="/images/logo.jpg"
@@ -54,10 +60,11 @@ export default function AuthSplitLayout({
                             className="border-sidebar-foreground/20 size-36 rounded-full border-2 object-cover shadow-regal xl:size-44"
                         />
                     </Link>
-                    <h1 className="text-3xl font-semibold tracking-tight text-balance xl:text-4xl">Welcome to the System Management</h1>
-                    <p className="text-sidebar-foreground/70 text-sm leading-relaxed text-pretty xl:text-base">
-                        Sign in to manage servers, directory accounts, and
-                        department support from one controlled portal.
+                    <h1 className="mt-6 text-3xl font-semibold tracking-tight text-balance xl:text-4xl">
+                        {t('brand.welcome')}
+                    </h1>
+                    <p className="text-sidebar-foreground/70 mt-3 max-w-md text-sm leading-relaxed text-pretty xl:text-base">
+                        {t('brand.tagline')}
                     </p>
                 </div>
             </aside>
@@ -75,6 +82,10 @@ export default function AuthSplitLayout({
                     }}
                 />
 
+                <div className="absolute end-6 top-6 z-20 sm:end-10">
+                    <LocaleSwitcher />
+                </div>
+
                 <div className="relative z-10 mx-auto w-full max-w-[24rem]">
                     <Link
                         href={home()}
@@ -89,11 +100,11 @@ export default function AuthSplitLayout({
 
                     <header className="mb-8 space-y-2 opacity-100 transition-all duration-500 starting:translate-y-2 starting:opacity-0">
                         <h1 className="text-section-title text-balance">
-                            {title}
+                            {resolvedTitle}
                         </h1>
-                        {description && (
+                        {resolvedDescription && (
                             <p className="text-muted-foreground text-body text-pretty">
-                                {description}
+                                {resolvedDescription}
                             </p>
                         )}
                     </header>

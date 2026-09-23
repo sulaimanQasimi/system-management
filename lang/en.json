@@ -1,0 +1,23 @@
+{
+    "Profile updated.": "Profile updated.",
+    "Password updated.": "Password updated.",
+    "User created.": "User created.",
+    "User updated.": "User updated.",
+    "User deleted.": "User deleted.",
+    "You cannot delete your own account.": "You cannot delete your own account.",
+    "Active Directory user created.": "Active Directory user created.",
+    "Active Directory user updated.": "Active Directory user updated.",
+    "Active Directory user deleted.": "Active Directory user deleted.",
+    "Server created.": "Server created.",
+    "Server updated.": "Server updated.",
+    "Server deleted.": "Server deleted.",
+    "Server model created.": "Server model created.",
+    "Server model updated.": "Server model updated.",
+    "Server model deleted.": "Server model deleted.",
+    "Server service created.": "Server service created.",
+    "Server service updated.": "Server service updated.",
+    "Server service deleted.": "Server service deleted.",
+    "IT Support contact created.": "IT Support contact created.",
+    "IT Support contact updated.": "IT Support contact updated.",
+    "IT Support contact deleted.": "IT Support contact deleted."
+}

@@ -19,6 +19,10 @@
     --font-sans:
         'Sora', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
         'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-arabic:
+        'Vazirmatn', 'Segoe UI', Tahoma, ui-sans-serif, system-ui, sans-serif,
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+        'Noto Color Emoji';
 
     --radius-lg: var(--radius);
     --radius-md: calc(var(--radius) - 2px);
@@ -425,4 +429,28 @@
 
 [data-sidebar='footer']::before {
     top: 0;
+}
+
+/*
+ |--------------------------------------------------------------------------
+ | Localization — Dari (RTL) typography & direction helpers
+ |--------------------------------------------------------------------------
+ */
+
+html[dir='rtl'] body {
+    font-family: var(--font-arabic);
+}
+
+html[dir='rtl'] {
+    font-feature-settings: 'ss01' on;
+}
+
+html[dir='rtl'] .tabular-nums {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' on;
+}
+
+/* Mirror directional icons in RTL without breaking brand marks */
+html[dir='rtl'] [data-sidebar='trigger'] svg {
+    transform: scaleX(-1);
 }

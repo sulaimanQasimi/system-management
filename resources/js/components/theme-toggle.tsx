@@ -6,6 +6,7 @@ import {
     TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { useAppearance } from '@/hooks/use-appearance';
+import { useTranslations } from '@/hooks/use-locale';
 
 /**
  * Compact light/dark toggle for the app header.
@@ -14,6 +15,7 @@ import { useAppearance } from '@/hooks/use-appearance';
  */
 export function ThemeToggle() {
     const { resolvedAppearance, updateAppearance } = useAppearance();
+    const { t } = useTranslations();
     const isDark = resolvedAppearance === 'dark';
 
     return (
@@ -24,7 +26,9 @@ export function ThemeToggle() {
                     variant="ghost"
                     size="icon"
                     className="size-8 shrink-0"
-                    aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+                    aria-label={
+                        isDark ? t('theme.switchToLight') : t('theme.switchToDark')
+                    }
                     onClick={() =>
                         updateAppearance(isDark ? 'light' : 'dark')
                     }
@@ -37,7 +41,7 @@ export function ThemeToggle() {
                 </Button>
             </TooltipTrigger>
             <TooltipContent side="bottom">
-                {isDark ? 'Light mode' : 'Dark mode'}
+                {isDark ? t('theme.lightMode') : t('theme.darkMode')}
             </TooltipContent>
         </Tooltip>
     );

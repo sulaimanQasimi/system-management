@@ -1,4 +1,5 @@
 import { Breadcrumbs } from '@/components/breadcrumbs';
+import { LocaleSwitcher } from '@/components/locale-switcher';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
@@ -6,7 +7,7 @@ import type { BreadcrumbItem as BreadcrumbItemType } from '@/types';
 
 /**
  * Application content header — sidebar toggle, breadcrumb context,
- * and theme controls. Page-level PageHeader owns title hierarchy.
+ * locale + theme controls. Page-level PageHeader owns title hierarchy.
  */
 export function AppSidebarHeader({
     breadcrumbs = [],
@@ -16,15 +17,16 @@ export function AppSidebarHeader({
     return (
         <header className="border-border/60 bg-surface-elevated/80 sticky top-0 z-10 flex h-14 shrink-0 items-center justify-between gap-2 border-b px-4 backdrop-blur-sm transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 md:px-6">
             <div className="flex min-w-0 items-center gap-2">
-                <SidebarTrigger className="-ml-1" />
+                <SidebarTrigger className="-ms-1" />
                 <Separator
                     orientation="vertical"
-                    className="mr-1 data-[orientation=vertical]:h-4"
+                    className="me-1 data-[orientation=vertical]:h-4"
                 />
                 <Breadcrumbs breadcrumbs={breadcrumbs} />
             </div>
 
             <div className="flex shrink-0 items-center gap-1">
+                <LocaleSwitcher />
                 <ThemeToggle />
             </div>
         </header>

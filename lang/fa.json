@@ -1,0 +1,23 @@
+{
+    "Profile updated.": "پروفایل به‌روزرسانی شد.",
+    "Password updated.": "رمز عبور به‌روزرسانی شد.",
+    "User created.": "کاربر ایجاد شد.",
+    "User updated.": "کاربر به‌روزرسانی شد.",
+    "User deleted.": "کاربر حذف شد.",
+    "You cannot delete your own account.": "شما نمی‌توانید حساب خود را حذف کنید.",
+    "Active Directory user created.": "کاربر اکتیو دایرکتوری ایجاد شد.",
+    "Active Directory user updated.": "کاربر اکتیو دایرکتوری به‌روزرسانی شد.",
+    "Active Directory user deleted.": "کاربر اکتیو دایرکتوری حذف شد.",
+    "Server created.": "سرور ایجاد شد.",
+    "Server updated.": "سرور به‌روزرسانی شد.",
+    "Server deleted.": "سرور حذف شد.",
+    "Server model created.": "مدل سرور ایجاد شد.",
+    "Server model updated.": "مدل سرور به‌روزرسانی شد.",
+    "Server model deleted.": "مدل سرور حذف شد.",
+    "Server service created.": "خدمت سرور ایجاد شد.",
+    "Server service updated.": "خدمت سرور به‌روزرسانی شد.",
+    "Server service deleted.": "خدمت سرور حذف شد.",
+    "IT Support contact created.": "مخاطب پشتیبانی IT ایجاد شد.",
+    "IT Support contact updated.": "مخاطب پشتیبانی IT به‌روزرسانی شد.",
+    "IT Support contact deleted.": "مخاطب پشتیبانی IT حذف شد."
+}

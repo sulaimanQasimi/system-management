@@ -4,39 +4,43 @@ import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useCurrentUrl } from '@/hooks/use-current-url';
+import { useTranslations } from '@/hooks/use-locale';
 import { cn, toUrl } from '@/lib/utils';
+import { edit as editLanguage } from '@/routes/language';
 import { edit } from '@/routes/profile';
 import { edit as editSecurity } from '@/routes/security';
-import type { NavItem } from '@/types';
-
-const sidebarNavItems: NavItem[] = [
-    {
-        title: 'Profile',
-        href: edit(),
-        icon: null,
-    },
-    {
-        title: 'Security',
-        href: editSecurity(),
-        icon: null,
-    },
-];
 
 export default function SettingsLayout({ children }: PropsWithChildren) {
     const { isCurrentOrParentUrl } = useCurrentUrl();
+    const { t } = useTranslations();
+
+    const sidebarNavItems = [
+        {
+            title: t('settings.profile'),
+            href: edit(),
+        },
+        {
+            title: t('settings.security'),
+            href: editSecurity(),
+        },
+        {
+            title: t('settings.language'),
+            href: editLanguage(),
+        },
+    ];
 
     return (
         <div className="px-4 py-6">
             <Heading
-                title="Settings"
-                description="Manage your profile and account settings"
+                title={t('settings.title')}
+                description={t('settings.description')}
             />
 
-            <div className="flex flex-col lg:flex-row lg:space-x-12">
+            <div className="flex flex-col lg:flex-row lg:space-x-12 rtl:lg:space-x-reverse">
                 <aside className="w-full max-w-xl lg:w-48">
                     <nav
                         className="flex flex-col space-y-1 space-x-0"
-                        aria-label="Settings"
+                        aria-label={t('settings.navLabel')}
                     >
                         {sidebarNavItems.map((item, index) => (
                             <Button
@@ -49,12 +53,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                                         isCurrentOrParentUrl(item.href),
                                 })}
                             >
-                                <Link href={item.href}>
-                                    {item.icon && (
-                                        <item.icon className="h-4 w-4" />
-                                    )}
-                                    {item.title}
-                                </Link>
+                                <Link href={item.href}>{item.title}</Link>
                             </Button>
                         ))}
                     </nav>

@@ -16,6 +16,9 @@ export default defineConfig({
                 bunny('Sora', {
                     weights: [400, 500, 600, 700],
                 }),
+                bunny('Vazirmatn', {
+                    weights: [400, 500, 600, 700],
+                }),
             ],
         }),
         inertia(),

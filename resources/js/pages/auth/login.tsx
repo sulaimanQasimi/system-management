@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Spinner } from '@/components/ui/spinner';
+import { useTranslations } from '@/hooks/use-locale';
 import { store } from '@/routes/login';
 import { request } from '@/routes/password';
 
@@ -17,9 +18,11 @@ type Props = {
 };
 
 export default function Login({ status, canResetPassword }: Props) {
+    const { t } = useTranslations();
+
     return (
         <>
-            <Head title="Log in" />
+            <Head title={t('auth.loginHead')} />
 
             <div className="flex flex-col gap-6">
                 {status && (
@@ -32,9 +35,9 @@ export default function Login({ status, canResetPassword }: Props) {
                 )}
 
                 <PasskeyVerify
-                    label="Continue with passkey"
-                    loadingLabel="Waiting for passkey…"
-                    separator="Or continue with email"
+                    label={t('auth.continuePasskey')}
+                    loadingLabel={t('auth.waitingPasskey')}
+                    separator={t('auth.orEmail')}
                 />
 
                 <Form
@@ -49,7 +52,7 @@ export default function Login({ status, canResetPassword }: Props) {
                                     htmlFor="email"
                                     className="text-foreground text-sm font-medium"
                                 >
-                                    Email address
+                                    {t('auth.email')}
                                 </label>
                                 <Input
                                     id="email"
@@ -59,7 +62,7 @@ export default function Login({ status, canResetPassword }: Props) {
                                     autoFocus
                                     tabIndex={1}
                                     autoComplete="email"
-                                    placeholder="name@organization.local"
+                                    placeholder={t('auth.emailPlaceholder')}
                                     className="h-10"
                                 />
                                 <InputError message={errors.email} />
@@ -71,7 +74,7 @@ export default function Login({ status, canResetPassword }: Props) {
                                         htmlFor="password"
                                         className="text-foreground text-sm font-medium"
                                     >
-                                        Password
+                                        {t('auth.password')}
                                     </label>
                                     {canResetPassword && (
                                         <TextLink
@@ -79,7 +82,7 @@ export default function Login({ status, canResetPassword }: Props) {
                                             className="text-muted-foreground hover:text-foreground text-xs font-medium"
                                             tabIndex={5}
                                         >
-                                            Forgot password?
+                                            {t('auth.forgotPassword')}
                                         </TextLink>
                                     )}
                                 </div>
@@ -89,7 +92,7 @@ export default function Login({ status, canResetPassword }: Props) {
                                     required
                                     tabIndex={2}
                                     autoComplete="current-password"
-                                    placeholder="Enter your password"
+                                    placeholder={t('auth.passwordPlaceholder')}
                                     className="h-10"
                                 />
                                 <InputError message={errors.password} />
@@ -105,7 +108,7 @@ export default function Login({ status, canResetPassword }: Props) {
                                     htmlFor="remember"
                                     className="text-muted-foreground text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                                 >
-                                    Keep me signed in on this device
+                                    {t('auth.remember')}
                                 </label>
                             </div>
 
@@ -124,7 +127,9 @@ export default function Login({ status, canResetPassword }: Props) {
                                         aria-hidden
                                     />
                                 )}
-                                {processing ? 'Signing in…' : 'Sign in'}
+                                {processing
+                                    ? t('auth.signingIn')
+                                    : t('auth.signIn')}
                             </Button>
                         </>
                     )}
@@ -135,7 +140,6 @@ export default function Login({ status, canResetPassword }: Props) {
 }
 
 Login.layout = {
-    title: 'Welcome back',
-    description:
-        'Sign in with your department credentials to open the operations portal.',
+    title: 'auth.loginTitle',
+    description: 'auth.loginDescription',
 };

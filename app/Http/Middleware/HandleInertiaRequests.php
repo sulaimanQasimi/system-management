@@ -36,6 +36,15 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $user = $request->user();
+        $localeCode = app()->getLocale();
+        $locales = config('localization.locales', []);
+        $localeMeta = $locales[$localeCode] ?? $locales[config('localization.fallback', 'en')] ?? [
+            'code' => 'en',
+            'name' => 'English',
+            'native' => 'English',
+            'dir' => 'ltr',
+            'html_lang' => 'en',
+        ];
 
         return [
             ...parent::share($request),
@@ -48,6 +57,14 @@ class HandleInertiaRequests extends Middleware
                     : [],
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'locale' => [
+                'code' => $localeMeta['code'] ?? $localeCode,
+                'name' => $localeMeta['name'] ?? $localeCode,
+                'native' => $localeMeta['native'] ?? $localeCode,
+                'dir' => $localeMeta['dir'] ?? 'ltr',
+                'htmlLang' => $localeMeta['html_lang'] ?? $localeCode,
+            ],
+            'availableLocales' => array_values($locales),
         ];
     }
 }

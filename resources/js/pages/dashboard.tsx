@@ -18,6 +18,8 @@ import {
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
 import { useCan } from '@/hooks/use-can';
+import { useLocale } from '@/hooks/use-locale';
+import type { TranslationKey } from '@/locales';
 import { dashboard } from '@/routes';
 import { index as adUsers } from '@/routes/ad-users';
 import { index as itSupport } from '@/routes/it-support';
@@ -27,11 +29,10 @@ import { index as users } from '@/routes/users';
 
 type DashboardStat = {
     key: string;
-    title: string;
     value: number;
     progress: number;
     tone: StatTone;
-    hint?: string;
+    hint_count?: number;
 };
 
 type ServersByService = {
@@ -47,6 +48,15 @@ const statIcons: Record<string, LucideIcon> = {
     ad_users: Users,
     portal_users: UserRound,
     it_support: Headset,
+};
+
+const statTitleKeys: Record<string, TranslationKey> = {
+    servers: 'dashboard.statServers',
+    virtual_machines: 'dashboard.statVirtualMachines',
+    physical_servers: 'dashboard.statPhysicalServers',
+    ad_users: 'dashboard.statAdUsers',
+    portal_users: 'dashboard.statPortalUsers',
+    it_support: 'dashboard.statItSupport',
 };
 
 const statLinks: Record<string, string> = {
@@ -67,10 +77,6 @@ const statPermissions: Record<string, string> = {
     it_support: 'it_support.view',
 };
 
-function formatCount(value: number): string {
-    return new Intl.NumberFormat().format(value);
-}
-
 export default function Dashboard({
     stats,
     serversByService,
@@ -79,18 +85,48 @@ export default function Dashboard({
     serversByService: ServersByService[];
 }) {
     const { can } = useCan();
+    const { t, locale } = useLocale();
     const maxServiceCount = Math.max(
         0,
         ...serversByService.map((service) => service.servers_count),
     );
 
+    const formatCount = (value: number): string =>
+        new Intl.NumberFormat(locale === 'fa' ? 'fa-AF' : 'en').format(value);
+
+    const resolveHint = (stat: DashboardStat): string | undefined => {
+        if (stat.hint_count === undefined) {
+            return undefined;
+        }
+
+        const count = formatCount(stat.hint_count);
+
+        switch (stat.key) {
+            case 'servers':
+                return t('dashboard.hintActive', { count });
+            case 'virtual_machines':
+            case 'physical_servers':
+                return t('dashboard.hintPercentOfServers', {
+                    percent: count,
+                });
+            case 'ad_users':
+                return t('dashboard.hintWithPhone', { count });
+            case 'portal_users':
+                return t('dashboard.hintVerified', { count });
+            case 'it_support':
+                return t('dashboard.hintWithPbx', { count });
+            default:
+                return undefined;
+        }
+    };
+
     return (
         <>
-            <Head title="Dashboard" />
+            <Head title={t('dashboard.title')} />
             <div className="flex h-full flex-1 flex-col gap-6 overflow-x-auto p-4 md:p-6">
                 <PageHeader
-                    title="Network operations"
-                    description="Overview for the Network Section Department."
+                    title={t('dashboard.networkOperations')}
+                    description={t('dashboard.description')}
                     icon={Network}
                 />
 
@@ -100,21 +136,22 @@ export default function Dashboard({
                         const href = statLinks[stat.key];
                         const permission = statPermissions[stat.key];
                         const canView = !permission || can(permission);
+                        const titleKey = statTitleKeys[stat.key];
 
                         return (
                             <StatCard
                                 key={stat.key}
-                                title={stat.title}
+                                title={titleKey ? t(titleKey) : stat.key}
                                 value={formatCount(stat.value)}
                                 progress={stat.progress}
                                 tone={stat.tone}
                                 icon={Icon}
-                                hint={stat.hint}
+                                hint={resolveHint(stat)}
                                 menuItems={
                                     canView && href
                                         ? [
                                               {
-                                                  label: 'View all',
+                                                  label: t('dashboard.viewAll'),
                                                   href,
                                               },
                                           ]
@@ -126,16 +163,16 @@ export default function Dashboard({
                 </div>
 
                 <ChartCard
-                    title="Servers by service"
-                    description="How many servers are attached to each service."
+                    title={t('dashboard.serversByService')}
+                    description={t('dashboard.serversByServiceDesc')}
                     isEmpty={serversByService.length === 0}
-                    emptyMessage="No services defined yet."
+                    emptyMessage={t('dashboard.noServices')}
                     minHeight="12rem"
                     action={
                         can('server_service.view') ? (
                             <Button variant="outline" size="sm" asChild>
                                 <Link href={serverServices()}>
-                                    Manage services
+                                    {t('dashboard.manageServices')}
                                 </Link>
                             </Button>
                         ) : undefined
@@ -182,7 +219,7 @@ export default function Dashboard({
 Dashboard.layout = {
     breadcrumbs: [
         {
-            title: 'Dashboard',
+            title: 'nav.dashboard',
             href: dashboard(),
         },
     ],

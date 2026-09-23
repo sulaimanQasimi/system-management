@@ -10,6 +10,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useTranslations } from '@/hooks/use-locale';
 
 export type ListFilters = {
     search: string;
@@ -130,7 +131,7 @@ export function ResourceFilters({
     filters,
     perPageOptions,
     extraFields,
-    searchPlaceholder = 'Search…',
+    searchPlaceholder,
 }: {
     indexUrl: string;
     filters: ListFilters;
@@ -138,6 +139,8 @@ export function ResourceFilters({
     extraFields?: ReactNode;
     searchPlaceholder?: string;
 }) {
+    const { t } = useTranslations();
+    const resolvedPlaceholder = searchPlaceholder ?? t('common.searchEllipsis');
     const [search, setSearch] = useState(String(filters.search ?? ''));
     const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -184,17 +187,17 @@ export function ResourceFilters({
         <div className="border-border/80 bg-card rounded-lg border p-4 shadow-regal">
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                 <div className="grid gap-2 xl:col-span-2">
-                    <Label htmlFor="resource-search">Search</Label>
+                    <Label htmlFor="resource-search">{t('common.search')}</Label>
                     <div className="relative">
-                        <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+                        <Search className="text-muted-foreground absolute start-3 top-1/2 size-4 -translate-y-1/2" />
                         <Input
                             id="resource-search"
                             value={search}
                             onChange={(event) =>
                                 onSearchChange(event.target.value)
                             }
-                            placeholder={searchPlaceholder}
-                            className="pl-9"
+                            placeholder={resolvedPlaceholder}
+                            className="ps-9"
                         />
                     </div>
                 </div>
@@ -208,7 +211,7 @@ export function ResourceFilters({
                         htmlFor="per_page"
                         className="text-muted-foreground whitespace-nowrap"
                     >
-                        Per page
+                        {t('common.perPage')}
                     </Label>
                     <select
                         id="per_page"
@@ -248,7 +251,7 @@ export function ResourceFilters({
                         }
                     >
                         <X />
-                        Clear filters
+                        {t('common.clearFilters')}
                     </Button>
                 )}
             </div>
@@ -316,9 +319,15 @@ export function ResultSummary({
     to: number | null;
     total: number;
 }) {
+    const { t } = useTranslations();
+
     return (
         <p className="text-muted-foreground text-sm">
-            Showing {from ?? 0}–{to ?? 0} of {total}
+            {t('common.showingRange', {
+                from: from ?? 0,
+                to: to ?? 0,
+                total,
+            })}
         </p>
     );
 }
