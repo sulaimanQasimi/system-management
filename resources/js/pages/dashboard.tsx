@@ -5,16 +5,12 @@ import {
     Headset,
     Network,
     Server,
+    ServerCog,
     Users,
     UserRound,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import {
-    ChartCard,
-    ChartPlaceholder,
-    StatCard,
-    type StatTone,
-} from '@/components/dashboard';
+import { StatCard, type StatTone } from '@/components/dashboard';
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
 import { useCan } from '@/hooks/use-can';
@@ -26,6 +22,14 @@ import { index as itSupport } from '@/routes/it-support';
 import { index as servers } from '@/routes/servers';
 import { index as serverServices } from '@/routes/server-services';
 import { index as users } from '@/routes/users';
+
+const serviceTones: StatTone[] = [
+    'primary',
+    'info',
+    'secondary',
+    'success',
+    'warning',
+];
 
 type DashboardStat = {
     key: string;
@@ -86,13 +90,19 @@ export default function Dashboard({
 }) {
     const { can } = useCan();
     const { t, locale } = useLocale();
-    const maxServiceCount = Math.max(
-        0,
-        ...serversByService.map((service) => service.servers_count),
-    );
+    const serversTotal =
+        stats.find((stat) => stat.key === 'servers')?.value ?? 0;
 
     const formatCount = (value: number): string =>
         new Intl.NumberFormat(locale === 'fa' ? 'fa-AF' : 'en').format(value);
+
+    const serviceProgress = (count: number): number => {
+        if (serversTotal <= 0) {
+            return 0;
+        }
+
+        return Math.min(100, Math.round((count / serversTotal) * 100));
+    };
 
     const resolveHint = (stat: DashboardStat): string | undefined => {
         if (stat.hint_count === undefined) {
@@ -162,55 +172,74 @@ export default function Dashboard({
                     })}
                 </div>
 
-                <ChartCard
-                    title={t('dashboard.serversByService')}
-                    description={t('dashboard.serversByServiceDesc')}
-                    isEmpty={serversByService.length === 0}
-                    emptyMessage={t('dashboard.noServices')}
-                    minHeight="12rem"
-                    action={
-                        can('server_service.view') ? (
+                <section className="space-y-4">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                        <div>
+                            <h2 className="text-base font-semibold tracking-tight">
+                                {t('dashboard.serversByService')}
+                            </h2>
+                            <p className="text-muted-foreground text-sm">
+                                {t('dashboard.serversByServiceDesc')}
+                            </p>
+                        </div>
+                        {can('server_service.view') && (
                             <Button variant="outline" size="sm" asChild>
                                 <Link href={serverServices()}>
                                     {t('dashboard.manageServices')}
                                 </Link>
                             </Button>
-                        ) : undefined
-                    }
-                >
-                    <div className="space-y-4">
-                        {serversByService.map((service) => {
-                            const percent =
-                                maxServiceCount > 0
-                                    ? Math.round(
-                                          (service.servers_count /
-                                              maxServiceCount) *
-                                              100,
-                                      )
-                                    : 0;
-
-                            return (
-                                <Link
-                                    key={service.id}
-                                    href={servers.url({
-                                        query: {
-                                            service_id: service.id,
-                                        },
-                                    })}
-                                    className="hover:opacity-80 block transition-opacity"
-                                >
-                                    <ChartPlaceholder
-                                        label={service.name}
-                                        value={formatCount(
-                                            service.servers_count,
-                                        )}
-                                        percent={percent}
-                                    />
-                                </Link>
-                            );
-                        })}
+                        )}
                     </div>
-                </ChartCard>
+
+                    {serversByService.length === 0 ? (
+                        <p className="text-muted-foreground border-border bg-card/40 rounded-2xl border px-5 py-10 text-center text-sm">
+                            {t('dashboard.noServices')}
+                        </p>
+                    ) : (
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                            {serversByService.map((service, index) => (
+                                <StatCard
+                                    key={service.id}
+                                    title={service.name}
+                                    value={formatCount(service.servers_count)}
+                                    progress={serviceProgress(
+                                        service.servers_count,
+                                    )}
+                                    tone={
+                                        serviceTones[
+                                            index % serviceTones.length
+                                        ]
+                                    }
+                                    icon={ServerCog}
+                                    hint={t('dashboard.hintPercentOfServers', {
+                                        percent: formatCount(
+                                            serviceProgress(
+                                                service.servers_count,
+                                            ),
+                                        ),
+                                    })}
+                                    menuItems={
+                                        can('server.view')
+                                            ? [
+                                                  {
+                                                      label: t(
+                                                          'dashboard.viewAll',
+                                                      ),
+                                                      href: servers.url({
+                                                          query: {
+                                                              service_id:
+                                                                  service.id,
+                                                          },
+                                                      }),
+                                                  },
+                                              ]
+                                            : undefined
+                                    }
+                                />
+                            ))}
+                        </div>
+                    )}
+                </section>
             </div>
         </>
     );

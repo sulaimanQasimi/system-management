@@ -14,6 +14,7 @@ use Illuminate\Support\Carbon;
  * @property string $lastname
  * @property string $username
  * @property string $email
+ * @property int|null $department_id
  * @property string|null $job
  * @property string|null $pbx
  * @property string|null $phone
@@ -21,6 +22,7 @@ use Illuminate\Support\Carbon;
  * @property int $created_by
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property-read Department|null $department
  * @property-read User $creator
  */
 #[Fillable([
@@ -28,6 +30,7 @@ use Illuminate\Support\Carbon;
     'lastname',
     'username',
     'email',
+    'department_id',
     'job',
     'pbx',
     'phone',
@@ -36,6 +39,14 @@ use Illuminate\Support\Carbon;
 ])]
 class ActiveDirectoryUser extends Model
 {
+    /**
+     * @return BelongsTo<Department, $this>
+     */
+    public function department(): BelongsTo
+    {
+        return $this->belongsTo(Department::class);
+    }
+
     /**
      * @return BelongsTo<User, $this>
      */
