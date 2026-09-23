@@ -22,7 +22,7 @@ const badgeVariants = cva(
                 warning:
                     'border-transparent bg-warning/15 text-warning-foreground [a&]:hover:bg-warning/20',
                 info: 'border-transparent bg-info/15 text-info [a&]:hover:bg-info/20',
-                gold: 'border-transparent bg-accent-gold-light text-accent-foreground [a&]:hover:bg-accent',
+                gold: 'border-transparent bg-primary-light text-primary [a&]:hover:bg-primary-light/80',
             },
         },
         defaultVariants: {

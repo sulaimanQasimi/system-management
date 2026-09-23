@@ -9,10 +9,10 @@
 
 /*
  |--------------------------------------------------------------------------
- | Regal / Majestic design system
+ | Standard institutional design system
  |--------------------------------------------------------------------------
- | Central palette: Midnight Navy, Royal Purple, Champagne Gold, Warm Ivory.
- | Components should consume these tokens — avoid hardcoding hex/oklch in UI.
+ | Deep Navy / Primary Blue / Royal Blue for UI & navigation.
+ | White / Off White for surfaces. Red for destructive/alerts only.
  */
 
 @theme {
@@ -56,6 +56,7 @@
 
     --color-destructive: var(--destructive);
     --color-destructive-foreground: var(--destructive-foreground);
+    --color-destructive-light: var(--destructive-light);
 
     --color-success: var(--success);
     --color-success-foreground: var(--success-foreground);
@@ -94,163 +95,171 @@
 }
 
 :root {
-    /* Surfaces — warm ivory / clean white */
-    --background: oklch(0.975 0.008 90);
-    --foreground: oklch(0.24 0.025 265);
-    --surface: oklch(0.975 0.008 90);
-    --surface-elevated: oklch(0.995 0.003 90);
+    /* Brand palette
+     * Deep Navy #0B1F3A | Primary Blue #1557B0 | Royal Blue #2563EB | Light Blue #E8F1FF
+     * Dark Red #C62828 | Bright Red #E53935 | Light Red #FDECEC
+     * White #FFFFFF | Off White #F7F9FC | Dark Text #172033 | Gray Text #667085 | Border #D9E1EC
+     */
+    --brand-deep-navy: #0b1f3a;
+    --brand-primary-blue: #1557b0;
+    --brand-royal-blue: #2563eb;
+    --brand-light-blue: #e8f1ff;
+    --brand-dark-red: #c62828;
+    --brand-bright-red: #e53935;
+    --brand-light-red: #fdecec;
+    --brand-white: #ffffff;
+    --brand-off-white: #f7f9fc;
+    --brand-dark-text: #172033;
+    --brand-gray-text: #667085;
+    --brand-border: #d9e1ec;
 
-    --card: oklch(0.995 0.003 90);
-    --card-foreground: oklch(0.24 0.025 265);
-    --popover: oklch(0.995 0.003 90);
-    --popover-foreground: oklch(0.24 0.025 265);
+    /* Surfaces — off-white / white */
+    --background: var(--brand-off-white);
+    --foreground: var(--brand-dark-text);
+    --surface: var(--brand-off-white);
+    --surface-elevated: var(--brand-white);
 
-    /* Primary — deep royal navy */
-    --primary: oklch(0.32 0.075 265);
-    --primary-foreground: oklch(0.98 0.01 90);
-    --primary-hover: oklch(0.27 0.08 265);
-    --primary-light: oklch(0.94 0.025 265);
+    --card: var(--brand-white);
+    --card-foreground: var(--brand-dark-text);
+    --popover: var(--brand-white);
+    --popover-foreground: var(--brand-dark-text);
 
-    /* Secondary — soft royal purple wash */
-    --secondary: oklch(0.94 0.025 300);
-    --secondary-foreground: oklch(0.38 0.11 300);
-    --secondary-hover: oklch(0.9 0.035 300);
+    /* Primary — Primary Blue */
+    --primary: var(--brand-primary-blue);
+    --primary-foreground: var(--brand-white);
+    --primary-hover: var(--brand-deep-navy);
+    --primary-light: var(--brand-light-blue);
 
-    /* Muted slate */
-    --muted: oklch(0.95 0.01 90);
-    --muted-foreground: oklch(0.48 0.025 265);
+    /* Secondary — light blue wash */
+    --secondary: var(--brand-light-blue);
+    --secondary-foreground: var(--brand-primary-blue);
+    --secondary-hover: color-mix(in srgb, var(--brand-light-blue) 70%, var(--brand-royal-blue));
 
-    /* Accent — champagne gold */
-    --accent: oklch(0.94 0.035 85);
-    --accent-foreground: oklch(0.38 0.06 85);
-    --accent-gold: oklch(0.72 0.1 85);
-    --accent-gold-light: oklch(0.95 0.03 85);
+    /* Muted */
+    --muted: color-mix(in srgb, var(--brand-off-white) 70%, var(--brand-border));
+    --muted-foreground: var(--brand-gray-text);
 
-    /* Status */
-    --destructive: oklch(0.55 0.18 25);
-    --destructive-foreground: oklch(0.55 0.18 25);
-    --success: oklch(0.52 0.12 155);
-    --success-foreground: oklch(0.98 0.01 155);
-    --warning: oklch(0.68 0.12 75);
-    --warning-foreground: oklch(0.32 0.06 75);
-    --info: oklch(0.5 0.1 250);
-    --info-foreground: oklch(0.98 0.01 250);
+    /* Accent — royal/light blue (replaces gold) */
+    --accent: var(--brand-light-blue);
+    --accent-foreground: var(--brand-deep-navy);
+    --accent-gold: var(--brand-royal-blue);
+    --accent-gold-light: var(--brand-light-blue);
 
-    --border: oklch(0.88 0.015 265);
-    --input: oklch(0.88 0.015 265);
-    --ring: oklch(0.45 0.08 265);
+    /* Status — red for destructive only */
+    --destructive: var(--brand-bright-red);
+    --destructive-foreground: var(--brand-dark-red);
+    --destructive-light: var(--brand-light-red);
+    --success: #1b7f4e;
+    --success-foreground: var(--brand-white);
+    --warning: #b45309;
+    --warning-foreground: var(--brand-white);
+    --info: var(--brand-royal-blue);
+    --info-foreground: var(--brand-white);
 
-    /* Charts — navy / purple / gold family */
-    --chart-1: oklch(0.35 0.08 265);
-    --chart-2: oklch(0.45 0.12 300);
-    --chart-3: oklch(0.72 0.1 85);
-    --chart-4: oklch(0.55 0.1 155);
-    --chart-5: oklch(0.5 0.08 250);
+    --border: var(--brand-border);
+    --input: var(--brand-border);
+    --ring: var(--brand-royal-blue);
+
+    /* Charts — navy / blue family */
+    --chart-1: var(--brand-deep-navy);
+    --chart-2: var(--brand-primary-blue);
+    --chart-3: var(--brand-royal-blue);
+    --chart-4: #1b7f4e;
+    --chart-5: var(--brand-gray-text);
 
     --radius: 0.5rem;
 
-    /* Subtle regal elevation */
-    --elevation-regal: 0 1px 2px oklch(0.24 0.025 265 / 0.04),
-        0 1px 3px oklch(0.24 0.025 265 / 0.03);
-    --elevation-regal-md: 0 2px 8px oklch(0.24 0.025 265 / 0.06),
-        0 1px 2px oklch(0.24 0.025 265 / 0.04);
+    --elevation-regal: 0 1px 2px color-mix(in srgb, var(--brand-deep-navy) 6%, transparent),
+        0 1px 3px color-mix(in srgb, var(--brand-deep-navy) 4%, transparent);
+    --elevation-regal-md: 0 2px 8px color-mix(in srgb, var(--brand-deep-navy) 8%, transparent),
+        0 1px 2px color-mix(in srgb, var(--brand-deep-navy) 5%, transparent);
 
-    /* Sidebar — light ivory glass (adapts in .dark to midnight navy) */
-    --sidebar: oklch(0.985 0.007 90);
-    --sidebar-foreground: oklch(0.28 0.04 265);
-    --sidebar-primary: oklch(0.36 0.085 265);
-    --sidebar-primary-foreground: oklch(0.98 0.01 90);
-    --sidebar-accent: oklch(0.94 0.02 270);
-    --sidebar-accent-foreground: oklch(0.28 0.05 265);
-    --sidebar-border: oklch(0.88 0.02 265);
-    --sidebar-ring: oklch(0.5 0.08 265);
-    --sidebar-glass: oklch(0.32 0.06 265 / 0.04);
-    --sidebar-glass-hover: oklch(0.32 0.06 265 / 0.08);
-    --sidebar-glass-active: color-mix(
-        in oklch,
-        var(--sidebar-primary) 12%,
-        transparent
-    );
-    --sidebar-glow: color-mix(in oklch, oklch(0.72 0.1 85) 45%, transparent);
-    --sidebar-wash: oklch(0.55 0.1 300);
-    --sidebar-highlight: oklch(1 0 0 / 0.7);
-    --sidebar-edge: oklch(0.32 0.05 265 / 0.08);
-    --sidebar-gradient-end: color-mix(in oklch, var(--sidebar) 94%, oklch(0.9 0.02 270));
+    /* Sidebar — Deep Navy navigation */
+    --sidebar: var(--brand-deep-navy);
+    --sidebar-foreground: var(--brand-white);
+    --sidebar-primary: var(--brand-royal-blue);
+    --sidebar-primary-foreground: var(--brand-white);
+    --sidebar-accent: color-mix(in srgb, var(--brand-deep-navy) 78%, var(--brand-primary-blue));
+    --sidebar-accent-foreground: var(--brand-white);
+    --sidebar-border: color-mix(in srgb, var(--brand-white) 12%, transparent);
+    --sidebar-ring: var(--brand-royal-blue);
+    --sidebar-glass: color-mix(in srgb, var(--brand-white) 6%, transparent);
+    --sidebar-glass-hover: color-mix(in srgb, var(--brand-white) 10%, transparent);
+    --sidebar-glass-active: color-mix(in srgb, var(--brand-royal-blue) 28%, transparent);
+    --sidebar-glow: color-mix(in srgb, var(--brand-royal-blue) 45%, transparent);
+    --sidebar-wash: var(--brand-primary-blue);
+    --sidebar-highlight: color-mix(in srgb, var(--brand-white) 10%, transparent);
+    --sidebar-edge: color-mix(in srgb, var(--brand-white) 8%, transparent);
+    --sidebar-gradient-end: color-mix(in srgb, var(--brand-deep-navy) 88%, black);
 }
 
 .dark {
-    --background: oklch(0.17 0.03 265);
-    --foreground: oklch(0.93 0.012 90);
-    --surface: oklch(0.17 0.03 265);
-    --surface-elevated: oklch(0.22 0.035 265);
+    --background: #071525;
+    --foreground: #eef3fa;
+    --surface: #071525;
+    --surface-elevated: #0f2744;
 
-    --card: oklch(0.22 0.035 265);
-    --card-foreground: oklch(0.93 0.012 90);
-    --popover: oklch(0.22 0.035 265);
-    --popover-foreground: oklch(0.93 0.012 90);
+    --card: #0f2744;
+    --card-foreground: #eef3fa;
+    --popover: #0f2744;
+    --popover-foreground: #eef3fa;
 
-    --primary: oklch(0.72 0.08 85);
-    --primary-foreground: oklch(0.2 0.05 265);
-    --primary-hover: oklch(0.78 0.09 85);
-    --primary-light: oklch(0.28 0.04 265);
+    --primary: var(--brand-royal-blue);
+    --primary-foreground: var(--brand-white);
+    --primary-hover: #3b82f6;
+    --primary-light: color-mix(in srgb, var(--brand-deep-navy) 70%, var(--brand-primary-blue));
 
-    --secondary: oklch(0.28 0.05 300);
-    --secondary-foreground: oklch(0.88 0.04 300);
-    --secondary-hover: oklch(0.32 0.055 300);
+    --secondary: color-mix(in srgb, var(--brand-deep-navy) 55%, var(--brand-primary-blue));
+    --secondary-foreground: var(--brand-light-blue);
+    --secondary-hover: color-mix(in srgb, var(--brand-deep-navy) 40%, var(--brand-primary-blue));
 
-    --muted: oklch(0.26 0.035 265);
-    --muted-foreground: oklch(0.7 0.025 265);
+    --muted: #132a47;
+    --muted-foreground: #9aa8bc;
 
-    --accent: oklch(0.3 0.045 270);
-    --accent-foreground: oklch(0.9 0.04 85);
-    --accent-gold: oklch(0.78 0.09 85);
-    --accent-gold-light: oklch(0.3 0.04 85);
+    --accent: #132a47;
+    --accent-foreground: var(--brand-light-blue);
+    --accent-gold: var(--brand-royal-blue);
+    --accent-gold-light: #132a47;
 
-    --destructive: oklch(0.48 0.16 25);
-    --destructive-foreground: oklch(0.75 0.14 25);
-    --success: oklch(0.6 0.12 155);
-    --success-foreground: oklch(0.18 0.04 155);
-    --warning: oklch(0.72 0.12 75);
-    --warning-foreground: oklch(0.25 0.05 75);
-    --info: oklch(0.62 0.1 250);
-    --info-foreground: oklch(0.18 0.04 250);
+    --destructive: var(--brand-bright-red);
+    --destructive-foreground: #ffc9c9;
+    --destructive-light: color-mix(in srgb, var(--brand-dark-red) 35%, #0f2744);
+    --success: #22a06b;
+    --success-foreground: var(--brand-white);
+    --warning: #d97706;
+    --warning-foreground: var(--brand-white);
+    --info: var(--brand-royal-blue);
+    --info-foreground: var(--brand-white);
 
-    --border: oklch(0.32 0.04 265);
-    --input: oklch(0.32 0.04 265);
-    --ring: oklch(0.72 0.09 85);
+    --border: #243b5c;
+    --input: #243b5c;
+    --ring: var(--brand-royal-blue);
 
-    --chart-1: oklch(0.72 0.08 85);
-    --chart-2: oklch(0.65 0.1 300);
-    --chart-3: oklch(0.6 0.08 265);
-    --chart-4: oklch(0.65 0.1 155);
-    --chart-5: oklch(0.6 0.08 250);
+    --chart-1: var(--brand-royal-blue);
+    --chart-2: var(--brand-primary-blue);
+    --chart-3: #60a5fa;
+    --chart-4: #22a06b;
+    --chart-5: #9aa8bc;
 
-    --elevation-regal: 0 1px 2px oklch(0 0 0 / 0.2),
-        0 1px 3px oklch(0 0 0 / 0.15);
-    --elevation-regal-md: 0 2px 8px oklch(0 0 0 / 0.28),
-        0 1px 2px oklch(0 0 0 / 0.18);
+    --elevation-regal: 0 1px 2px rgb(0 0 0 / 0.24), 0 1px 3px rgb(0 0 0 / 0.16);
+    --elevation-regal-md: 0 2px 8px rgb(0 0 0 / 0.32), 0 1px 2px rgb(0 0 0 / 0.2);
 
-    /* Sidebar — midnight navy glass for dark mode */
-    --sidebar: oklch(0.15 0.05 268);
-    --sidebar-foreground: oklch(0.93 0.012 90);
-    --sidebar-primary: oklch(0.8 0.1 85);
-    --sidebar-primary-foreground: oklch(0.15 0.05 265);
-    --sidebar-accent: oklch(0.26 0.05 280);
-    --sidebar-accent-foreground: oklch(0.95 0.02 90);
-    --sidebar-border: oklch(0.3 0.045 275);
-    --sidebar-ring: oklch(0.75 0.1 85);
-    --sidebar-glass: oklch(1 0 0 / 0.06);
-    --sidebar-glass-hover: oklch(1 0 0 / 0.1);
-    --sidebar-glass-active: color-mix(
-        in oklch,
-        var(--sidebar-primary) 20%,
-        transparent
-    );
-    --sidebar-glow: color-mix(in oklch, var(--sidebar-primary) 32%, transparent);
-    --sidebar-wash: oklch(0.45 0.12 300);
-    --sidebar-highlight: oklch(1 0 0 / 0.1);
-    --sidebar-edge: oklch(1 0 0 / 0.06);
-    --sidebar-gradient-end: color-mix(in oklch, var(--sidebar) 90%, black);
+    --sidebar: #071525;
+    --sidebar-foreground: #eef3fa;
+    --sidebar-primary: var(--brand-royal-blue);
+    --sidebar-primary-foreground: var(--brand-white);
+    --sidebar-accent: #132a47;
+    --sidebar-accent-foreground: #eef3fa;
+    --sidebar-border: #243b5c;
+    --sidebar-ring: var(--brand-royal-blue);
+    --sidebar-glass: color-mix(in srgb, var(--brand-white) 5%, transparent);
+    --sidebar-glass-hover: color-mix(in srgb, var(--brand-white) 9%, transparent);
+    --sidebar-glass-active: color-mix(in srgb, var(--brand-royal-blue) 26%, transparent);
+    --sidebar-glow: color-mix(in srgb, var(--brand-royal-blue) 40%, transparent);
+    --sidebar-wash: var(--brand-primary-blue);
+    --sidebar-highlight: color-mix(in srgb, var(--brand-white) 8%, transparent);
+    --sidebar-edge: color-mix(in srgb, var(--brand-white) 6%, transparent);
+    --sidebar-gradient-end: color-mix(in srgb, #071525 90%, black);
 }
 
 @layer base {
@@ -342,27 +351,26 @@
 
 /*
  |--------------------------------------------------------------------------
- | Sidebar glass surface (theme-aware)
+ | Sidebar surface (theme-aware)
  |--------------------------------------------------------------------------
- | Light: ivory / navy glass. Dark: midnight navy / gold glass.
- | All washes and highlights come from CSS variables so both modes work.
+ | Deep navy navigation with blue active washes.
  */
 [data-sidebar='sidebar'] {
     background-color: var(--sidebar);
     background-image:
         radial-gradient(
             ellipse 120% 55% at 0% 0%,
-            color-mix(in oklch, var(--sidebar-primary) 14%, transparent),
+            color-mix(in srgb, var(--sidebar-primary) 22%, transparent),
             transparent 55%
         ),
         radial-gradient(
             ellipse 90% 50% at 100% 100%,
-            color-mix(in oklch, var(--sidebar-wash) 18%, transparent),
+            color-mix(in srgb, var(--sidebar-wash) 18%, transparent),
             transparent 55%
         ),
         linear-gradient(
             165deg,
-            color-mix(in oklch, var(--sidebar) 92%, var(--sidebar-wash)),
+            color-mix(in srgb, var(--sidebar) 92%, var(--sidebar-wash)),
             var(--sidebar) 48%,
             var(--sidebar-gradient-end)
         );
@@ -417,7 +425,7 @@
     background: linear-gradient(
         90deg,
         transparent,
-        color-mix(in oklch, var(--sidebar-primary) 40%, transparent),
+        color-mix(in srgb, var(--sidebar-primary) 40%, transparent),
         var(--sidebar-edge),
         transparent
     );

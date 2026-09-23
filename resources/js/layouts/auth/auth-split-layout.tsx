@@ -17,7 +17,7 @@ export default function AuthSplitLayout({
 
     return (
         <div className="relative grid min-h-svh lg:grid-cols-2">
-            {/* Brand panel — institutional imagery + regal wash */}
+            {/* Brand panel — institutional imagery + navy wash */}
             <aside className="bg-sidebar text-sidebar-foreground relative hidden overflow-hidden lg:flex lg:flex-col">
                 <img
                     src="/images/background.png"
@@ -31,9 +31,9 @@ export default function AuthSplitLayout({
                         backgroundImage: `
                             linear-gradient(
                                 115deg,
-                                color-mix(in oklch, var(--sidebar) 92%, transparent) 0%,
-                                color-mix(in oklch, var(--sidebar) 78%, transparent) 48%,
-                                color-mix(in oklch, var(--sidebar) 55%, transparent) 100%
+                                color-mix(in srgb, var(--sidebar) 92%, transparent) 0%,
+                                color-mix(in srgb, var(--sidebar) 78%, transparent) 48%,
+                                color-mix(in srgb, var(--sidebar) 55%, transparent) 100%
                             )
                         `,
                     }}
@@ -45,7 +45,7 @@ export default function AuthSplitLayout({
                         backgroundImage: `
                             radial-gradient(
                                 ellipse 65% 50% at 20% 35%,
-                                color-mix(in oklch, var(--accent-gold) 16%, transparent),
+                                color-mix(in srgb, var(--primary) 22%, transparent),
                                 transparent 62%
                             )
                         `,
@@ -76,8 +76,8 @@ export default function AuthSplitLayout({
                     className="pointer-events-none absolute inset-0"
                     style={{
                         backgroundImage: `
-                            radial-gradient(ellipse 60% 40% at 80% 0%, color-mix(in oklch, var(--accent-gold) 10%, transparent), transparent 55%),
-                            radial-gradient(ellipse 45% 35% at 0% 100%, color-mix(in oklch, var(--primary) 8%, transparent), transparent 50%)
+                            radial-gradient(ellipse 60% 40% at 80% 0%, color-mix(in srgb, var(--primary) 10%, transparent), transparent 55%),
+                            radial-gradient(ellipse 45% 35% at 0% 100%, color-mix(in srgb, var(--primary) 8%, transparent), transparent 50%)
                         `,
                     }}
                 />

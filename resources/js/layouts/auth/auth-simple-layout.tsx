@@ -13,14 +13,14 @@ export default function AuthSimpleLayout({
 
     return (
         <div className="bg-background relative flex min-h-svh flex-col items-center justify-center overflow-hidden p-6 md:p-10">
-            {/* Soft regal atmosphere — tokens only, no hardcoded brand colors */}
+            {/* Soft blue atmosphere — tokens only */}
             <div
                 aria-hidden
                 className="pointer-events-none absolute inset-0"
                 style={{
                     backgroundImage: `
-                        radial-gradient(ellipse 70% 50% at 50% -10%, color-mix(in oklch, var(--accent-gold) 18%, transparent), transparent 55%),
-                        radial-gradient(ellipse 50% 40% at 100% 100%, color-mix(in oklch, var(--primary) 12%, transparent), transparent 50%)
+                        radial-gradient(ellipse 70% 50% at 50% -10%, color-mix(in srgb, var(--primary) 14%, transparent), transparent 55%),
+                        radial-gradient(ellipse 50% 40% at 100% 100%, color-mix(in srgb, var(--primary) 10%, transparent), transparent 50%)
                     `,
                 }}
             />

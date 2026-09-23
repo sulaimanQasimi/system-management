@@ -2,7 +2,7 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import { ArrowRight } from 'lucide-react';
 import { dashboard, login } from '@/routes';
 /**
- * Public landing — full-bleed institutional imagery with a calm Regal overlay.
+ * Public landing — full-bleed institutional imagery with a navy overlay.
  * Brand title is the primary signal; CTA lives in the hero (no separate header).
  */
 export default function Welcome() {
@@ -16,7 +16,7 @@ export default function Welcome() {
             <div className="relative min-h-svh overflow-hidden">
                 <img src="/images/background.png" alt="" className="absolute inset-0 size-full object-cover object-center" />
 
-                {/* Regal navy wash for contrast over the photograph */}
+                {/* Deep navy wash for contrast over the photograph */}
                 <div
                     aria-hidden
                     className="absolute inset-0"
@@ -24,9 +24,9 @@ export default function Welcome() {
                         backgroundImage: `
                             linear-gradient(
                                 105deg,
-                                color-mix(in oklch, var(--sidebar) 88%, transparent) 0%,
-                                color-mix(in oklch, var(--sidebar) 72%, transparent) 42%,
-                                color-mix(in oklch, var(--sidebar) 35%, transparent) 100%
+                                color-mix(in srgb, var(--sidebar) 88%, transparent) 0%,
+                                color-mix(in srgb, var(--sidebar) 72%, transparent) 42%,
+                                color-mix(in srgb, var(--sidebar) 35%, transparent) 100%
                             )
                         `,
                     }}
@@ -38,7 +38,7 @@ export default function Welcome() {
                         backgroundImage: `
                             radial-gradient(
                                 ellipse 70% 55% at 18% 40%,
-                                color-mix(in oklch, var(--accent-gold) 14%, transparent),
+                                color-mix(in srgb, var(--primary) 18%, transparent),
                                 transparent 60%
                             )
                         `,
