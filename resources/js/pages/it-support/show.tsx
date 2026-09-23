@@ -3,6 +3,7 @@ import { Headset, Pencil } from 'lucide-react';
 import { DetailField, DetailSection } from '@/components/detail-fields';
 import { Button } from '@/components/ui/button';
 import { useCan } from '@/hooks/use-can';
+import { useTranslations } from '@/hooks/use-locale';
 import { edit, index } from '@/routes/it-support';
 
 type ContactShow = {
@@ -16,6 +17,7 @@ type ContactShow = {
 
 export default function ItSupportShow({ contact }: { contact: ContactShow }) {
     const { can } = useCan();
+    const { t } = useTranslations();
 
     return (
         <>
@@ -32,31 +34,42 @@ export default function ItSupportShow({ contact }: { contact: ContactShow }) {
                                 {contact.name} {contact.lastname}
                             </h1>
                             <p className="text-muted-foreground text-sm">
-                                IT Support contact
+                                {t('itSupport.contactSubtitle')}
                             </p>
                         </div>
                     </div>
                     <div className="flex flex-wrap gap-2">
                         <Button variant="outline" asChild>
-                            <Link href={index()}>Back to IT Support</Link>
+                            <Link href={index()}>
+                                {t('itSupport.backToItSupport')}
+                            </Link>
                         </Button>
                         {can('it_support.update') && (
                             <Button asChild>
                                 <Link href={edit(contact.id)}>
                                     <Pencil />
-                                    Edit
+                                    {t('common.edit')}
                                 </Link>
                             </Button>
                         )}
                     </div>
                 </div>
 
-                <DetailSection title="Contact details">
-                    <DetailField label="Name" value={contact.name} />
-                    <DetailField label="Last name" value={contact.lastname} />
-                    <DetailField label="PBX" value={contact.pbx} />
-                    <DetailField label="Created at" value={contact.created_at} />
-                    <DetailField label="Updated at" value={contact.updated_at} />
+                <DetailSection title={t('itSupport.contactDetails')}>
+                    <DetailField label={t('common.name')} value={contact.name} />
+                    <DetailField
+                        label={t('common.lastName')}
+                        value={contact.lastname}
+                    />
+                    <DetailField label={t('common.pbx')} value={contact.pbx} />
+                    <DetailField
+                        label={t('common.createdAt')}
+                        value={contact.created_at}
+                    />
+                    <DetailField
+                        label={t('common.updatedAt')}
+                        value={contact.updated_at}
+                    />
                 </DetailSection>
             </div>
         </>
@@ -65,7 +78,7 @@ export default function ItSupportShow({ contact }: { contact: ContactShow }) {
 
 ItSupportShow.layout = {
     breadcrumbs: [
-        { title: 'IT Support', href: index() },
-        { title: 'Details', href: '#' },
+        { title: 'itSupport.title', href: index() },
+        { title: 'itSupport.breadcrumbDetails', href: '#' },
     ],
 };

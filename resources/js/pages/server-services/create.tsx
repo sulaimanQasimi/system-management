@@ -6,17 +6,20 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
+import { useTranslations } from '@/hooks/use-locale';
 import { create, index } from '@/routes/server-services';
 
 export default function ServerServicesCreate() {
+    const { t } = useTranslations();
+
     return (
         <>
-            <Head title="Add Server Service" />
+            <Head title={t('serverServices.headAdd')} />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-4 md:p-6">
                 <Heading
-                    title="Add server service"
-                    description="Register a new infrastructure service."
+                    title={t('serverServices.addTitle')}
+                    description={t('serverServices.addDescription')}
                 />
 
                 <div className="border-border/80 bg-card w-full rounded-lg border shadow-regal p-4 md:p-6">
@@ -27,12 +30,14 @@ export default function ServerServicesCreate() {
                         {({ processing, errors }) => (
                             <>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="name">Name</Label>
+                                    <Label htmlFor="name">{t('common.name')}</Label>
                                     <Input
                                         id="name"
                                         name="name"
                                         required
-                                        placeholder="e.g. DNS, DHCP, Active Directory"
+                                        placeholder={t(
+                                            'serverServices.placeholderName',
+                                        )}
                                         autoFocus
                                     />
                                     <InputError message={errors.name} />
@@ -41,10 +46,12 @@ export default function ServerServicesCreate() {
                                 <div className="flex items-center gap-3">
                                     <Button disabled={processing}>
                                         {processing && <Spinner />}
-                                        Create service
+                                        {t('serverServices.createService')}
                                     </Button>
                                     <Button variant="outline" asChild>
-                                        <Link href={index()}>Cancel</Link>
+                                        <Link href={index()}>
+                                            {t('common.cancel')}
+                                        </Link>
                                     </Button>
                                 </div>
                             </>
@@ -59,11 +66,11 @@ export default function ServerServicesCreate() {
 ServerServicesCreate.layout = {
     breadcrumbs: [
         {
-            title: 'Server Services',
+            title: 'serverServices.title',
             href: index(),
         },
         {
-            title: 'Add service',
+            title: 'serverServices.breadcrumbAdd',
             href: create(),
         },
     ],

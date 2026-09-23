@@ -12,6 +12,7 @@ import {
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
 import { useCan } from '@/hooks/use-can';
+import { useTranslations } from '@/hooks/use-locale';
 import { create, edit, index, show } from '@/routes/server-services';
 
 type ServerServiceRow = {
@@ -32,22 +33,23 @@ export default function ServerServicesIndex({
 }) {
     const indexUrl = index.url();
     const { can } = useCan();
+    const { t } = useTranslations();
 
     return (
         <>
-            <Head title="Server Services" />
+            <Head title={t('serverServices.title')} />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-4 md:p-6">
                 <PageHeader
-                    title="Server Services"
-                    description="Track services running across the infrastructure."
+                    title={t('serverServices.title')}
+                    description={t('serverServices.description')}
                     icon={ServerCog}
                     action={
                         can('server_service.create') ? (
                             <Button asChild>
                                 <Link href={create()}>
                                     <Plus />
-                                    Add service
+                                    {t('serverServices.addService')}
                                 </Link>
                             </Button>
                         ) : undefined
@@ -58,7 +60,7 @@ export default function ServerServicesIndex({
                     indexUrl={indexUrl}
                     filters={filters}
                     perPageOptions={perPageOptions}
-                    searchPlaceholder="Search by service name…"
+                    searchPlaceholder={t('serverServices.searchPlaceholder')}
                 />
 
                 <ResultSummary
@@ -69,12 +71,12 @@ export default function ServerServicesIndex({
 
                 <div className="border-border/80 bg-card overflow-hidden rounded-lg border shadow-regal">
                     <div className="overflow-x-auto">
-                        <table className="w-full min-w-[640px] text-left text-sm">
+                        <table className="w-full min-w-[640px] text-start text-sm">
                             <thead className="bg-muted/50 border-b">
                                 <tr className="text-muted-foreground">
                                     <th className="px-4 py-3">
                                         <SortHeader
-                                            label="Name"
+                                            label={t('common.name')}
                                             column="name"
                                             filters={filters}
                                             indexUrl={indexUrl}
@@ -82,7 +84,7 @@ export default function ServerServicesIndex({
                                     </th>
                                     <th className="px-4 py-3">
                                         <SortHeader
-                                            label="Created"
+                                            label={t('common.created')}
                                             column="created_at"
                                             filters={filters}
                                             indexUrl={indexUrl}
@@ -90,14 +92,14 @@ export default function ServerServicesIndex({
                                     </th>
                                     <th className="px-4 py-3">
                                         <SortHeader
-                                            label="Updated"
+                                            label={t('common.updated')}
                                             column="updated_at"
                                             filters={filters}
                                             indexUrl={indexUrl}
                                         />
                                     </th>
-                                    <th className="px-4 py-3 text-right font-medium">
-                                        Actions
+                                    <th className="px-4 py-3 text-end font-medium">
+                                        {t('common.actions')}
                                     </th>
                                 </tr>
                             </thead>
@@ -108,7 +110,7 @@ export default function ServerServicesIndex({
                                             colSpan={4}
                                             className="text-muted-foreground px-4 py-10 text-center"
                                         >
-                                            No server services found.
+                                            {t('serverServices.noResults')}
                                         </td>
                                     </tr>
                                 ) : (
@@ -143,7 +145,9 @@ export default function ServerServicesIndex({
                                                             >
                                                                 <Eye />
                                                                 <span className="sr-only">
-                                                                    View
+                                                                    {t(
+                                                                        'common.view',
+                                                                    )}
                                                                 </span>
                                                             </Link>
                                                         </Button>
@@ -163,7 +167,9 @@ export default function ServerServicesIndex({
                                                             >
                                                                 <Pencil />
                                                                 <span className="sr-only">
-                                                                    Edit
+                                                                    {t(
+                                                                        'common.edit',
+                                                                    )}
                                                                 </span>
                                                             </Link>
                                                         </Button>
@@ -183,7 +189,9 @@ export default function ServerServicesIndex({
                                                             ) => {
                                                                 if (
                                                                     !confirm(
-                                                                        'Delete this server service?',
+                                                                        t(
+                                                                            'serverServices.deleteConfirm',
+                                                                        ),
                                                                     )
                                                                 ) {
                                                                     event.preventDefault();
@@ -204,7 +212,9 @@ export default function ServerServicesIndex({
                                                                 >
                                                                     <Trash2 />
                                                                     <span className="sr-only">
-                                                                        Delete
+                                                                        {t(
+                                                                            'common.delete',
+                                                                        )}
                                                                     </span>
                                                                 </Button>
                                                             )}
@@ -229,7 +239,7 @@ export default function ServerServicesIndex({
 ServerServicesIndex.layout = {
     breadcrumbs: [
         {
-            title: 'Server Services',
+            title: 'serverServices.title',
             href: index(),
         },
     ],

@@ -3,6 +3,7 @@ import { Pencil, ServerCog } from 'lucide-react';
 import { DetailField, DetailSection } from '@/components/detail-fields';
 import { Button } from '@/components/ui/button';
 import { useCan } from '@/hooks/use-can';
+import { useTranslations } from '@/hooks/use-locale';
 import { edit, index } from '@/routes/server-services';
 
 type ServiceShow = {
@@ -18,6 +19,7 @@ export default function ServerServicesShow({
     service: ServiceShow;
 }) {
     const { can } = useCan();
+    const { t } = useTranslations();
 
     return (
         <>
@@ -34,29 +36,37 @@ export default function ServerServicesShow({
                                 {service.name}
                             </h1>
                             <p className="text-muted-foreground text-sm">
-                                Server service
+                                {t('serverServices.serviceSubtitle')}
                             </p>
                         </div>
                     </div>
                     <div className="flex flex-wrap gap-2">
                         <Button variant="outline" asChild>
-                            <Link href={index()}>Back to services</Link>
+                            <Link href={index()}>
+                                {t('serverServices.backToServices')}
+                            </Link>
                         </Button>
                         {can('server_service.update') && (
                             <Button asChild>
                                 <Link href={edit(service.id)}>
                                     <Pencil />
-                                    Edit
+                                    {t('common.edit')}
                                 </Link>
                             </Button>
                         )}
                     </div>
                 </div>
 
-                <DetailSection title="Service details">
-                    <DetailField label="Name" value={service.name} />
-                    <DetailField label="Created at" value={service.created_at} />
-                    <DetailField label="Updated at" value={service.updated_at} />
+                <DetailSection title={t('serverServices.serviceDetails')}>
+                    <DetailField label={t('common.name')} value={service.name} />
+                    <DetailField
+                        label={t('common.createdAt')}
+                        value={service.created_at}
+                    />
+                    <DetailField
+                        label={t('common.updatedAt')}
+                        value={service.updated_at}
+                    />
                 </DetailSection>
             </div>
         </>
@@ -65,7 +75,7 @@ export default function ServerServicesShow({
 
 ServerServicesShow.layout = {
     breadcrumbs: [
-        { title: 'Server Services', href: index() },
-        { title: 'Details', href: '#' },
+        { title: 'serverServices.title', href: index() },
+        { title: 'serverServices.breadcrumbDetails', href: '#' },
     ],
 };
