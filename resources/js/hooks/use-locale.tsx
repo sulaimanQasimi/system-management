@@ -102,12 +102,15 @@ export function useLocale(): UseLocaleReturn {
     );
 
     const setLocale = (code: LocaleCode): void => {
+        if (currentLocale === code) {
+            return;
+        }
+
         currentLocale = code;
         localStorage.setItem(LOCALE_COOKIE, code);
         setCookie(LOCALE_COOKIE, code);
         applyDocumentLocale(code);
         notify();
-        window.location.reload();
     };
 
     const t = (

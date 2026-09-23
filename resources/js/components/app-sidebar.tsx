@@ -154,6 +154,7 @@ export function AppSidebar() {
 
     return (
         <Sidebar
+            key={isRtl ? 'rtl' : 'ltr'}
             collapsible="icon"
             variant="inset"
             side={isRtl ? 'right' : 'left'}
