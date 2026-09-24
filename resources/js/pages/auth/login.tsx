@@ -3,21 +3,18 @@ import { LockKeyhole } from 'lucide-react';
 import InputError from '@/components/input-error';
 import PasskeyVerify from '@/components/passkey-verify';
 import PasswordInput from '@/components/password-input';
-import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Spinner } from '@/components/ui/spinner';
 import { useTranslations } from '@/hooks/use-locale';
 import { store } from '@/routes/login';
-import { request } from '@/routes/password';
 
 type Props = {
     status?: string;
-    canResetPassword: boolean;
 };
 
-export default function Login({ status, canResetPassword }: Props) {
+export default function Login({ status }: Props) {
     const { t } = useTranslations();
 
     return (
@@ -69,23 +66,12 @@ export default function Login({ status, canResetPassword }: Props) {
                             </div>
 
                             <div className="space-y-2">
-                                <div className="flex items-center justify-between gap-3">
-                                    <label
-                                        htmlFor="password"
-                                        className="text-foreground text-sm font-medium"
-                                    >
-                                        {t('auth.password')}
-                                    </label>
-                                    {canResetPassword && (
-                                        <TextLink
-                                            href={request()}
-                                            className="text-muted-foreground hover:text-foreground text-xs font-medium"
-                                            tabIndex={5}
-                                        >
-                                            {t('auth.forgotPassword')}
-                                        </TextLink>
-                                    )}
-                                </div>
+                                <label
+                                    htmlFor="password"
+                                    className="text-foreground text-sm font-medium"
+                                >
+                                    {t('auth.password')}
+                                </label>
                                 <PasswordInput
                                     id="password"
                                     name="password"

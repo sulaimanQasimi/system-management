@@ -14,6 +14,17 @@ import {
 import { PageHeader } from '@/components/layout/page-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+    DataTable,
+    DataTableActions,
+    DataTableBody,
+    DataTableCell,
+    DataTableEmpty,
+    DataTableHead,
+    DataTableHeader,
+    DataTableHeaderRow,
+    DataTableRow,
+} from '@/components/ui/data-table';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useCan } from '@/hooks/use-can';
@@ -286,245 +297,231 @@ export default function ServersIndex({
                     total={servers.total}
                 />
 
-                <div className="border-border/80 bg-card overflow-hidden rounded-lg border shadow-regal">
-                    <div className="overflow-x-auto">
-                        <table className="w-full min-w-[1200px] text-start text-sm">
-                            <thead className="bg-muted/50 border-b">
-                                <tr className="text-muted-foreground">
-                                    <th className="px-4 py-3">
-                                        <SortHeader
-                                            label={t('common.site')}
-                                            column="site_name"
-                                            filters={filters}
-                                            indexUrl={indexUrl}
-                                        />
-                                    </th>
-                                    <th className="px-4 py-3">
-                                        <SortHeader
-                                            label={t('common.server')}
-                                            column="name"
-                                            filters={filters}
-                                            indexUrl={indexUrl}
-                                        />
-                                    </th>
-                                    <th className="px-4 py-3">{t('common.model')}</th>
-                                    <th className="px-4 py-3">
-                                        <SortHeader
-                                            label={t('common.ip')}
-                                            column="ip_address"
-                                            filters={filters}
-                                            indexUrl={indexUrl}
-                                        />
-                                    </th>
-                                    <th className="px-4 py-3">{t('common.services')}</th>
-                                    <th className="px-4 py-3">{t('common.department')}</th>
-                                    <th className="px-4 py-3">{t('servers.itSupport')}</th>
-                                    <th className="px-4 py-3">
-                                        <SortHeader
-                                            label={t('common.status')}
-                                            column="status"
-                                            filters={filters}
-                                            indexUrl={indexUrl}
-                                        />
-                                    </th>
-                                    <th className="px-4 py-3">{t('common.createdBy')}</th>
-                                    <th className="px-4 py-3 text-end font-medium">
-                                        {t('common.actions')}
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {servers.data.length === 0 ? (
-                                    <tr>
-                                        <td
-                                            colSpan={10}
-                                            className="text-muted-foreground px-4 py-10 text-center"
+                <DataTable minWidth={1200}>
+                    <DataTableHeader>
+                        <DataTableHeaderRow>
+                            <DataTableHead>
+                                <SortHeader
+                                    label={t('common.site')}
+                                    column="site_name"
+                                    filters={filters}
+                                    indexUrl={indexUrl}
+                                />
+                            </DataTableHead>
+                            <DataTableHead>
+                                <SortHeader
+                                    label={t('common.server')}
+                                    column="name"
+                                    filters={filters}
+                                    indexUrl={indexUrl}
+                                />
+                            </DataTableHead>
+                            <DataTableHead>{t('common.model')}</DataTableHead>
+                            <DataTableHead>
+                                <SortHeader
+                                    label={t('common.ip')}
+                                    column="ip_address"
+                                    filters={filters}
+                                    indexUrl={indexUrl}
+                                />
+                            </DataTableHead>
+                            <DataTableHead>
+                                {t('common.services')}
+                            </DataTableHead>
+                            <DataTableHead>
+                                {t('common.department')}
+                            </DataTableHead>
+                            <DataTableHead>
+                                {t('servers.itSupport')}
+                            </DataTableHead>
+                            <DataTableHead>
+                                <SortHeader
+                                    label={t('common.status')}
+                                    column="status"
+                                    filters={filters}
+                                    indexUrl={indexUrl}
+                                />
+                            </DataTableHead>
+                            <DataTableHead>
+                                {t('common.createdBy')}
+                            </DataTableHead>
+                            <DataTableHead align="end">
+                                {t('common.actions')}
+                            </DataTableHead>
+                        </DataTableHeaderRow>
+                    </DataTableHeader>
+                    <DataTableBody>
+                        {servers.data.length === 0 ? (
+                            <DataTableEmpty colSpan={10}>
+                                {t('servers.noResults')}
+                            </DataTableEmpty>
+                        ) : (
+                            servers.data.map((server) => (
+                                <DataTableRow key={server.id}>
+                                    <DataTableCell>
+                                        {server.site_name}
+                                    </DataTableCell>
+                                    <DataTableCell className="font-medium">
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <Link
+                                                href={show(server.id)}
+                                                className="hover:text-primary hover:underline"
+                                            >
+                                                {server.name}
+                                            </Link>
+                                            {server.is_vm && (
+                                                <Badge variant="secondary">
+                                                    {t('common.vm')}
+                                                </Badge>
+                                            )}
+                                        </div>
+                                    </DataTableCell>
+                                    <DataTableCell>
+                                        {server.server_model ?? '—'}
+                                    </DataTableCell>
+                                    <DataTableCell className="font-mono text-xs">
+                                        {server.ip_address}
+                                    </DataTableCell>
+                                    <DataTableCell>
+                                        <div className="flex max-w-[220px] flex-wrap gap-1">
+                                            {server.services.length === 0 ? (
+                                                <span className="text-muted-foreground">
+                                                    —
+                                                </span>
+                                            ) : (
+                                                server.services.map(
+                                                    (service) => (
+                                                        <Badge
+                                                            key={service}
+                                                            variant="secondary"
+                                                        >
+                                                            {service}
+                                                        </Badge>
+                                                    ),
+                                                )
+                                            )}
+                                        </div>
+                                    </DataTableCell>
+                                    <DataTableCell>
+                                        {server.department ?? '—'}
+                                    </DataTableCell>
+                                    <DataTableCell>
+                                        {server.is_vm ? (
+                                            <span className="text-muted-foreground">
+                                                —
+                                            </span>
+                                        ) : (
+                                            <>
+                                                <div>
+                                                    {server.it_support ?? '—'}
+                                                </div>
+                                                {server.it_support_phone && (
+                                                    <div className="text-muted-foreground text-xs">
+                                                        {
+                                                            server.it_support_phone
+                                                        }
+                                                    </div>
+                                                )}
+                                            </>
+                                        )}
+                                    </DataTableCell>
+                                    <DataTableCell>
+                                        <Badge
+                                            variant={statusVariant(
+                                                server.status,
+                                            )}
                                         >
-                                            {t('servers.noResults')}
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    servers.data.map((server) => (
-                                        <tr
-                                            key={server.id}
-                                            className="border-b last:border-0"
-                                        >
-                                            <td className="px-4 py-3">
-                                                {server.site_name}
-                                            </td>
-                                            <td className="px-4 py-3 font-medium">
-                                                <div className="flex flex-wrap items-center gap-2">
+                                            {statusLabel(
+                                                t,
+                                                server.status,
+                                                server.status_label,
+                                            )}
+                                        </Badge>
+                                    </DataTableCell>
+                                    <DataTableCell>
+                                        {server.created_by ?? '—'}
+                                    </DataTableCell>
+                                    <DataTableCell>
+                                        <DataTableActions>
+                                            {can('server.view') && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    asChild
+                                                >
                                                     <Link
                                                         href={show(server.id)}
-                                                        className="hover:text-primary hover:underline"
                                                     >
-                                                        {server.name}
-                                                    </Link>
-                                                    {server.is_vm && (
-                                                        <Badge variant="secondary">
-                                                            {t('common.vm')}
-                                                        </Badge>
-                                                    )}
-                                                </div>
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                {server.server_model ?? '—'}
-                                            </td>
-                                            <td className="px-4 py-3 font-mono text-xs">
-                                                {server.ip_address}
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                <div className="flex max-w-[220px] flex-wrap gap-1">
-                                                    {server.services.length ===
-                                                    0 ? (
-                                                        <span className="text-muted-foreground">
-                                                            —
+                                                        <Eye />
+                                                        <span className="sr-only">
+                                                            {t('common.view')}
                                                         </span>
-                                                    ) : (
-                                                        server.services.map(
-                                                            (service) => (
-                                                                <Badge
-                                                                    key={
-                                                                        service
-                                                                    }
-                                                                    variant="secondary"
-                                                                >
-                                                                    {service}
-                                                                </Badge>
-                                                            ),
-                                                        )
-                                                    )}
-                                                </div>
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                {server.department ?? '—'}
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                {server.is_vm ? (
-                                                    <span className="text-muted-foreground">
-                                                        —
-                                                    </span>
-                                                ) : (
-                                                    <>
-                                                        <div>
-                                                            {server.it_support ??
-                                                                '—'}
-                                                        </div>
-                                                        {server.it_support_phone && (
-                                                            <div className="text-muted-foreground text-xs">
-                                                                {
-                                                                    server.it_support_phone
-                                                                }
-                                                            </div>
-                                                        )}
-                                                    </>
-                                                )}
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                <Badge
-                                                    variant={statusVariant(
-                                                        server.status,
-                                                    )}
+                                                    </Link>
+                                                </Button>
+                                            )}
+                                            {can('server.update') && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    asChild
                                                 >
-                                                    {statusLabel(
-                                                        t,
-                                                        server.status,
-                                                        server.status_label,
+                                                    <Link
+                                                        href={edit(server.id)}
+                                                    >
+                                                        <Pencil />
+                                                        <span className="sr-only">
+                                                            {t('common.edit')}
+                                                        </span>
+                                                    </Link>
+                                                </Button>
+                                            )}
+                                            {can('server.delete') && (
+                                                <Form
+                                                    {...ServerController.destroy.form(
+                                                        server.id,
                                                     )}
-                                                </Badge>
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                {server.created_by ?? '—'}
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                <div className="flex items-center justify-end gap-1">
-                                                    {can('server.view') && (
+                                                    options={{
+                                                        preserveScroll: true,
+                                                    }}
+                                                    onSubmit={(event) => {
+                                                        if (
+                                                            !confirm(
+                                                                t(
+                                                                    'servers.deleteConfirm',
+                                                                ),
+                                                            )
+                                                        ) {
+                                                            event.preventDefault();
+                                                        }
+                                                    }}
+                                                >
+                                                    {({ processing }) => (
                                                         <Button
+                                                            type="submit"
                                                             variant="ghost"
                                                             size="icon"
-                                                            asChild
+                                                            disabled={
+                                                                processing
+                                                            }
+                                                            className="text-destructive hover:text-destructive"
                                                         >
-                                                            <Link
-                                                                href={show(
-                                                                    server.id,
+                                                            <Trash2 />
+                                                            <span className="sr-only">
+                                                                {t(
+                                                                    'common.delete',
                                                                 )}
-                                                            >
-                                                                <Eye />
-                                                                <span className="sr-only">
-                                                                    {t('common.view')}
-                                                                </span>
-                                                            </Link>
+                                                            </span>
                                                         </Button>
                                                     )}
-                                                    {can('server.update') && (
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            asChild
-                                                        >
-                                                            <Link
-                                                                href={edit(
-                                                                    server.id,
-                                                                )}
-                                                            >
-                                                                <Pencil />
-                                                                <span className="sr-only">
-                                                                    {t('common.edit')}
-                                                                </span>
-                                                            </Link>
-                                                        </Button>
-                                                    )}
-                                                    {can('server.delete') && (
-                                                        <Form
-                                                            {...ServerController.destroy.form(
-                                                                server.id,
-                                                            )}
-                                                            options={{
-                                                                preserveScroll: true,
-                                                            }}
-                                                            onSubmit={(
-                                                                event,
-                                                            ) => {
-                                                                if (
-                                                                    !confirm(
-                                                                        t(
-                                                                            'servers.deleteConfirm',
-                                                                        ),
-                                                                    )
-                                                                ) {
-                                                                    event.preventDefault();
-                                                                }
-                                                            }}
-                                                        >
-                                                            {({
-                                                                processing,
-                                                            }) => (
-                                                                <Button
-                                                                    type="submit"
-                                                                    variant="ghost"
-                                                                    size="icon"
-                                                                    disabled={
-                                                                        processing
-                                                                    }
-                                                                    className="text-destructive hover:text-destructive"
-                                                                >
-                                                                    <Trash2 />
-                                                                    <span className="sr-only">
-                                                                    {t('common.delete')}
-                                                                </span>
-                                                                </Button>
-                                                            )}
-                                                        </Form>
-                                                    )}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                                                </Form>
+                                            )}
+                                        </DataTableActions>
+                                    </DataTableCell>
+                                </DataTableRow>
+                            ))
+                        )}
+                    </DataTableBody>
+                </DataTable>
 
                 <ResourcePagination links={servers.links} />
             </div>

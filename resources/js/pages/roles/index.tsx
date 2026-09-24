@@ -12,6 +12,17 @@ import {
 import { PageHeader } from '@/components/layout/page-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+    DataTable,
+    DataTableActions,
+    DataTableBody,
+    DataTableCell,
+    DataTableEmpty,
+    DataTableHead,
+    DataTableHeader,
+    DataTableHeaderRow,
+    DataTableRow,
+} from '@/components/ui/data-table';
 import { useCan } from '@/hooks/use-can';
 import { useTranslations } from '@/hooks/use-locale';
 import { create, edit, index, show } from '@/routes/roles';
@@ -75,171 +86,143 @@ export default function RolesIndex({
                     />
                 </div>
 
-                <div className="border-border/80 bg-card overflow-hidden rounded-lg border shadow-regal">
-                    <div className="overflow-x-auto">
-                        <table className="w-full min-w-[720px] text-start text-sm">
-                            <thead className="bg-muted/50 border-b">
-                                <tr className="text-muted-foreground">
-                                    <th className="px-4 py-3">
-                                        <SortHeader
-                                            label={t('common.name')}
-                                            column="name"
-                                            filters={filters}
-                                            indexUrl={indexUrl}
-                                        />
-                                    </th>
-                                    <th className="px-4 py-3 font-medium">
-                                        {t('roles.users')}
-                                    </th>
-                                    <th className="px-4 py-3 font-medium">
-                                        {t('roles.permissions')}
-                                    </th>
-                                    <th className="px-4 py-3">
-                                        <SortHeader
-                                            label={t('common.created')}
-                                            column="created_at"
-                                            filters={filters}
-                                            indexUrl={indexUrl}
-                                        />
-                                    </th>
-                                    <th className="px-4 py-3 text-end font-medium">
-                                        {t('common.actions')}
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {roles.data.length === 0 ? (
-                                    <tr>
-                                        <td
-                                            colSpan={5}
-                                            className="text-muted-foreground px-4 py-10 text-center"
-                                        >
-                                            {t('roles.noResults')}
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    roles.data.map((role) => (
-                                        <tr
-                                            key={role.id}
-                                            className="border-b last:border-0"
-                                        >
-                                            <td className="px-4 py-3 font-medium">
-                                                <div className="flex flex-wrap items-center gap-2">
-                                                    {role.name}
-                                                    {role.is_protected && (
-                                                        <Badge variant="secondary">
-                                                            {t(
-                                                                'roles.protected',
-                                                            )}
-                                                        </Badge>
-                                                    )}
-                                                </div>
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                {role.users_count}
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                {role.permissions_count}
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                {role.created_at ?? '—'}
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                <div className="flex items-center justify-end gap-1">
-                                                    {can('role.view') && (
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            asChild
-                                                        >
-                                                            <Link
-                                                                href={show(
-                                                                    role.id,
-                                                                )}
-                                                            >
-                                                                <Eye />
-                                                                <span className="sr-only">
-                                                                    {t(
-                                                                        'common.view',
-                                                                    )}
-                                                                </span>
-                                                            </Link>
-                                                        </Button>
-                                                    )}
-                                                    {can('role.update') && (
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            asChild
-                                                        >
-                                                            <Link
-                                                                href={edit(
-                                                                    role.id,
-                                                                )}
-                                                            >
-                                                                <Pencil />
-                                                                <span className="sr-only">
-                                                                    {t(
-                                                                        'common.edit',
-                                                                    )}
-                                                                </span>
-                                                            </Link>
-                                                        </Button>
-                                                    )}
-                                                    {can('role.delete') &&
-                                                        !role.is_protected && (
-                                                            <Form
-                                                                {...RoleController.destroy.form(
-                                                                    role.id,
-                                                                )}
-                                                                options={{
-                                                                    preserveScroll: true,
-                                                                }}
-                                                                onSubmit={(
-                                                                    event,
-                                                                ) => {
-                                                                    if (
-                                                                        !confirm(
-                                                                            t(
-                                                                                'roles.deleteConfirm',
-                                                                            ),
-                                                                        )
-                                                                    ) {
-                                                                        event.preventDefault();
-                                                                    }
-                                                                }}
-                                                            >
-                                                                {({
-                                                                    processing,
-                                                                }) => (
-                                                                    <Button
-                                                                        type="submit"
-                                                                        variant="ghost"
-                                                                        size="icon"
-                                                                        disabled={
-                                                                            processing
-                                                                        }
-                                                                        className="text-destructive hover:text-destructive"
-                                                                    >
-                                                                        <Trash2 />
-                                                                        <span className="sr-only">
-                                                                            {t(
-                                                                                'common.delete',
-                                                                            )}
-                                                                        </span>
-                                                                    </Button>
-                                                                )}
-                                                            </Form>
+                <DataTable minWidth={720}>
+                    <DataTableHeader>
+                        <DataTableHeaderRow>
+                            <DataTableHead>
+                                <SortHeader
+                                    label={t('common.name')}
+                                    column="name"
+                                    filters={filters}
+                                    indexUrl={indexUrl}
+                                />
+                            </DataTableHead>
+                            <DataTableHead>{t('roles.users')}</DataTableHead>
+                            <DataTableHead>
+                                {t('roles.permissions')}
+                            </DataTableHead>
+                            <DataTableHead>
+                                <SortHeader
+                                    label={t('common.created')}
+                                    column="created_at"
+                                    filters={filters}
+                                    indexUrl={indexUrl}
+                                />
+                            </DataTableHead>
+                            <DataTableHead align="end">
+                                {t('common.actions')}
+                            </DataTableHead>
+                        </DataTableHeaderRow>
+                    </DataTableHeader>
+                    <DataTableBody>
+                        {roles.data.length === 0 ? (
+                            <DataTableEmpty colSpan={5}>
+                                {t('roles.noResults')}
+                            </DataTableEmpty>
+                        ) : (
+                            roles.data.map((role) => (
+                                <DataTableRow key={role.id}>
+                                    <DataTableCell className="font-medium">
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            {role.name}
+                                            {role.is_protected && (
+                                                <Badge variant="secondary">
+                                                    {t('roles.protected')}
+                                                </Badge>
+                                            )}
+                                        </div>
+                                    </DataTableCell>
+                                    <DataTableCell>
+                                        {role.users_count}
+                                    </DataTableCell>
+                                    <DataTableCell>
+                                        {role.permissions_count}
+                                    </DataTableCell>
+                                    <DataTableCell>
+                                        {role.created_at ?? '—'}
+                                    </DataTableCell>
+                                    <DataTableCell>
+                                        <DataTableActions>
+                                            {can('role.view') && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    asChild
+                                                >
+                                                    <Link
+                                                        href={show(role.id)}
+                                                    >
+                                                        <Eye />
+                                                        <span className="sr-only">
+                                                            {t('common.view')}
+                                                        </span>
+                                                    </Link>
+                                                </Button>
+                                            )}
+                                            {can('role.update') && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    asChild
+                                                >
+                                                    <Link
+                                                        href={edit(role.id)}
+                                                    >
+                                                        <Pencil />
+                                                        <span className="sr-only">
+                                                            {t('common.edit')}
+                                                        </span>
+                                                    </Link>
+                                                </Button>
+                                            )}
+                                            {can('role.delete') &&
+                                                !role.is_protected && (
+                                                    <Form
+                                                        {...RoleController.destroy.form(
+                                                            role.id,
                                                         )}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                                                        options={{
+                                                            preserveScroll: true,
+                                                        }}
+                                                        onSubmit={(event) => {
+                                                            if (
+                                                                !confirm(
+                                                                    t(
+                                                                        'roles.deleteConfirm',
+                                                                    ),
+                                                                )
+                                                            ) {
+                                                                event.preventDefault();
+                                                            }
+                                                        }}
+                                                    >
+                                                        {({ processing }) => (
+                                                            <Button
+                                                                type="submit"
+                                                                variant="ghost"
+                                                                size="icon"
+                                                                disabled={
+                                                                    processing
+                                                                }
+                                                                className="text-destructive hover:text-destructive"
+                                                            >
+                                                                <Trash2 />
+                                                                <span className="sr-only">
+                                                                    {t(
+                                                                        'common.delete',
+                                                                    )}
+                                                                </span>
+                                                            </Button>
+                                                        )}
+                                                    </Form>
+                                                )}
+                                        </DataTableActions>
+                                    </DataTableCell>
+                                </DataTableRow>
+                            ))
+                        )}
+                    </DataTableBody>
+                </DataTable>
 
                 <ResourcePagination links={roles.links} />
             </div>

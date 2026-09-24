@@ -14,6 +14,17 @@ import {
 import { PageHeader } from '@/components/layout/page-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+    DataTable,
+    DataTableActions,
+    DataTableBody,
+    DataTableCell,
+    DataTableEmpty,
+    DataTableHead,
+    DataTableHeader,
+    DataTableHeaderRow,
+    DataTableRow,
+} from '@/components/ui/data-table';
 import { Label } from '@/components/ui/label';
 import { useCan } from '@/hooks/use-can';
 import { create, edit, index, show } from '@/routes/users';
@@ -110,178 +121,152 @@ export default function UsersIndex({
                     total={users.total}
                 />
 
-                <div className="border-border/80 bg-card overflow-hidden rounded-lg border shadow-regal">
-                    <div className="overflow-x-auto">
-                        <table className="w-full min-w-[800px] text-left text-sm">
-                            <thead className="bg-muted/50 border-b">
-                                <tr className="text-muted-foreground">
-                                    <th className="px-4 py-3">
-                                        <SortHeader
-                                            label="Name"
-                                            column="name"
-                                            filters={filters}
-                                            indexUrl={indexUrl}
-                                        />
-                                    </th>
-                                    <th className="px-4 py-3">
-                                        <SortHeader
-                                            label="Email"
-                                            column="email"
-                                            filters={filters}
-                                            indexUrl={indexUrl}
-                                        />
-                                    </th>
-                                    <th className="px-4 py-3">
-                                        <span className="inline-flex items-center gap-1 font-medium">
-                                            <Shield className="size-3.5" />
-                                            Roles
-                                        </span>
-                                    </th>
-                                    <th className="px-4 py-3">
-                                        <SortHeader
-                                            label="Created"
-                                            column="created_at"
-                                            filters={filters}
-                                            indexUrl={indexUrl}
-                                        />
-                                    </th>
-                                    <th className="px-4 py-3 text-right font-medium">
-                                        Actions
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {users.data.length === 0 ? (
-                                    <tr>
-                                        <td
-                                            colSpan={5}
-                                            className="text-muted-foreground px-4 py-10 text-center"
-                                        >
-                                            No users found.
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    users.data.map((user) => (
-                                        <tr
-                                            key={user.id}
-                                            className="border-b last:border-0"
-                                        >
-                                            <td className="px-4 py-3 font-medium">
-                                                {user.name}
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                {user.email}
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                <div className="flex flex-wrap gap-1">
-                                                    {user.roles.length === 0 ? (
-                                                        <span className="text-muted-foreground">
-                                                            —
+                <DataTable minWidth={800}>
+                    <DataTableHeader>
+                        <DataTableHeaderRow>
+                            <DataTableHead>
+                                <SortHeader
+                                    label="Name"
+                                    column="name"
+                                    filters={filters}
+                                    indexUrl={indexUrl}
+                                />
+                            </DataTableHead>
+                            <DataTableHead>
+                                <SortHeader
+                                    label="Email"
+                                    column="email"
+                                    filters={filters}
+                                    indexUrl={indexUrl}
+                                />
+                            </DataTableHead>
+                            <DataTableHead>
+                                <span className="inline-flex items-center gap-1 font-medium">
+                                    <Shield className="size-3.5" />
+                                    Roles
+                                </span>
+                            </DataTableHead>
+                            <DataTableHead>
+                                <SortHeader
+                                    label="Created"
+                                    column="created_at"
+                                    filters={filters}
+                                    indexUrl={indexUrl}
+                                />
+                            </DataTableHead>
+                            <DataTableHead align="end">Actions</DataTableHead>
+                        </DataTableHeaderRow>
+                    </DataTableHeader>
+                    <DataTableBody>
+                        {users.data.length === 0 ? (
+                            <DataTableEmpty colSpan={5}>
+                                No users found.
+                            </DataTableEmpty>
+                        ) : (
+                            users.data.map((user) => (
+                                <DataTableRow key={user.id}>
+                                    <DataTableCell className="font-medium">
+                                        {user.name}
+                                    </DataTableCell>
+                                    <DataTableCell>{user.email}</DataTableCell>
+                                    <DataTableCell>
+                                        <div className="flex flex-wrap gap-1">
+                                            {user.roles.length === 0 ? (
+                                                <span className="text-muted-foreground">
+                                                    —
+                                                </span>
+                                            ) : (
+                                                user.roles.map((item) => (
+                                                    <Badge
+                                                        key={item}
+                                                        variant="secondary"
+                                                    >
+                                                        {item}
+                                                    </Badge>
+                                                ))
+                                            )}
+                                        </div>
+                                    </DataTableCell>
+                                    <DataTableCell>
+                                        {user.created_at ?? '—'}
+                                    </DataTableCell>
+                                    <DataTableCell>
+                                        <DataTableActions>
+                                            {can('user.view') && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    asChild
+                                                >
+                                                    <Link
+                                                        href={show(user.id)}
+                                                    >
+                                                        <Eye />
+                                                        <span className="sr-only">
+                                                            View
                                                         </span>
-                                                    ) : (
-                                                        user.roles.map(
-                                                            (item) => (
-                                                                <Badge
-                                                                    key={item}
-                                                                    variant="secondary"
-                                                                >
-                                                                    {item}
-                                                                </Badge>
-                                                            ),
-                                                        )
+                                                    </Link>
+                                                </Button>
+                                            )}
+                                            {can('user.update') && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    asChild
+                                                >
+                                                    <Link
+                                                        href={edit(user.id)}
+                                                    >
+                                                        <Pencil />
+                                                        <span className="sr-only">
+                                                            Edit
+                                                        </span>
+                                                    </Link>
+                                                </Button>
+                                            )}
+                                            {can('user.delete') && (
+                                                <Form
+                                                    {...UserController.destroy.form(
+                                                        user.id,
                                                     )}
-                                                </div>
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                {user.created_at ?? '—'}
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                <div className="flex items-center justify-end gap-1">
-                                                    {can('user.view') && (
+                                                    options={{
+                                                        preserveScroll: true,
+                                                    }}
+                                                    onSubmit={(event) => {
+                                                        if (
+                                                            !confirm(
+                                                                'Delete this user?',
+                                                            )
+                                                        ) {
+                                                            event.preventDefault();
+                                                        }
+                                                    }}
+                                                >
+                                                    {({ processing }) => (
                                                         <Button
+                                                            type="submit"
                                                             variant="ghost"
                                                             size="icon"
-                                                            asChild
+                                                            disabled={
+                                                                processing
+                                                            }
+                                                            className="text-destructive hover:text-destructive"
                                                         >
-                                                            <Link
-                                                                href={show(
-                                                                    user.id,
-                                                                )}
-                                                            >
-                                                                <Eye />
-                                                                <span className="sr-only">
-                                                                    View
-                                                                </span>
-                                                            </Link>
+                                                            <Trash2 />
+                                                            <span className="sr-only">
+                                                                Delete
+                                                            </span>
                                                         </Button>
                                                     )}
-                                                    {can('user.update') && (
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            asChild
-                                                        >
-                                                            <Link
-                                                                href={edit(
-                                                                    user.id,
-                                                                )}
-                                                            >
-                                                                <Pencil />
-                                                                <span className="sr-only">
-                                                                    Edit
-                                                                </span>
-                                                            </Link>
-                                                        </Button>
-                                                    )}
-                                                    {can('user.delete') && (
-                                                        <Form
-                                                            {...UserController.destroy.form(
-                                                                user.id,
-                                                            )}
-                                                            options={{
-                                                                preserveScroll: true,
-                                                            }}
-                                                            onSubmit={(
-                                                                event,
-                                                            ) => {
-                                                                if (
-                                                                    !confirm(
-                                                                        'Delete this user?',
-                                                                    )
-                                                                ) {
-                                                                    event.preventDefault();
-                                                                }
-                                                            }}
-                                                        >
-                                                            {({
-                                                                processing,
-                                                            }) => (
-                                                                <Button
-                                                                    type="submit"
-                                                                    variant="ghost"
-                                                                    size="icon"
-                                                                    disabled={
-                                                                        processing
-                                                                    }
-                                                                    className="text-destructive hover:text-destructive"
-                                                                >
-                                                                    <Trash2 />
-                                                                    <span className="sr-only">
-                                                                        Delete
-                                                                    </span>
-                                                                </Button>
-                                                            )}
-                                                        </Form>
-                                                    )}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                                                </Form>
+                                            )}
+                                        </DataTableActions>
+                                    </DataTableCell>
+                                </DataTableRow>
+                            ))
+                        )}
+                    </DataTableBody>
+                </DataTable>
 
                 <ResourcePagination links={users.links} />
             </div>

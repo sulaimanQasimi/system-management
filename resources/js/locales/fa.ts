@@ -2,7 +2,7 @@ import type { TranslationDictionary } from './types';
 
 const fa: TranslationDictionary = {
     brand: {
-        portal: 'پورتال ریاست',
+        portal: 'پورتال سیستم',
         welcome: 'به مدیریت سیستم خوش آمدید',
         tagline:
             'برای مدیریت سرورها، حساب‌های دایرکتوری و پشتیبانی ریاست از یک پورتال کنترل‌شده وارد شوید.',

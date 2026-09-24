@@ -11,6 +11,17 @@ import {
 } from '@/components/resource-list';
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
+import {
+    DataTable,
+    DataTableActions,
+    DataTableBody,
+    DataTableCell,
+    DataTableEmpty,
+    DataTableHead,
+    DataTableHeader,
+    DataTableHeaderRow,
+    DataTableRow,
+} from '@/components/ui/data-table';
 import { useCan } from '@/hooks/use-can';
 import { useTranslations } from '@/hooks/use-locale';
 import { create, edit, index, show } from '@/routes/departments';
@@ -71,166 +82,140 @@ export default function DepartmentsIndex({
                     />
                 </div>
 
-                <div className="border-border/80 bg-card overflow-hidden rounded-lg border shadow-regal">
-                    <div className="overflow-x-auto">
-                        <table className="w-full min-w-[640px] text-start text-sm">
-                            <thead className="bg-muted/50 border-b">
-                                <tr className="text-muted-foreground">
-                                    <th className="px-4 py-3">
-                                        <SortHeader
-                                            label={t('common.name')}
-                                            column="name"
-                                            filters={filters}
-                                            indexUrl={indexUrl}
-                                        />
-                                    </th>
-                                    <th className="px-4 py-3">
-                                        <SortHeader
-                                            label={t('common.created')}
-                                            column="created_at"
-                                            filters={filters}
-                                            indexUrl={indexUrl}
-                                        />
-                                    </th>
-                                    <th className="px-4 py-3">
-                                        <SortHeader
-                                            label={t('common.updated')}
-                                            column="updated_at"
-                                            filters={filters}
-                                            indexUrl={indexUrl}
-                                        />
-                                    </th>
-                                    <th className="px-4 py-3 text-end font-medium">
-                                        {t('common.actions')}
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {departments.data.length === 0 ? (
-                                    <tr>
-                                        <td
-                                            colSpan={4}
-                                            className="text-muted-foreground px-4 py-10 text-center"
-                                        >
-                                            {t('departments.noResults')}
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    departments.data.map((department) => (
-                                        <tr
-                                            key={department.id}
-                                            className="border-b last:border-0"
-                                        >
-                                            <td className="px-4 py-3 font-medium">
-                                                {department.name}
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                {department.created_at ?? '—'}
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                {department.updated_at ?? '—'}
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                <div className="flex items-center justify-end gap-1">
-                                                    {can(
-                                                        'department.view',
-                                                    ) && (
+                <DataTable minWidth={640}>
+                    <DataTableHeader>
+                        <DataTableHeaderRow>
+                            <DataTableHead>
+                                <SortHeader
+                                    label={t('common.name')}
+                                    column="name"
+                                    filters={filters}
+                                    indexUrl={indexUrl}
+                                />
+                            </DataTableHead>
+                            <DataTableHead>
+                                <SortHeader
+                                    label={t('common.created')}
+                                    column="created_at"
+                                    filters={filters}
+                                    indexUrl={indexUrl}
+                                />
+                            </DataTableHead>
+                            <DataTableHead>
+                                <SortHeader
+                                    label={t('common.updated')}
+                                    column="updated_at"
+                                    filters={filters}
+                                    indexUrl={indexUrl}
+                                />
+                            </DataTableHead>
+                            <DataTableHead align="end">
+                                {t('common.actions')}
+                            </DataTableHead>
+                        </DataTableHeaderRow>
+                    </DataTableHeader>
+                    <DataTableBody>
+                        {departments.data.length === 0 ? (
+                            <DataTableEmpty colSpan={4}>
+                                {t('departments.noResults')}
+                            </DataTableEmpty>
+                        ) : (
+                            departments.data.map((department) => (
+                                <DataTableRow key={department.id}>
+                                    <DataTableCell className="font-medium">
+                                        {department.name}
+                                    </DataTableCell>
+                                    <DataTableCell>
+                                        {department.created_at ?? '—'}
+                                    </DataTableCell>
+                                    <DataTableCell>
+                                        {department.updated_at ?? '—'}
+                                    </DataTableCell>
+                                    <DataTableCell>
+                                        <DataTableActions>
+                                            {can('department.view') && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    asChild
+                                                >
+                                                    <Link
+                                                        href={show(
+                                                            department.id,
+                                                        )}
+                                                    >
+                                                        <Eye />
+                                                        <span className="sr-only">
+                                                            {t('common.view')}
+                                                        </span>
+                                                    </Link>
+                                                </Button>
+                                            )}
+                                            {can('department.update') && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    asChild
+                                                >
+                                                    <Link
+                                                        href={edit(
+                                                            department.id,
+                                                        )}
+                                                    >
+                                                        <Pencil />
+                                                        <span className="sr-only">
+                                                            {t('common.edit')}
+                                                        </span>
+                                                    </Link>
+                                                </Button>
+                                            )}
+                                            {can('department.delete') && (
+                                                <Form
+                                                    {...DepartmentController.destroy.form(
+                                                        department.id,
+                                                    )}
+                                                    options={{
+                                                        preserveScroll: true,
+                                                    }}
+                                                    onSubmit={(event) => {
+                                                        if (
+                                                            !confirm(
+                                                                t(
+                                                                    'departments.deleteConfirm',
+                                                                ),
+                                                            )
+                                                        ) {
+                                                            event.preventDefault();
+                                                        }
+                                                    }}
+                                                >
+                                                    {({ processing }) => (
                                                         <Button
+                                                            type="submit"
                                                             variant="ghost"
                                                             size="icon"
-                                                            asChild
+                                                            disabled={
+                                                                processing
+                                                            }
+                                                            className="text-destructive hover:text-destructive"
                                                         >
-                                                            <Link
-                                                                href={show(
-                                                                    department.id,
+                                                            <Trash2 />
+                                                            <span className="sr-only">
+                                                                {t(
+                                                                    'common.delete',
                                                                 )}
-                                                            >
-                                                                <Eye />
-                                                                <span className="sr-only">
-                                                                    {t(
-                                                                        'common.view',
-                                                                    )}
-                                                                </span>
-                                                            </Link>
+                                                            </span>
                                                         </Button>
                                                     )}
-                                                    {can(
-                                                        'department.update',
-                                                    ) && (
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            asChild
-                                                        >
-                                                            <Link
-                                                                href={edit(
-                                                                    department.id,
-                                                                )}
-                                                            >
-                                                                <Pencil />
-                                                                <span className="sr-only">
-                                                                    {t(
-                                                                        'common.edit',
-                                                                    )}
-                                                                </span>
-                                                            </Link>
-                                                        </Button>
-                                                    )}
-                                                    {can(
-                                                        'department.delete',
-                                                    ) && (
-                                                        <Form
-                                                            {...DepartmentController.destroy.form(
-                                                                department.id,
-                                                            )}
-                                                            options={{
-                                                                preserveScroll: true,
-                                                            }}
-                                                            onSubmit={(
-                                                                event,
-                                                            ) => {
-                                                                if (
-                                                                    !confirm(
-                                                                        t(
-                                                                            'departments.deleteConfirm',
-                                                                        ),
-                                                                    )
-                                                                ) {
-                                                                    event.preventDefault();
-                                                                }
-                                                            }}
-                                                        >
-                                                            {({
-                                                                processing,
-                                                            }) => (
-                                                                <Button
-                                                                    type="submit"
-                                                                    variant="ghost"
-                                                                    size="icon"
-                                                                    disabled={
-                                                                        processing
-                                                                    }
-                                                                    className="text-destructive hover:text-destructive"
-                                                                >
-                                                                    <Trash2 />
-                                                                    <span className="sr-only">
-                                                                        {t(
-                                                                            'common.delete',
-                                                                        )}
-                                                                    </span>
-                                                                </Button>
-                                                            )}
-                                                        </Form>
-                                                    )}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                                                </Form>
+                                            )}
+                                        </DataTableActions>
+                                    </DataTableCell>
+                                </DataTableRow>
+                            ))
+                        )}
+                    </DataTableBody>
+                </DataTable>
 
                 <ResourcePagination links={departments.links} />
             </div>

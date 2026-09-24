@@ -9,11 +9,13 @@ export default function AuthSplitLayout({
     title,
     description,
 }: AuthLayoutProps) {
-    const { name } = usePage().props;
+    const page = usePage();
+    const { name } = page.props;
     const { t } = useTranslations();
 
     const resolvedTitle = title ? t(title) : '';
     const resolvedDescription = description ? t(description) : '';
+    const showLocaleSwitcher = page.component !== 'auth/login';
 
     return (
         <div className="relative grid min-h-svh lg:grid-cols-2">
@@ -82,9 +84,11 @@ export default function AuthSplitLayout({
                     }}
                 />
 
-                <div className="absolute end-6 top-6 z-20 sm:end-10">
-                    <LocaleSwitcher />
-                </div>
+                {showLocaleSwitcher && (
+                    <div className="absolute end-6 top-6 z-20 sm:end-10">
+                        <LocaleSwitcher />
+                    </div>
+                )}
 
                 <div className="relative z-10 mx-auto w-full max-w-[24rem]">
                     <Link

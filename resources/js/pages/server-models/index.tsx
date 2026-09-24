@@ -11,6 +11,17 @@ import {
 } from '@/components/resource-list';
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
+import {
+    DataTable,
+    DataTableActions,
+    DataTableBody,
+    DataTableCell,
+    DataTableEmpty,
+    DataTableHead,
+    DataTableHeader,
+    DataTableHeaderRow,
+    DataTableRow,
+} from '@/components/ui/data-table';
 import { useCan } from '@/hooks/use-can';
 import { useTranslations } from '@/hooks/use-locale';
 import { create, edit, index, show } from '@/routes/server-models';
@@ -71,160 +82,136 @@ export default function ServerModelsIndex({
                     />
                 </div>
 
-                <div className="border-border/80 bg-card overflow-hidden rounded-lg border shadow-regal">
-                    <div className="overflow-x-auto">
-                        <table className="w-full min-w-[640px] text-start text-sm">
-                            <thead className="bg-muted/50 border-b">
-                                <tr className="text-muted-foreground">
-                                    <th className="px-4 py-3">
-                                        <SortHeader
-                                            label={t('common.name')}
-                                            column="name"
-                                            filters={filters}
-                                            indexUrl={indexUrl}
-                                        />
-                                    </th>
-                                    <th className="px-4 py-3">
-                                        <SortHeader
-                                            label={t('common.created')}
-                                            column="created_at"
-                                            filters={filters}
-                                            indexUrl={indexUrl}
-                                        />
-                                    </th>
-                                    <th className="px-4 py-3">
-                                        <SortHeader
-                                            label={t('common.updated')}
-                                            column="updated_at"
-                                            filters={filters}
-                                            indexUrl={indexUrl}
-                                        />
-                                    </th>
-                                    <th className="px-4 py-3 text-end font-medium">
-                                        {t('common.actions')}
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {models.data.length === 0 ? (
-                                    <tr>
-                                        <td
-                                            colSpan={4}
-                                            className="text-muted-foreground px-4 py-10 text-center"
-                                        >
-                                            {t('serverModels.noResults')}
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    models.data.map((model) => (
-                                        <tr
-                                            key={model.id}
-                                            className="border-b last:border-0"
-                                        >
-                                            <td className="px-4 py-3 font-medium">
-                                                {model.name}
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                {model.created_at ?? '—'}
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                {model.updated_at ?? '—'}
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                <div className="flex items-center justify-end gap-1">
-                                                    {can(
-                                                        'server_model.view',
-                                                    ) && (
+                <DataTable minWidth={640}>
+                    <DataTableHeader>
+                        <DataTableHeaderRow>
+                            <DataTableHead>
+                                <SortHeader
+                                    label={t('common.name')}
+                                    column="name"
+                                    filters={filters}
+                                    indexUrl={indexUrl}
+                                />
+                            </DataTableHead>
+                            <DataTableHead>
+                                <SortHeader
+                                    label={t('common.created')}
+                                    column="created_at"
+                                    filters={filters}
+                                    indexUrl={indexUrl}
+                                />
+                            </DataTableHead>
+                            <DataTableHead>
+                                <SortHeader
+                                    label={t('common.updated')}
+                                    column="updated_at"
+                                    filters={filters}
+                                    indexUrl={indexUrl}
+                                />
+                            </DataTableHead>
+                            <DataTableHead align="end">
+                                {t('common.actions')}
+                            </DataTableHead>
+                        </DataTableHeaderRow>
+                    </DataTableHeader>
+                    <DataTableBody>
+                        {models.data.length === 0 ? (
+                            <DataTableEmpty colSpan={4}>
+                                {t('serverModels.noResults')}
+                            </DataTableEmpty>
+                        ) : (
+                            models.data.map((model) => (
+                                <DataTableRow key={model.id}>
+                                    <DataTableCell className="font-medium">
+                                        {model.name}
+                                    </DataTableCell>
+                                    <DataTableCell>
+                                        {model.created_at ?? '—'}
+                                    </DataTableCell>
+                                    <DataTableCell>
+                                        {model.updated_at ?? '—'}
+                                    </DataTableCell>
+                                    <DataTableCell>
+                                        <DataTableActions>
+                                            {can('server_model.view') && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    asChild
+                                                >
+                                                    <Link
+                                                        href={show(model.id)}
+                                                    >
+                                                        <Eye />
+                                                        <span className="sr-only">
+                                                            {t('common.view')}
+                                                        </span>
+                                                    </Link>
+                                                </Button>
+                                            )}
+                                            {can('server_model.update') && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    asChild
+                                                >
+                                                    <Link
+                                                        href={edit(model.id)}
+                                                    >
+                                                        <Pencil />
+                                                        <span className="sr-only">
+                                                            {t('common.edit')}
+                                                        </span>
+                                                    </Link>
+                                                </Button>
+                                            )}
+                                            {can('server_model.delete') && (
+                                                <Form
+                                                    {...ServerModelController.destroy.form(
+                                                        model.id,
+                                                    )}
+                                                    options={{
+                                                        preserveScroll: true,
+                                                    }}
+                                                    onSubmit={(event) => {
+                                                        if (
+                                                            !confirm(
+                                                                t(
+                                                                    'serverModels.deleteConfirm',
+                                                                ),
+                                                            )
+                                                        ) {
+                                                            event.preventDefault();
+                                                        }
+                                                    }}
+                                                >
+                                                    {({ processing }) => (
                                                         <Button
+                                                            type="submit"
                                                             variant="ghost"
                                                             size="icon"
-                                                            asChild
+                                                            disabled={
+                                                                processing
+                                                            }
+                                                            className="text-destructive hover:text-destructive"
                                                         >
-                                                            <Link
-                                                                href={show(
-                                                                    model.id,
+                                                            <Trash2 />
+                                                            <span className="sr-only">
+                                                                {t(
+                                                                    'common.delete',
                                                                 )}
-                                                            >
-                                                                <Eye />
-                                                                <span className="sr-only">
-                                                                    {t('common.view')}
-                                                                </span>
-                                                            </Link>
+                                                            </span>
                                                         </Button>
                                                     )}
-                                                    {can(
-                                                        'server_model.update',
-                                                    ) && (
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            asChild
-                                                        >
-                                                            <Link
-                                                                href={edit(
-                                                                    model.id,
-                                                                )}
-                                                            >
-                                                                <Pencil />
-                                                                <span className="sr-only">
-                                                                    {t('common.edit')}
-                                                                </span>
-                                                            </Link>
-                                                        </Button>
-                                                    )}
-                                                    {can(
-                                                        'server_model.delete',
-                                                    ) && (
-                                                        <Form
-                                                            {...ServerModelController.destroy.form(
-                                                                model.id,
-                                                            )}
-                                                            options={{
-                                                                preserveScroll: true,
-                                                            }}
-                                                            onSubmit={(
-                                                                event,
-                                                            ) => {
-                                                                if (
-                                                                    !confirm(
-                                                                        t(
-                                                                            'serverModels.deleteConfirm',
-                                                                        ),
-                                                                    )
-                                                                ) {
-                                                                    event.preventDefault();
-                                                                }
-                                                            }}
-                                                        >
-                                                            {({
-                                                                processing,
-                                                            }) => (
-                                                                <Button
-                                                                    type="submit"
-                                                                    variant="ghost"
-                                                                    size="icon"
-                                                                    disabled={
-                                                                        processing
-                                                                    }
-                                                                    className="text-destructive hover:text-destructive"
-                                                                >
-                                                                    <Trash2 />
-                                                                    <span className="sr-only">
-                                                                        {t('common.delete')}
-                                                                    </span>
-                                                                </Button>
-                                                            )}
-                                                        </Form>
-                                                    )}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                                                </Form>
+                                            )}
+                                        </DataTableActions>
+                                    </DataTableCell>
+                                </DataTableRow>
+                            ))
+                        )}
+                    </DataTableBody>
+                </DataTable>
 
                 <ResourcePagination links={models.links} />
             </div>

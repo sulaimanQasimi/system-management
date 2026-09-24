@@ -11,6 +11,17 @@ import {
 } from '@/components/resource-list';
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
+import {
+    DataTable,
+    DataTableActions,
+    DataTableBody,
+    DataTableCell,
+    DataTableEmpty,
+    DataTableHead,
+    DataTableHeader,
+    DataTableHeaderRow,
+    DataTableRow,
+} from '@/components/ui/data-table';
 import { useCan } from '@/hooks/use-can';
 import { useTranslations } from '@/hooks/use-locale';
 import { create, edit, index, show } from '@/routes/server-services';
@@ -69,166 +80,136 @@ export default function ServerServicesIndex({
                     total={services.total}
                 />
 
-                <div className="border-border/80 bg-card overflow-hidden rounded-lg border shadow-regal">
-                    <div className="overflow-x-auto">
-                        <table className="w-full min-w-[640px] text-start text-sm">
-                            <thead className="bg-muted/50 border-b">
-                                <tr className="text-muted-foreground">
-                                    <th className="px-4 py-3">
-                                        <SortHeader
-                                            label={t('common.name')}
-                                            column="name"
-                                            filters={filters}
-                                            indexUrl={indexUrl}
-                                        />
-                                    </th>
-                                    <th className="px-4 py-3">
-                                        <SortHeader
-                                            label={t('common.created')}
-                                            column="created_at"
-                                            filters={filters}
-                                            indexUrl={indexUrl}
-                                        />
-                                    </th>
-                                    <th className="px-4 py-3">
-                                        <SortHeader
-                                            label={t('common.updated')}
-                                            column="updated_at"
-                                            filters={filters}
-                                            indexUrl={indexUrl}
-                                        />
-                                    </th>
-                                    <th className="px-4 py-3 text-end font-medium">
-                                        {t('common.actions')}
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {services.data.length === 0 ? (
-                                    <tr>
-                                        <td
-                                            colSpan={4}
-                                            className="text-muted-foreground px-4 py-10 text-center"
-                                        >
-                                            {t('serverServices.noResults')}
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    services.data.map((service) => (
-                                        <tr
-                                            key={service.id}
-                                            className="border-b last:border-0"
-                                        >
-                                            <td className="px-4 py-3 font-medium">
-                                                {service.name}
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                {service.created_at ?? '—'}
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                {service.updated_at ?? '—'}
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                <div className="flex items-center justify-end gap-1">
-                                                    {can(
-                                                        'server_service.view',
-                                                    ) && (
+                <DataTable minWidth={640}>
+                    <DataTableHeader>
+                        <DataTableHeaderRow>
+                            <DataTableHead>
+                                <SortHeader
+                                    label={t('common.name')}
+                                    column="name"
+                                    filters={filters}
+                                    indexUrl={indexUrl}
+                                />
+                            </DataTableHead>
+                            <DataTableHead>
+                                <SortHeader
+                                    label={t('common.created')}
+                                    column="created_at"
+                                    filters={filters}
+                                    indexUrl={indexUrl}
+                                />
+                            </DataTableHead>
+                            <DataTableHead>
+                                <SortHeader
+                                    label={t('common.updated')}
+                                    column="updated_at"
+                                    filters={filters}
+                                    indexUrl={indexUrl}
+                                />
+                            </DataTableHead>
+                            <DataTableHead align="end">
+                                {t('common.actions')}
+                            </DataTableHead>
+                        </DataTableHeaderRow>
+                    </DataTableHeader>
+                    <DataTableBody>
+                        {services.data.length === 0 ? (
+                            <DataTableEmpty colSpan={4}>
+                                {t('serverServices.noResults')}
+                            </DataTableEmpty>
+                        ) : (
+                            services.data.map((service) => (
+                                <DataTableRow key={service.id}>
+                                    <DataTableCell className="font-medium">
+                                        {service.name}
+                                    </DataTableCell>
+                                    <DataTableCell>
+                                        {service.created_at ?? '—'}
+                                    </DataTableCell>
+                                    <DataTableCell>
+                                        {service.updated_at ?? '—'}
+                                    </DataTableCell>
+                                    <DataTableCell>
+                                        <DataTableActions>
+                                            {can('server_service.view') && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    asChild
+                                                >
+                                                    <Link
+                                                        href={show(service.id)}
+                                                    >
+                                                        <Eye />
+                                                        <span className="sr-only">
+                                                            {t('common.view')}
+                                                        </span>
+                                                    </Link>
+                                                </Button>
+                                            )}
+                                            {can('server_service.update') && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    asChild
+                                                >
+                                                    <Link
+                                                        href={edit(service.id)}
+                                                    >
+                                                        <Pencil />
+                                                        <span className="sr-only">
+                                                            {t('common.edit')}
+                                                        </span>
+                                                    </Link>
+                                                </Button>
+                                            )}
+                                            {can('server_service.delete') && (
+                                                <Form
+                                                    {...ServerServiceController.destroy.form(
+                                                        service.id,
+                                                    )}
+                                                    options={{
+                                                        preserveScroll: true,
+                                                    }}
+                                                    onSubmit={(event) => {
+                                                        if (
+                                                            !confirm(
+                                                                t(
+                                                                    'serverServices.deleteConfirm',
+                                                                ),
+                                                            )
+                                                        ) {
+                                                            event.preventDefault();
+                                                        }
+                                                    }}
+                                                >
+                                                    {({ processing }) => (
                                                         <Button
+                                                            type="submit"
                                                             variant="ghost"
                                                             size="icon"
-                                                            asChild
+                                                            disabled={
+                                                                processing
+                                                            }
+                                                            className="text-destructive hover:text-destructive"
                                                         >
-                                                            <Link
-                                                                href={show(
-                                                                    service.id,
+                                                            <Trash2 />
+                                                            <span className="sr-only">
+                                                                {t(
+                                                                    'common.delete',
                                                                 )}
-                                                            >
-                                                                <Eye />
-                                                                <span className="sr-only">
-                                                                    {t(
-                                                                        'common.view',
-                                                                    )}
-                                                                </span>
-                                                            </Link>
+                                                            </span>
                                                         </Button>
                                                     )}
-                                                    {can(
-                                                        'server_service.update',
-                                                    ) && (
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            asChild
-                                                        >
-                                                            <Link
-                                                                href={edit(
-                                                                    service.id,
-                                                                )}
-                                                            >
-                                                                <Pencil />
-                                                                <span className="sr-only">
-                                                                    {t(
-                                                                        'common.edit',
-                                                                    )}
-                                                                </span>
-                                                            </Link>
-                                                        </Button>
-                                                    )}
-                                                    {can(
-                                                        'server_service.delete',
-                                                    ) && (
-                                                        <Form
-                                                            {...ServerServiceController.destroy.form(
-                                                                service.id,
-                                                            )}
-                                                            options={{
-                                                                preserveScroll: true,
-                                                            }}
-                                                            onSubmit={(
-                                                                event,
-                                                            ) => {
-                                                                if (
-                                                                    !confirm(
-                                                                        t(
-                                                                            'serverServices.deleteConfirm',
-                                                                        ),
-                                                                    )
-                                                                ) {
-                                                                    event.preventDefault();
-                                                                }
-                                                            }}
-                                                        >
-                                                            {({
-                                                                processing,
-                                                            }) => (
-                                                                <Button
-                                                                    type="submit"
-                                                                    variant="ghost"
-                                                                    size="icon"
-                                                                    disabled={
-                                                                        processing
-                                                                    }
-                                                                    className="text-destructive hover:text-destructive"
-                                                                >
-                                                                    <Trash2 />
-                                                                    <span className="sr-only">
-                                                                        {t(
-                                                                            'common.delete',
-                                                                        )}
-                                                                    </span>
-                                                                </Button>
-                                                            )}
-                                                        </Form>
-                                                    )}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                                                </Form>
+                                            )}
+                                        </DataTableActions>
+                                    </DataTableCell>
+                                </DataTableRow>
+                            ))
+                        )}
+                    </DataTableBody>
+                </DataTable>
 
                 <ResourcePagination links={services.links} />
             </div>

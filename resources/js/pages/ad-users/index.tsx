@@ -15,6 +15,17 @@ import { useEffect, useRef, useState } from 'react';
 import ActiveDirectoryUserController from '@/actions/App/Http/Controllers/ActiveDirectoryUserController';
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
+import {
+    DataTable,
+    DataTableActions,
+    DataTableBody,
+    DataTableCell,
+    DataTableEmpty,
+    DataTableHead,
+    DataTableHeader,
+    DataTableHeaderRow,
+    DataTableRow,
+} from '@/components/ui/data-table';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useCan } from '@/hooks/use-can';
@@ -389,226 +400,214 @@ export default function AdUsersIndex({
                     </div>
                 </div>
 
-                <div className="border-border/80 bg-card overflow-hidden rounded-lg border shadow-regal">
-                    <div className="overflow-x-auto">
-                        <table className="w-full min-w-[960px] table-fixed text-start text-sm">
-                            <colgroup>
-                                <col className="w-[9%]" />
-                                <col className="w-[9%]" />
-                                <col className="w-[9%]" />
-                                <col className="w-[14%]" />
-                                <col className="w-[10%]" />
-                                <col className="w-[9%]" />
-                                <col className="w-[7%]" />
-                                <col className="w-[8%]" />
-                                <col className="w-[8%]" />
-                                <col className="w-[9%]" />
-                                <col className="w-[8%]" />
-                            </colgroup>
-                            <thead className="bg-muted/50 border-b">
-                                <tr className="text-muted-foreground">
-                                    <th className="px-4 py-3 font-medium">
-                                        <SortButton
-                                            label={t('common.name')}
-                                            column="name"
-                                            filters={filters}
-                                        />
-                                    </th>
-                                    <th className="px-4 py-3 font-medium">
-                                        <SortButton
-                                            label={t('common.lastName')}
-                                            column="lastname"
-                                            filters={filters}
-                                        />
-                                    </th>
-                                    <th className="px-4 py-3 font-medium">
-                                        <SortButton
-                                            label={t('common.username')}
-                                            column="username"
-                                            filters={filters}
-                                        />
-                                    </th>
-                                    <th className="px-4 py-3 font-medium">
-                                        <SortButton
-                                            label={t('common.email')}
-                                            column="email"
-                                            filters={filters}
-                                        />
-                                    </th>
-                                    <th className="px-4 py-3 font-medium">
-                                        {t('common.department')}
-                                    </th>
-                                    <th className="px-4 py-3 font-medium">
-                                        <SortButton
-                                            label={t('common.job')}
-                                            column="job"
-                                            filters={filters}
-                                        />
-                                    </th>
-                                    <th className="px-4 py-3 font-medium">
-                                        <SortButton
-                                            label={t('common.pbx')}
-                                            column="pbx"
-                                            filters={filters}
-                                        />
-                                    </th>
-                                    <th className="px-4 py-3 font-medium">
-                                        <SortButton
-                                            label={t('common.phone')}
-                                            column="phone"
-                                            filters={filters}
-                                        />
-                                    </th>
-                                    <th className="px-4 py-3 font-medium">
-                                        <SortButton
-                                            label={t('common.date')}
-                                            column="date"
-                                            filters={filters}
-                                        />
-                                    </th>
-                                    <th className="px-4 py-3 font-medium">
-                                        {t('common.createdBy')}
-                                    </th>
-                                    <th className="px-4 py-3 text-end font-medium">
-                                        {t('common.actions')}
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {users.data.length === 0 ? (
-                                    <tr>
-                                        <td
-                                            colSpan={11}
-                                            className="text-muted-foreground px-4 py-8 text-center"
-                                        >
-                                            {t('adUsers.noResults')}
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    users.data.map((user) => (
-                                        <tr
-                                            key={user.id}
-                                            className="border-b last:border-0"
-                                        >
-                                            <td className="truncate px-4 py-3 font-medium">
-                                                {user.name}
-                                            </td>
-                                            <td className="truncate px-4 py-3">
-                                                {user.lastname}
-                                            </td>
-                                            <td className="truncate px-4 py-3">
-                                                {user.username}
-                                            </td>
-                                            <td className="truncate px-4 py-3">
-                                                {user.email}
-                                            </td>
-                                            <td className="truncate px-4 py-3">
-                                                {user.department ?? '—'}
-                                            </td>
-                                            <td className="truncate px-4 py-3">
-                                                {user.job ?? '—'}
-                                            </td>
-                                            <td className="truncate px-4 py-3">
-                                                {user.pbx ?? '—'}
-                                            </td>
-                                            <td className="truncate px-4 py-3">
-                                                {user.phone ?? '—'}
-                                            </td>
-                                            <td className="truncate px-4 py-3">
-                                                {user.date ?? '—'}
-                                            </td>
-                                            <td className="truncate px-4 py-3">
-                                                {user.created_by ?? '—'}
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                <div className="flex items-center justify-end gap-1">
-                                                    {can('ad_user.view') && (
+                <DataTable
+                    minWidth={960}
+                    fixed
+                    columnWidths={[
+                        '9%',
+                        '9%',
+                        '9%',
+                        '14%',
+                        '10%',
+                        '9%',
+                        '7%',
+                        '8%',
+                        '8%',
+                        '9%',
+                        '8%',
+                    ]}
+                >
+                    <DataTableHeader>
+                        <DataTableHeaderRow>
+                            <DataTableHead>
+                                <SortButton
+                                    label={t('common.name')}
+                                    column="name"
+                                    filters={filters}
+                                />
+                            </DataTableHead>
+                            <DataTableHead>
+                                <SortButton
+                                    label={t('common.lastName')}
+                                    column="lastname"
+                                    filters={filters}
+                                />
+                            </DataTableHead>
+                            <DataTableHead>
+                                <SortButton
+                                    label={t('common.username')}
+                                    column="username"
+                                    filters={filters}
+                                />
+                            </DataTableHead>
+                            <DataTableHead>
+                                <SortButton
+                                    label={t('common.email')}
+                                    column="email"
+                                    filters={filters}
+                                />
+                            </DataTableHead>
+                            <DataTableHead>
+                                {t('common.department')}
+                            </DataTableHead>
+                            <DataTableHead>
+                                <SortButton
+                                    label={t('common.job')}
+                                    column="job"
+                                    filters={filters}
+                                />
+                            </DataTableHead>
+                            <DataTableHead>
+                                <SortButton
+                                    label={t('common.pbx')}
+                                    column="pbx"
+                                    filters={filters}
+                                />
+                            </DataTableHead>
+                            <DataTableHead>
+                                <SortButton
+                                    label={t('common.phone')}
+                                    column="phone"
+                                    filters={filters}
+                                />
+                            </DataTableHead>
+                            <DataTableHead>
+                                <SortButton
+                                    label={t('common.date')}
+                                    column="date"
+                                    filters={filters}
+                                />
+                            </DataTableHead>
+                            <DataTableHead>
+                                {t('common.createdBy')}
+                            </DataTableHead>
+                            <DataTableHead align="end">
+                                {t('common.actions')}
+                            </DataTableHead>
+                        </DataTableHeaderRow>
+                    </DataTableHeader>
+                    <DataTableBody>
+                        {users.data.length === 0 ? (
+                            <DataTableEmpty colSpan={11}>
+                                {t('adUsers.noResults')}
+                            </DataTableEmpty>
+                        ) : (
+                            users.data.map((user) => (
+                                <DataTableRow key={user.id}>
+                                    <DataTableCell
+                                        truncate
+                                        className="font-medium"
+                                    >
+                                        {user.name}
+                                    </DataTableCell>
+                                    <DataTableCell truncate>
+                                        {user.lastname}
+                                    </DataTableCell>
+                                    <DataTableCell truncate>
+                                        {user.username}
+                                    </DataTableCell>
+                                    <DataTableCell truncate>
+                                        {user.email}
+                                    </DataTableCell>
+                                    <DataTableCell truncate>
+                                        {user.department ?? '—'}
+                                    </DataTableCell>
+                                    <DataTableCell truncate>
+                                        {user.job ?? '—'}
+                                    </DataTableCell>
+                                    <DataTableCell truncate>
+                                        {user.pbx ?? '—'}
+                                    </DataTableCell>
+                                    <DataTableCell truncate>
+                                        {user.phone ?? '—'}
+                                    </DataTableCell>
+                                    <DataTableCell truncate>
+                                        {user.date ?? '—'}
+                                    </DataTableCell>
+                                    <DataTableCell truncate>
+                                        {user.created_by ?? '—'}
+                                    </DataTableCell>
+                                    <DataTableCell>
+                                        <DataTableActions>
+                                            {can('ad_user.view') && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    asChild
+                                                >
+                                                    <Link
+                                                        href={show(user.id)}
+                                                    >
+                                                        <Eye />
+                                                        <span className="sr-only">
+                                                            {t('common.view')}
+                                                        </span>
+                                                    </Link>
+                                                </Button>
+                                            )}
+                                            {can('ad_user.update') && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    asChild
+                                                >
+                                                    <Link
+                                                        href={edit(user.id)}
+                                                    >
+                                                        <Pencil />
+                                                        <span className="sr-only">
+                                                            {t('common.edit')}
+                                                        </span>
+                                                    </Link>
+                                                </Button>
+                                            )}
+                                            {can('ad_user.delete') && (
+                                                <Form
+                                                    {...ActiveDirectoryUserController.destroy.form(
+                                                        user.id,
+                                                    )}
+                                                    options={{
+                                                        preserveScroll: true,
+                                                    }}
+                                                    onSubmit={(event) => {
+                                                        if (
+                                                            !confirm(
+                                                                t(
+                                                                    'adUsers.deleteConfirm',
+                                                                ),
+                                                            )
+                                                        ) {
+                                                            event.preventDefault();
+                                                        }
+                                                    }}
+                                                >
+                                                    {({ processing }) => (
                                                         <Button
+                                                            type="submit"
                                                             variant="ghost"
                                                             size="icon"
-                                                            asChild
+                                                            disabled={
+                                                                processing
+                                                            }
+                                                            className="text-destructive hover:text-destructive"
                                                         >
-                                                            <Link
-                                                                href={show(
-                                                                    user.id,
+                                                            <Trash2 />
+                                                            <span className="sr-only">
+                                                                {t(
+                                                                    'common.delete',
                                                                 )}
-                                                            >
-                                                                <Eye />
-                                                                <span className="sr-only">
-                                                                    {t('common.view')}
-                                                                </span>
-                                                            </Link>
+                                                            </span>
                                                         </Button>
                                                     )}
-                                                    {can('ad_user.update') && (
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            asChild
-                                                        >
-                                                            <Link
-                                                                href={edit(
-                                                                    user.id,
-                                                                )}
-                                                            >
-                                                                <Pencil />
-                                                                <span className="sr-only">
-                                                                    {t('common.edit')}
-                                                                </span>
-                                                            </Link>
-                                                        </Button>
-                                                    )}
-                                                    {can('ad_user.delete') && (
-                                                        <Form
-                                                            {...ActiveDirectoryUserController.destroy.form(
-                                                                user.id,
-                                                            )}
-                                                            options={{
-                                                                preserveScroll: true,
-                                                            }}
-                                                            onSubmit={(
-                                                                event,
-                                                            ) => {
-                                                                if (
-                                                                    !confirm(
-                                                                        t(
-                                                                            'adUsers.deleteConfirm',
-                                                                        ),
-                                                                    )
-                                                                ) {
-                                                                    event.preventDefault();
-                                                                }
-                                                            }}
-                                                        >
-                                                            {({
-                                                                processing,
-                                                            }) => (
-                                                                <Button
-                                                                    type="submit"
-                                                                    variant="ghost"
-                                                                    size="icon"
-                                                                    disabled={
-                                                                        processing
-                                                                    }
-                                                                    className="text-destructive hover:text-destructive"
-                                                                >
-                                                                    <Trash2 />
-                                                                    <span className="sr-only">
-                                                                    {t('common.delete')}
-                                                                </span>
-                                                                </Button>
-                                                            )}
-                                                        </Form>
-                                                    )}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                                                </Form>
+                                            )}
+                                        </DataTableActions>
+                                    </DataTableCell>
+                                </DataTableRow>
+                            ))
+                        )}
+                    </DataTableBody>
+                </DataTable>
 
                 {users.links.length > 3 && (
                     <div className="flex flex-wrap gap-2">
