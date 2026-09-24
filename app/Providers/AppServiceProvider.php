@@ -5,9 +5,12 @@ namespace App\Providers;
 use App\Models\User;
 use App\Support\AppPermissions;
 use Carbon\CarbonImmutable;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -27,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+        $this->configureRateLimiting();
 
         Gate::before(function ($user, string $ability): ?bool {
             if (! $user instanceof User) {
@@ -40,7 +44,7 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Configure default behaviors for production-ready applications.
      */
-    protected function configureDefaults(): void
+    private function configureDefaults(): void
     {
         Date::use(CarbonImmutable::class);
 
@@ -49,7 +53,7 @@ class AppServiceProvider extends ServiceProvider
         );
 
         Password::defaults(fn (): ?Password => app()->isProduction()
-            ? Password::min(5)
+            ? Password::min(8)
                 ->mixedCase()
                 ->letters()
                 ->numbers()
@@ -57,5 +61,19 @@ class AppServiceProvider extends ServiceProvider
                 ->uncompromised()
             : null,
         );
+    }
+
+    /**
+     * Global HTTP rate limiters used by the web middleware stack.
+     */
+    private function configureRateLimiting(): void
+    {
+        RateLimiter::for('web', function (Request $request) {
+            $limit = $request->user()
+                ? (int) config('security.rate_limits.web_authenticated', 180)
+                : (int) config('security.rate_limits.web', 90);
+
+            return Limit::perMinute(max(1, $limit))->by($request->ip());
+        });
     }
 }
