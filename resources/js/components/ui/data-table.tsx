@@ -1,4 +1,9 @@
-import type { ComponentProps, ReactNode } from 'react';
+import {
+    createContext,
+    useContext,
+    type ComponentProps,
+    type ReactNode,
+} from 'react';
 import { cn } from '@/lib/utils';
 
 type DataTableProps = {
@@ -13,6 +18,14 @@ type DataTableProps = {
     tableClassName?: string;
 };
 
+type DataTableContextValue = {
+    fixed: boolean;
+};
+
+const DataTableContext = createContext<DataTableContextValue>({
+    fixed: false,
+});
+
 function resolveMinWidth(minWidth?: number | string) {
     if (minWidth === undefined) {
         return undefined;
@@ -24,6 +37,9 @@ function resolveMinWidth(minWidth?: number | string) {
 /**
  * Shared list-table shell used across resource index pages.
  * Preserves the Regal card + muted header design.
+ *
+ * Auto layout (default): content columns shrink to fit; actions absorb leftover space.
+ * Fixed layout: use with `columnWidths` for dense multi-column tables (e.g. AD users).
  */
 function DataTable({
     children,
@@ -34,41 +50,47 @@ function DataTable({
     tableClassName,
 }: DataTableProps) {
     const minWidthValue = resolveMinWidth(minWidth);
+    const isFixed = fixed || Boolean(columnWidths?.length);
 
     return (
-        <div
-            className={cn(
-                'border-border/80 bg-card overflow-hidden rounded-lg border shadow-regal',
-                className,
-            )}
-        >
-            <div className="overflow-x-auto">
-                <table
-                    className={cn(
-                        'w-full text-start text-sm',
-                        fixed && 'table-fixed',
-                        tableClassName,
-                    )}
-                    style={
-                        minWidthValue
-                            ? { minWidth: minWidthValue }
-                            : undefined
-                    }
-                >
-                    {columnWidths && columnWidths.length > 0 && (
-                        <colgroup>
-                            {columnWidths.map((width, index) => (
-                                <col
-                                    key={index}
-                                    style={{ width }}
-                                />
-                            ))}
-                        </colgroup>
-                    )}
-                    {children}
-                </table>
+        <DataTableContext.Provider value={{ fixed: isFixed }}>
+            <div
+                className={cn(
+                    'border-border/80 bg-card overflow-hidden rounded-lg border shadow-regal',
+                    className,
+                )}
+            >
+                <div className="overflow-x-auto">
+                    <table
+                        className={cn(
+                            'w-full text-start text-sm',
+                            isFixed
+                                ? 'table-fixed'
+                                : [
+                                      // Content columns hug their text; last column (actions) takes leftover space.
+                                      '[&_tbody_tr>td:not(:last-child)]:w-[1%]',
+                                      '[&_tbody_tr>td:not(:last-child)]:whitespace-nowrap',
+                                  ],
+                            tableClassName,
+                        )}
+                        style={
+                            minWidthValue
+                                ? { minWidth: minWidthValue }
+                                : undefined
+                        }
+                    >
+                        {columnWidths && columnWidths.length > 0 && (
+                            <colgroup>
+                                {columnWidths.map((width, index) => (
+                                    <col key={index} style={{ width }} />
+                                ))}
+                            </colgroup>
+                        )}
+                        {children}
+                    </table>
+                </div>
             </div>
-        </div>
+        </DataTableContext.Provider>
     );
 }
 
@@ -105,10 +127,14 @@ function DataTableHead({
     align = 'start',
     ...props
 }: DataTableHeadProps) {
+    const { fixed } = useContext(DataTableContext);
+
     return (
         <th
             className={cn(
-                'px-4 py-3 font-medium',
+                'px-4 py-3 font-medium whitespace-nowrap',
+                // Shrink label columns to content; actions column takes leftover width.
+                !fixed && align !== 'end' && 'w-[1%]',
                 align === 'end' && 'text-end',
                 align === 'center' && 'text-center',
                 className,
@@ -186,6 +212,7 @@ function DataTableActions({
 }: ComponentProps<'div'>) {
     return (
         <div
+            data-slot="data-table-actions"
             className={cn(
                 'flex items-center justify-end gap-1',
                 className,
