@@ -25,14 +25,24 @@ function emailFromUsername(username: string): string {
     return local ? `${local}@${EMAIL_DOMAIN}` : '';
 }
 
+function fieldName(field: keyof AdUserFormValues, index?: number): string {
+    return index === undefined ? field : `users[${index}][${field}]`;
+}
+
+function fieldId(field: keyof AdUserFormValues, index?: number): string {
+    return index === undefined ? field : `user-${index}-${field}`;
+}
+
 export default function AdUserFormFields({
     values = {},
     errors = {},
     departments = [],
+    index,
 }: {
     values?: AdUserFormValues;
     errors?: Partial<Record<keyof AdUserFormValues, string>>;
     departments?: DepartmentOption[];
+    index?: number;
 }) {
     const { t } = useTranslations();
     const [username, setUsername] = useState(values.username ?? '');
@@ -46,10 +56,10 @@ export default function AdUserFormFields({
     return (
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
             <div className="grid gap-2">
-                <Label htmlFor="name">{t('common.name')}</Label>
+                <Label htmlFor={fieldId('name', index)}>{t('common.name')}</Label>
                 <Input
-                    id="name"
-                    name="name"
+                    id={fieldId('name', index)}
+                    name={fieldName('name', index)}
                     required
                     defaultValue={values.name ?? ''}
                     placeholder={t('adUsers.placeholderFirstName')}
@@ -59,10 +69,12 @@ export default function AdUserFormFields({
             </div>
 
             <div className="grid gap-2">
-                <Label htmlFor="lastname">{t('common.lastName')}</Label>
+                <Label htmlFor={fieldId('lastname', index)}>
+                    {t('common.lastName')}
+                </Label>
                 <Input
-                    id="lastname"
-                    name="lastname"
+                    id={fieldId('lastname', index)}
+                    name={fieldName('lastname', index)}
                     required
                     defaultValue={values.lastname ?? ''}
                     placeholder={t('adUsers.placeholderLastName')}
@@ -72,10 +84,12 @@ export default function AdUserFormFields({
             </div>
 
             <div className="grid gap-2">
-                <Label htmlFor="username">{t('common.username')}</Label>
+                <Label htmlFor={fieldId('username', index)}>
+                    {t('common.username')}
+                </Label>
                 <Input
-                    id="username"
-                    name="username"
+                    id={fieldId('username', index)}
+                    name={fieldName('username', index)}
                     required
                     value={username}
                     onChange={(event) => {
@@ -90,10 +104,12 @@ export default function AdUserFormFields({
             </div>
 
             <div className="grid gap-2">
-                <Label htmlFor="email">{t('common.email')}</Label>
+                <Label htmlFor={fieldId('email', index)}>
+                    {t('common.email')}
+                </Label>
                 <Input
-                    id="email"
-                    name="email"
+                    id={fieldId('email', index)}
+                    name={fieldName('email', index)}
                     type="email"
                     required
                     readOnly
@@ -106,10 +122,12 @@ export default function AdUserFormFields({
             </div>
 
             <div className="grid gap-2">
-                <Label htmlFor="department_id">{t('common.department')}</Label>
+                <Label htmlFor={fieldId('department_id', index)}>
+                    {t('common.department')}
+                </Label>
                 <select
-                    id="department_id"
-                    name="department_id"
+                    id={fieldId('department_id', index)}
+                    name={fieldName('department_id', index)}
                     value={departmentId}
                     onChange={(event) => setDepartmentId(event.target.value)}
                     className="border-input bg-background h-9 w-full rounded-md border px-3 text-sm shadow-xs"
@@ -125,10 +143,10 @@ export default function AdUserFormFields({
             </div>
 
             <div className="grid gap-2">
-                <Label htmlFor="job">{t('common.job')}</Label>
+                <Label htmlFor={fieldId('job', index)}>{t('common.job')}</Label>
                 <Input
-                    id="job"
-                    name="job"
+                    id={fieldId('job', index)}
+                    name={fieldName('job', index)}
                     defaultValue={values.job ?? ''}
                     placeholder={t('adUsers.placeholderJobTitle')}
                 />
@@ -136,10 +154,10 @@ export default function AdUserFormFields({
             </div>
 
             <div className="grid gap-2">
-                <Label htmlFor="pbx">{t('common.pbx')}</Label>
+                <Label htmlFor={fieldId('pbx', index)}>{t('common.pbx')}</Label>
                 <Input
-                    id="pbx"
-                    name="pbx"
+                    id={fieldId('pbx', index)}
+                    name={fieldName('pbx', index)}
                     defaultValue={values.pbx ?? ''}
                     placeholder={t('adUsers.placeholderPbxExtension')}
                 />
@@ -147,10 +165,12 @@ export default function AdUserFormFields({
             </div>
 
             <div className="grid gap-2">
-                <Label htmlFor="phone">{t('common.phone')}</Label>
+                <Label htmlFor={fieldId('phone', index)}>
+                    {t('common.phone')}
+                </Label>
                 <Input
-                    id="phone"
-                    name="phone"
+                    id={fieldId('phone', index)}
+                    name={fieldName('phone', index)}
                     defaultValue={values.phone ?? ''}
                     placeholder={t('adUsers.placeholderPhoneNumber')}
                     autoComplete="tel"

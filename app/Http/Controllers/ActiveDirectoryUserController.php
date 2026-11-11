@@ -14,6 +14,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -158,14 +159,26 @@ class ActiveDirectoryUserController extends Controller implements HasMiddleware
 
     public function store(StoreActiveDirectoryUserRequest $request): RedirectResponse
     {
-        ActiveDirectoryUser::create([
-            ...$request->validated(),
-            'created_by' => $request->user()->id,
-        ]);
+        /** @var list<array<string, mixed>> $users */
+        $users = $request->validated('users');
+        $createdBy = $request->user()->id;
+
+        DB::transaction(function () use ($users, $createdBy): void {
+            foreach ($users as $user) {
+                ActiveDirectoryUser::create([
+                    ...$user,
+                    'created_by' => $createdBy,
+                ]);
+            }
+        });
+
+        $count = count($users);
 
         Inertia::flash('toast', [
             'type' => 'success',
-            'message' => __('Active Directory user created.'),
+            'message' => $count === 1
+                ? __('Active Directory user created.')
+                : __(':count Active Directory users created.', ['count' => $count]),
         ]);
 
         return to_route('ad-users.index');

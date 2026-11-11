@@ -109,6 +109,10 @@ export type TranslationDictionary = {
         addDescription: string;
         headAdd: string;
         createUser: string;
+        createUsers: string;
+        addAnotherUser: string;
+        removeUser: string;
+        userNumber: string;
         editTitle: string;
         editDescription: string;
         headEdit: string;
