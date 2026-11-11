@@ -111,6 +111,11 @@ const en: TranslationDictionary = {
         placeholderPbxExtension: 'PBX extension',
         placeholderPhoneNumber: 'Phone number',
         selectDepartment: 'Select department (optional)',
+        exportExcel: 'Export Excel',
+        importExcel: 'Import Excel',
+        downloadTemplate: 'Download template',
+        importHint: 'Upload .xlsx / .xls / .csv. Username is required; email is set as username@mov.gov.af. Existing usernames are updated.',
+        importing: 'Importing…',
     },
     departments: {
         title: 'Departments',

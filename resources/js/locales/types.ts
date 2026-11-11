@@ -119,6 +119,11 @@ export type TranslationDictionary = {
         placeholderPbxExtension: string;
         placeholderPhoneNumber: string;
         selectDepartment: string;
+        exportExcel: string;
+        importExcel: string;
+        downloadTemplate: string;
+        importHint: string;
+        importing: string;
     };
     departments: {
         title: string;

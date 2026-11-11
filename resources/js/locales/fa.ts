@@ -111,6 +111,12 @@ const fa: TranslationDictionary = {
         placeholderPbxExtension: 'شماره داخلی PBX',
         placeholderPhoneNumber: 'شماره تلفن',
         selectDepartment: 'انتخاب ریاست (اختیاری)',
+        exportExcel: 'خروجی اکسل',
+        importExcel: 'ورود اکسل',
+        downloadTemplate: 'دانلود قالب',
+        importHint:
+            'فایل .xlsx / .xls / .csv را آپلود کنید. نام کاربری الزامی است؛ ایمیل به صورت username@mov.gov.af تنظیم می‌شود. نام‌های کاربری موجود به‌روزرسانی می‌شوند.',
+        importing: 'در حال ورود…',
     },
     departments: {
         title: 'ریاست‌ها',

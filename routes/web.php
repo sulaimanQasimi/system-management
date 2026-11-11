@@ -23,6 +23,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('departments', DepartmentController::class);
 
+    Route::get('ad-users/export', [ActiveDirectoryUserController::class, 'export'])
+        ->name('ad-users.export');
+    Route::get('ad-users/import/template', [ActiveDirectoryUserController::class, 'template'])
+        ->name('ad-users.import.template');
+    Route::post('ad-users/import', [ActiveDirectoryUserController::class, 'import'])
+        ->name('ad-users.import');
+
     Route::resource('ad-users', ActiveDirectoryUserController::class)
         ->parameters(['ad-users' => 'activeDirectoryUser']);
 

@@ -1,19 +1,23 @@
-import { Form, Head, Link, router } from '@inertiajs/react';
+import { Form, Head, Link, router, usePage } from '@inertiajs/react';
 import {
     ArrowDown,
     ArrowUp,
     ArrowUpDown,
+    Download,
+    FileSpreadsheet,
     Plus,
     Eye,
     Pencil,
     Search,
     Trash2,
+    Upload,
     Users,
     X,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import ActiveDirectoryUserController from '@/actions/App/Http/Controllers/ActiveDirectoryUserController';
 import { PageHeader } from '@/components/layout/page-header';
+import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import {
     DataTable,
@@ -30,7 +34,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useCan } from '@/hooks/use-can';
 import { useTranslations } from '@/hooks/use-locale';
-import { create, edit, index, show } from '@/routes/ad-users';
+import {
+    create,
+    edit,
+    exportMethod,
+    importMethod,
+    index,
+    show,
+} from '@/routes/ad-users';
+import { template as importTemplate } from '@/routes/ad-users/import';
 
 type AdUserRow = {
     id: number;
@@ -171,12 +183,47 @@ export default function AdUsersIndex({
 }) {
     const { can } = useCan();
     const { t } = useTranslations();
+    const { errors } = usePage().props;
     const [search, setSearch] = useState(filters.search);
     const [job, setJob] = useState(filters.job);
     const [departmentId, setDepartmentId] = useState(filters.department_id);
     const [dateFrom, setDateFrom] = useState(filters.date_from);
     const [dateTo, setDateTo] = useState(filters.date_to);
+    const [importing, setImporting] = useState(false);
     const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const importInputRef = useRef<HTMLInputElement>(null);
+
+    const exportQuery = {
+        search: filters.search || undefined,
+        job: filters.job || undefined,
+        department_id: filters.department_id || undefined,
+        date_from: filters.date_from || undefined,
+        date_to: filters.date_to || undefined,
+        sort: filters.sort !== 'created_at' ? filters.sort : undefined,
+        direction: filters.direction !== 'desc' ? filters.direction : undefined,
+    };
+
+    const onImportFile = (file: File | undefined) => {
+        if (!file) {
+            return;
+        }
+
+        setImporting(true);
+        router.post(
+            importMethod.url(),
+            { file },
+            {
+                forceFormData: true,
+                preserveScroll: true,
+                onFinish: () => {
+                    setImporting(false);
+                    if (importInputRef.current) {
+                        importInputRef.current.value = '';
+                    }
+                },
+            },
+        );
+    };
 
     useEffect(() => {
         setSearch(filters.search);
@@ -225,16 +272,71 @@ export default function AdUsersIndex({
                     description={t('adUsers.description')}
                     icon={Users}
                     action={
-                        can('ad_user.create') ? (
-                            <Button asChild>
-                                <Link href={create()}>
-                                    <Plus />
-                                    {t('adUsers.addUser')}
-                                </Link>
-                            </Button>
-                        ) : undefined
+                        <>
+                            {can('ad_user.view') && (
+                                <Button variant="outline" asChild>
+                                    <a
+                                        href={exportMethod.url({
+                                            query: exportQuery,
+                                        })}
+                                    >
+                                        <Download />
+                                        {t('adUsers.exportExcel')}
+                                    </a>
+                                </Button>
+                            )}
+                            {can('ad_user.create') && (
+                                <>
+                                    <Button variant="outline" asChild>
+                                        <a href={importTemplate.url()}>
+                                            <FileSpreadsheet />
+                                            {t('adUsers.downloadTemplate')}
+                                        </a>
+                                    </Button>
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        disabled={importing}
+                                        onClick={() =>
+                                            importInputRef.current?.click()
+                                        }
+                                    >
+                                        <Upload />
+                                        {importing
+                                            ? t('adUsers.importing')
+                                            : t('adUsers.importExcel')}
+                                    </Button>
+                                    <input
+                                        ref={importInputRef}
+                                        type="file"
+                                        accept=".xlsx,.xls,.csv"
+                                        className="hidden"
+                                        onChange={(event) =>
+                                            onImportFile(
+                                                event.target.files?.[0],
+                                            )
+                                        }
+                                    />
+                                    <Button asChild>
+                                        <Link href={create()}>
+                                            <Plus />
+                                            {t('adUsers.addUser')}
+                                        </Link>
+                                    </Button>
+                                </>
+                            )}
+                        </>
                     }
                 />
+
+                {can('ad_user.create') && (
+                    <div className="space-y-1">
+                        <p className="text-muted-foreground text-sm">
+                            {t('adUsers.importHint')}
+                        </p>
+                        <InputError message={errors.file} />
+                    </div>
+                )}
 
                 <div className="border-border/80 bg-card rounded-lg border p-4 shadow-regal">
                     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-6">
