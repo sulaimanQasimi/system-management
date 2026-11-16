@@ -253,10 +253,13 @@ class ServerController extends Controller implements HasMiddleware
             'services' => ServerService::query()->orderBy('name')->get(['id', 'name']),
             'itSupports' => ItSupport::query()
                 ->orderBy('name')
-                ->get(['id', 'name', 'lastname', 'pbx'])
+                ->get(['id', 'name', 'lastname', 'site_name', 'pbx'])
                 ->map(fn (ItSupport $contact) => [
                     'id' => $contact->id,
-                    'name' => trim($contact->name.' '.$contact->lastname),
+                    'name' => trim(
+                        $contact->name.' '.$contact->lastname
+                        .($contact->site_name !== '' ? ' — '.$contact->site_name : ''),
+                    ),
                     'phone' => $contact->pbx,
                 ]),
             'statusOptions' => ServerStatus::options(),

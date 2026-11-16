@@ -74,7 +74,10 @@ class QuickCreateController extends Controller
 
         return response()->json([
             'id' => $contact->id,
-            'name' => trim($contact->name.' '.$contact->lastname),
+            'name' => trim(
+                $contact->name.' '.$contact->lastname
+                .($contact->site_name !== '' ? ' — '.$contact->site_name : ''),
+            ),
             'phone' => $contact->pbx,
         ]);
     }

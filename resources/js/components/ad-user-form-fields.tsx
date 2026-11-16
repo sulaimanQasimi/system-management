@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import SearchableSelect from '@/components/ui/searchable-select';
 import { useTranslations } from '@/hooks/use-locale';
 
 const EMAIL_DOMAIN = 'mov.gov.af';
@@ -51,6 +52,15 @@ export default function AdUserFormFields({
     );
     const [departmentId, setDepartmentId] = useState(
         values.department_id ? String(values.department_id) : '',
+    );
+
+    const departmentOptions = useMemo(
+        () =>
+            departments.map((department) => ({
+                value: String(department.id),
+                label: department.name,
+            })),
+        [departments],
     );
 
     return (
@@ -125,20 +135,16 @@ export default function AdUserFormFields({
                 <Label htmlFor={fieldId('department_id', index)}>
                     {t('common.department')}
                 </Label>
-                <select
+                <SearchableSelect
                     id={fieldId('department_id', index)}
                     name={fieldName('department_id', index)}
                     value={departmentId}
-                    onChange={(event) => setDepartmentId(event.target.value)}
-                    className="border-input bg-background h-9 w-full rounded-md border px-3 text-sm shadow-xs"
-                >
-                    <option value="">{t('adUsers.selectDepartment')}</option>
-                    {departments.map((department) => (
-                        <option key={department.id} value={department.id}>
-                            {department.name}
-                        </option>
-                    ))}
-                </select>
+                    onValueChange={setDepartmentId}
+                    options={departmentOptions}
+                    placeholder={t('adUsers.selectDepartment')}
+                    searchPlaceholder={t('departments.searchPlaceholder')}
+                    allowClear
+                />
                 <InputError message={errors.department_id} />
             </div>
 

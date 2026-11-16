@@ -9,7 +9,7 @@ import {
     Server,
     ServerCog,
 } from 'lucide-react';
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import InputError from '@/components/input-error';
 import QuickCreateItSupportDialog from '@/components/quick-create-it-support-dialog';
 import QuickCreateNameDialog from '@/components/quick-create-name-dialog';
@@ -18,6 +18,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import IpInput from '@/components/ui/ip-input';
 import { Label } from '@/components/ui/label';
+import SearchableSelect from '@/components/ui/searchable-select';
 import { useCan } from '@/hooks/use-can';
 import { useTranslations } from '@/hooks/use-locale';
 import { statusLabel } from '@/lib/status-label';
@@ -210,6 +211,33 @@ export default function ServerFormFields({
         }
     };
 
+    const departmentSelectOptions = useMemo(
+        () =>
+            departmentOptions.map((department) => ({
+                value: String(department.id),
+                label: department.name,
+            })),
+        [departmentOptions],
+    );
+
+    const modelSelectOptions = useMemo(
+        () =>
+            modelOptions.map((model) => ({
+                value: String(model.id),
+                label: model.name,
+            })),
+        [modelOptions],
+    );
+
+    const itSupportSelectOptions = useMemo(
+        () =>
+            itSupportOptions.map((contact) => ({
+                value: String(contact.id),
+                label: contact.name,
+            })),
+        [itSupportOptions],
+    );
+
     return (
         <div className="space-y-6">
             <Section
@@ -273,28 +301,18 @@ export default function ServerFormFields({
                                 </Button>
                             )}
                         </div>
-                        <select
+                        <SearchableSelect
                             id="department_id"
                             name="department_id"
                             required
                             value={departmentId}
-                            onChange={(event) =>
-                                setDepartmentId(event.target.value)
-                            }
-                            className="border-input bg-background h-9 w-full rounded-md border px-3 text-sm shadow-xs"
-                        >
-                            <option value="" disabled>
-                                {t('servers.selectDepartment')}
-                            </option>
-                            {departmentOptions.map((department) => (
-                                <option
-                                    key={department.id}
-                                    value={department.id}
-                                >
-                                    {department.name}
-                                </option>
-                            ))}
-                        </select>
+                            onValueChange={setDepartmentId}
+                            options={departmentSelectOptions}
+                            placeholder={t('servers.selectDepartment')}
+                            searchPlaceholder={t(
+                                'departments.searchPlaceholder',
+                            )}
+                        />
                         <InputError message={errors.department_id} />
                     </div>
 
@@ -318,25 +336,18 @@ export default function ServerFormFields({
                                 </Button>
                             )}
                         </div>
-                        <select
+                        <SearchableSelect
                             id="server_model_id"
                             name="server_model_id"
                             required
                             value={serverModelId}
-                            onChange={(event) =>
-                                setServerModelId(event.target.value)
-                            }
-                            className="border-input bg-background h-9 w-full rounded-md border px-3 text-sm shadow-xs"
-                        >
-                            <option value="" disabled>
-                                {t('servers.selectServerModel')}
-                            </option>
-                            {modelOptions.map((model) => (
-                                <option key={model.id} value={model.id}>
-                                    {model.name}
-                                </option>
-                            ))}
-                        </select>
+                            onValueChange={setServerModelId}
+                            options={modelSelectOptions}
+                            placeholder={t('servers.selectServerModel')}
+                            searchPlaceholder={t(
+                                'serverModels.searchPlaceholder',
+                            )}
+                        />
                         <InputError message={errors.server_model_id} />
                     </div>
 
@@ -537,27 +548,18 @@ export default function ServerFormFields({
                                 >
                                     {t('servers.itSupportName')}
                                 </FieldIconLabel>
-                                <select
+                                <SearchableSelect
                                     id="it_support_id"
                                     name="it_support_id"
                                     value={itSupportId}
-                                    onChange={(event) =>
-                                        onItSupportChange(event.target.value)
-                                    }
-                                    className="border-input bg-background h-9 w-full rounded-md border px-3 text-sm shadow-xs"
-                                >
-                                    <option value="">
-                                        {t('servers.selectContact')}
-                                    </option>
-                                    {itSupportOptions.map((contact) => (
-                                        <option
-                                            key={contact.id}
-                                            value={contact.id}
-                                        >
-                                            {contact.name}
-                                        </option>
-                                    ))}
-                                </select>
+                                    onValueChange={onItSupportChange}
+                                    options={itSupportSelectOptions}
+                                    placeholder={t('servers.selectContact')}
+                                    searchPlaceholder={t(
+                                        'itSupport.searchPlaceholder',
+                                    )}
+                                    allowClear
+                                />
                                 <InputError message={errors.it_support_id} />
                             </div>
                             <div className="grid gap-2">
