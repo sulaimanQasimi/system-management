@@ -31,6 +31,7 @@ class DepartmentController extends Controller implements HasMiddleware
         $filters = $this->indexFilters($request, self::SORTABLE);
 
         $departments = Department::query()
+            ->with('parent:id,name')
             ->search($filters['search'])
             ->when($filters['created_from'], fn ($query) => $query->whereDate('created_at', '>=', $filters['created_from']))
             ->when($filters['created_to'], fn ($query) => $query->whereDate('created_at', '<=', $filters['created_to']))
@@ -40,6 +41,8 @@ class DepartmentController extends Controller implements HasMiddleware
             ->through(fn (Department $department) => [
                 'id' => $department->id,
                 'name' => $department->name,
+                'parent_id' => $department->parent_id,
+                'parent' => $department->parent?->name,
                 'created_at' => $department->created_at?->toDateTimeString(),
                 'updated_at' => $department->updated_at?->toDateTimeString(),
             ]);
@@ -53,7 +56,9 @@ class DepartmentController extends Controller implements HasMiddleware
 
     public function create(): Response
     {
-        return Inertia::render('departments/create');
+        return Inertia::render('departments/create', [
+            'parentOptions' => Department::optionsForSelect(),
+        ]);
     }
 
     public function store(StoreDepartmentRequest $request): RedirectResponse
@@ -70,10 +75,27 @@ class DepartmentController extends Controller implements HasMiddleware
 
     public function show(Department $department): Response
     {
+        $department->load([
+            'parent:id,name',
+            'children:id,name,parent_id',
+        ]);
+
         return Inertia::render('departments/show', [
             'department' => [
                 'id' => $department->id,
                 'name' => $department->name,
+                'parent_id' => $department->parent_id,
+                'parent' => $department->parent
+                    ? ['id' => $department->parent->id, 'name' => $department->parent->name]
+                    : null,
+                'path' => $department->ancestryPath(),
+                'children' => $department->children
+                    ->map(fn (Department $child) => [
+                        'id' => $child->id,
+                        'name' => $child->name,
+                    ])
+                    ->values()
+                    ->all(),
                 'created_at' => $department->created_at?->toDateTimeString(),
                 'updated_at' => $department->updated_at?->toDateTimeString(),
             ],
@@ -86,7 +108,9 @@ class DepartmentController extends Controller implements HasMiddleware
             'department' => [
                 'id' => $department->id,
                 'name' => $department->name,
+                'parent_id' => $department->parent_id,
             ],
+            'parentOptions' => Department::optionsForSelect($department->id),
         ]);
     }
 

@@ -94,7 +94,7 @@ class ActiveDirectoryUserController extends Controller implements HasMiddleware
                 'per_page' => $perPage,
             ],
             'perPageOptions' => self::PER_PAGE_OPTIONS,
-            'departments' => Department::query()->orderBy('name')->get(['id', 'name']),
+            'departments' => Department::optionsForSelect(),
         ]);
     }
 
@@ -160,7 +160,7 @@ class ActiveDirectoryUserController extends Controller implements HasMiddleware
     public function create(): Response
     {
         return Inertia::render('ad-users/create', [
-            'departments' => Department::query()->orderBy('name')->get(['id', 'name']),
+            'departments' => Department::optionsForSelect(),
         ]);
     }
 
@@ -231,7 +231,7 @@ class ActiveDirectoryUserController extends Controller implements HasMiddleware
                 'pbx' => $activeDirectoryUser->pbx,
                 'phone' => $activeDirectoryUser->phone,
             ],
-            'departments' => Department::query()->orderBy('name')->get(['id', 'name']),
+            'departments' => Department::optionsForSelect(),
         ]);
     }
 

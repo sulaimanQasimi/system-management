@@ -28,6 +28,8 @@ type ServerShow = {
     status: string;
     status_label: string;
     department: string | null;
+    department_path: { id: number; name: string }[];
+    department_path_label: string | null;
     server_model: string | null;
     it_support: string | null;
     it_support_phone: string | null;
@@ -139,8 +141,36 @@ export default function ServersShow({ server }: { server: ServerShow }) {
                         />
                         <DetailField
                             label={t('common.department')}
-                            value={server.department}
+                            value={
+                                server.department_path_label ||
+                                server.department ||
+                                '—'
+                            }
                         />
+                        {server.department_path.length > 1 && (
+                            <DetailField
+                                label={t('departments.hierarchy')}
+                                value={
+                                    <div className="flex flex-wrap items-center gap-1 text-sm">
+                                        {server.department_path.map(
+                                            (item, index) => (
+                                                <span
+                                                    key={item.id}
+                                                    className="inline-flex items-center gap-1"
+                                                >
+                                                    {index > 0 && (
+                                                        <span className="text-muted-foreground">
+                                                            ›
+                                                        </span>
+                                                    )}
+                                                    <span>{item.name}</span>
+                                                </span>
+                                            ),
+                                        )}
+                                    </div>
+                                }
+                            />
+                        )}
                         <DetailField
                             label={t('servers.serverModel')}
                             value={server.server_model}

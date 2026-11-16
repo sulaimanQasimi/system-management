@@ -23,7 +23,13 @@ import { useCan } from '@/hooks/use-can';
 import { useTranslations } from '@/hooks/use-locale';
 import { statusLabel } from '@/lib/status-label';
 
-export type Option = { id: number; name: string };
+export type Option = {
+    id: number;
+    name: string;
+    label?: string;
+    parent_id?: number | null;
+    depth?: number;
+};
 export type ItSupportOption = {
     id: number;
     name: string;
@@ -215,7 +221,7 @@ export default function ServerFormFields({
         () =>
             departmentOptions.map((department) => ({
                 value: String(department.id),
-                label: department.name,
+                label: department.label ?? department.name,
             })),
         [departmentOptions],
     );
@@ -691,10 +697,22 @@ export default function ServerFormFields({
                 endpoint="/quick-create/departments"
                 placeholder={t('servers.quickCreateDepartmentPlaceholder')}
                 icon={<Building2 className="size-4" />}
+                parentOptions={departmentOptions}
                 onCreated={(option) => {
+                    const label = option.label ?? option.name;
                     setDepartmentOptions((current) =>
-                        [...current, option].sort((a, b) =>
-                            a.name.localeCompare(b.name),
+                        [
+                            ...current,
+                            {
+                                id: option.id,
+                                name: option.name,
+                                label,
+                                parent_id: option.parent_id ?? null,
+                            },
+                        ].sort((a, b) =>
+                            (a.label ?? a.name).localeCompare(
+                                b.label ?? b.name,
+                            ),
                         ),
                     );
                     setDepartmentId(String(option.id));

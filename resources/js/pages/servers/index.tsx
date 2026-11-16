@@ -1,56 +1,25 @@
-import { Form, Head, Link } from '@inertiajs/react';
-import { Eye, HardDrive, Pencil, Plus, Trash2 } from 'lucide-react';
+import { Head, Link } from '@inertiajs/react';
+import { HardDrive, Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import ServerController from '@/actions/App/Http/Controllers/ServerController';
 import {
     applyListFilters,
     ResourceFilters,
-    ResourcePagination,
-    ResultSummary,
-    SortHeader,
     type ListFilters,
-    type Paginated,
 } from '@/components/resource-list';
 import { PageHeader } from '@/components/layout/page-header';
-import { Badge } from '@/components/ui/badge';
+import ServersDepartmentTree, {
+    type DepartmentTreeNode,
+} from '@/components/servers-department-tree';
 import { Button } from '@/components/ui/button';
-import {
-    DataTable,
-    DataTableActions,
-    DataTableBody,
-    DataTableCell,
-    DataTableEmpty,
-    DataTableHead,
-    DataTableHeader,
-    DataTableHeaderRow,
-    DataTableRow,
-} from '@/components/ui/data-table';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useCan } from '@/hooks/use-can';
 import { useTranslations } from '@/hooks/use-locale';
 import { statusLabel } from '@/lib/status-label';
-import { create, edit, index, show } from '@/routes/servers';
+import { create, index } from '@/routes/servers';
 
-type Option = { id: number; name: string };
+type Option = { id: number; name: string; label?: string };
 type StatusOption = { value: string; label: string };
-
-type ServerRow = {
-    id: number;
-    site_name: string;
-    name: string;
-    ip_address: string;
-    status: string;
-    status_label: string;
-    is_vm: boolean;
-    department: string | null;
-    server_model: string | null;
-    it_support: string | null;
-    it_support_phone: string | null;
-    services: string[];
-    created_by: string | null;
-    created_at: string | null;
-};
 
 type ServerFilters = ListFilters & {
     status: string;
@@ -60,23 +29,9 @@ type ServerFilters = ListFilters & {
     site_name: string;
 };
 
-function statusVariant(status: string) {
-    switch (status) {
-        case 'active':
-            return 'success' as const;
-        case 'maintenance':
-            return 'warning' as const;
-        case 'inactive':
-            return 'outline' as const;
-        case 'decommissioned':
-            return 'destructive' as const;
-        default:
-            return 'outline' as const;
-    }
-}
-
 export default function ServersIndex({
-    servers,
+    departmentTree,
+    totalServers,
     filters,
     perPageOptions,
     statusOptions,
@@ -84,7 +39,8 @@ export default function ServersIndex({
     serverModels,
     services,
 }: {
-    servers: Paginated<ServerRow>;
+    departmentTree: DepartmentTreeNode[];
+    totalServers: number;
     filters: ServerFilters;
     perPageOptions: number[];
     statusOptions: StatusOption[];
@@ -138,7 +94,9 @@ export default function ServersIndex({
                     extraFields={
                         <>
                             <div className="grid gap-2">
-                                <Label htmlFor="site_name">{t('common.site')}</Label>
+                                <Label htmlFor="site_name">
+                                    {t('common.site')}
+                                </Label>
                                 <Input
                                     id="site_name"
                                     value={siteName}
@@ -165,7 +123,9 @@ export default function ServersIndex({
                                 />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="status">{t('common.status')}</Label>
+                                <Label htmlFor="status">
+                                    {t('common.status')}
+                                </Label>
                                 <select
                                     id="status"
                                     value={status}
@@ -223,7 +183,8 @@ export default function ServersIndex({
                                             key={department.id}
                                             value={department.id}
                                         >
-                                            {department.name}
+                                            {department.label ??
+                                                department.name}
                                         </option>
                                     ))}
                                 </select>
@@ -291,239 +252,11 @@ export default function ServersIndex({
                     }
                 />
 
-                <ResultSummary
-                    from={servers.from}
-                    to={servers.to}
-                    total={servers.total}
-                />
+                <p className="text-muted-foreground text-sm">
+                    {t('servers.treeSummary', { count: totalServers })}
+                </p>
 
-                <DataTable minWidth={1200}>
-                    <DataTableHeader>
-                        <DataTableHeaderRow>
-                            <DataTableHead>
-                                <SortHeader
-                                    label={t('common.site')}
-                                    column="site_name"
-                                    filters={filters}
-                                    indexUrl={indexUrl}
-                                />
-                            </DataTableHead>
-                            <DataTableHead>
-                                <SortHeader
-                                    label={t('common.server')}
-                                    column="name"
-                                    filters={filters}
-                                    indexUrl={indexUrl}
-                                />
-                            </DataTableHead>
-                            <DataTableHead>{t('common.model')}</DataTableHead>
-                            <DataTableHead>
-                                <SortHeader
-                                    label={t('common.ip')}
-                                    column="ip_address"
-                                    filters={filters}
-                                    indexUrl={indexUrl}
-                                />
-                            </DataTableHead>
-                            <DataTableHead>
-                                {t('common.services')}
-                            </DataTableHead>
-                            <DataTableHead>
-                                {t('common.department')}
-                            </DataTableHead>
-                            <DataTableHead>
-                                {t('servers.itSupport')}
-                            </DataTableHead>
-                            <DataTableHead>
-                                <SortHeader
-                                    label={t('common.status')}
-                                    column="status"
-                                    filters={filters}
-                                    indexUrl={indexUrl}
-                                />
-                            </DataTableHead>
-                            <DataTableHead>
-                                {t('common.createdBy')}
-                            </DataTableHead>
-                            <DataTableHead align="end">
-                                {t('common.actions')}
-                            </DataTableHead>
-                        </DataTableHeaderRow>
-                    </DataTableHeader>
-                    <DataTableBody>
-                        {servers.data.length === 0 ? (
-                            <DataTableEmpty colSpan={10}>
-                                {t('servers.noResults')}
-                            </DataTableEmpty>
-                        ) : (
-                            servers.data.map((server) => (
-                                <DataTableRow key={server.id}>
-                                    <DataTableCell>
-                                        {server.site_name}
-                                    </DataTableCell>
-                                    <DataTableCell className="font-medium">
-                                        <div className="flex flex-wrap items-center gap-2">
-                                            <Link
-                                                href={show(server.id)}
-                                                className="hover:text-primary hover:underline"
-                                            >
-                                                {server.name}
-                                            </Link>
-                                            {server.is_vm && (
-                                                <Badge variant="secondary">
-                                                    {t('common.vm')}
-                                                </Badge>
-                                            )}
-                                        </div>
-                                    </DataTableCell>
-                                    <DataTableCell>
-                                        {server.server_model ?? '—'}
-                                    </DataTableCell>
-                                    <DataTableCell className="font-mono text-xs">
-                                        {server.ip_address}
-                                    </DataTableCell>
-                                    <DataTableCell>
-                                        <div className="flex max-w-[220px] flex-wrap gap-1">
-                                            {server.services.length === 0 ? (
-                                                <span className="text-muted-foreground">
-                                                    —
-                                                </span>
-                                            ) : (
-                                                server.services.map(
-                                                    (service) => (
-                                                        <Badge
-                                                            key={service}
-                                                            variant="secondary"
-                                                        >
-                                                            {service}
-                                                        </Badge>
-                                                    ),
-                                                )
-                                            )}
-                                        </div>
-                                    </DataTableCell>
-                                    <DataTableCell>
-                                        {server.department ?? '—'}
-                                    </DataTableCell>
-                                    <DataTableCell>
-                                        {server.is_vm ? (
-                                            <span className="text-muted-foreground">
-                                                —
-                                            </span>
-                                        ) : (
-                                            <>
-                                                <div>
-                                                    {server.it_support ?? '—'}
-                                                </div>
-                                                {server.it_support_phone && (
-                                                    <div className="text-muted-foreground text-xs">
-                                                        {
-                                                            server.it_support_phone
-                                                        }
-                                                    </div>
-                                                )}
-                                            </>
-                                        )}
-                                    </DataTableCell>
-                                    <DataTableCell>
-                                        <Badge
-                                            variant={statusVariant(
-                                                server.status,
-                                            )}
-                                        >
-                                            {statusLabel(
-                                                t,
-                                                server.status,
-                                                server.status_label,
-                                            )}
-                                        </Badge>
-                                    </DataTableCell>
-                                    <DataTableCell>
-                                        {server.created_by ?? '—'}
-                                    </DataTableCell>
-                                    <DataTableCell>
-                                        <DataTableActions>
-                                            {can('server.view') && (
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    asChild
-                                                >
-                                                    <Link
-                                                        href={show(server.id)}
-                                                    >
-                                                        <Eye />
-                                                        <span className="sr-only">
-                                                            {t('common.view')}
-                                                        </span>
-                                                    </Link>
-                                                </Button>
-                                            )}
-                                            {can('server.update') && (
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    asChild
-                                                >
-                                                    <Link
-                                                        href={edit(server.id)}
-                                                    >
-                                                        <Pencil />
-                                                        <span className="sr-only">
-                                                            {t('common.edit')}
-                                                        </span>
-                                                    </Link>
-                                                </Button>
-                                            )}
-                                            {can('server.delete') && (
-                                                <Form
-                                                    {...ServerController.destroy.form(
-                                                        server.id,
-                                                    )}
-                                                    options={{
-                                                        preserveScroll: true,
-                                                    }}
-                                                    onSubmit={(event) => {
-                                                        if (
-                                                            !confirm(
-                                                                t(
-                                                                    'servers.deleteConfirm',
-                                                                ),
-                                                            )
-                                                        ) {
-                                                            event.preventDefault();
-                                                        }
-                                                    }}
-                                                >
-                                                    {({ processing }) => (
-                                                        <Button
-                                                            type="submit"
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            disabled={
-                                                                processing
-                                                            }
-                                                            className="text-destructive hover:text-destructive"
-                                                        >
-                                                            <Trash2 />
-                                                            <span className="sr-only">
-                                                                {t(
-                                                                    'common.delete',
-                                                                )}
-                                                            </span>
-                                                        </Button>
-                                                    )}
-                                                </Form>
-                                            )}
-                                        </DataTableActions>
-                                    </DataTableCell>
-                                </DataTableRow>
-                            ))
-                        )}
-                    </DataTableBody>
-                </DataTable>
-
-                <ResourcePagination links={servers.links} />
+                <ServersDepartmentTree tree={departmentTree} />
             </div>
         </>
     );

@@ -17,13 +17,20 @@ class QuickCreateController extends Controller
 
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:departments,name'],
+            'parent_id' => ['nullable', 'integer', 'exists:departments,id'],
         ]);
+
+        if (! array_key_exists('parent_id', $data) || blank($data['parent_id'] ?? null)) {
+            $data['parent_id'] = null;
+        }
 
         $department = Department::create($data);
 
         return response()->json([
             'id' => $department->id,
             'name' => $department->name,
+            'parent_id' => $department->parent_id,
+            'label' => $department->name,
         ]);
     }
 

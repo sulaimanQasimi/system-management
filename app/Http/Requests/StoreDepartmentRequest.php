@@ -12,6 +12,13 @@ class StoreDepartmentRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        if (! $this->filled('parent_id')) {
+            $this->merge(['parent_id' => null]);
+        }
+    }
+
     /**
      * @return array<string, ValidationRule|array<mixed>|string>
      */
@@ -19,6 +26,7 @@ class StoreDepartmentRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255', 'unique:departments,name'],
+            'parent_id' => ['nullable', 'integer', 'exists:departments,id'],
         ];
     }
 }

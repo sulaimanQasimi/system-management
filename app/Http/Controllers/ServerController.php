@@ -66,9 +66,18 @@ class ServerController extends Controller implements HasMiddleware
         $serviceId = $extra['service_id'] ?? null;
         $siteName = $extra['site_name'] ?? null;
 
-        $servers = Server::query()
+        $departmentScopeIds = null;
+
+        if ($departmentId) {
+            $departmentScopeIds = array_merge(
+                [$departmentId],
+                Department::descendantIdsOf($departmentId),
+            );
+        }
+
+        $filteredServers = Server::query()
             ->with([
-                'department:id,name',
+                'department:id,name,parent_id',
                 'serverModel:id,name',
                 'itSupport:id,name,lastname,pbx',
                 'services:id,name',
@@ -76,7 +85,10 @@ class ServerController extends Controller implements HasMiddleware
             ])
             ->search($base['search'])
             ->when($status, fn ($query) => $query->where('status', $status))
-            ->when($departmentId, fn ($query) => $query->where('department_id', $departmentId))
+            ->when(
+                $departmentScopeIds,
+                fn ($query) => $query->whereIn('department_id', $departmentScopeIds),
+            )
             ->when($serverModelId, fn ($query) => $query->where('server_model_id', $serverModelId))
             ->when($siteName, fn ($query) => $query->where('site_name', 'like', '%'.$siteName.'%'))
             ->when($serviceId, fn ($query) => $query->whereHas(
@@ -86,12 +98,32 @@ class ServerController extends Controller implements HasMiddleware
             ->when($base['created_from'], fn ($query) => $query->whereDate('created_at', '>=', $base['created_from']))
             ->when($base['created_to'], fn ($query) => $query->whereDate('created_at', '<=', $base['created_to']))
             ->orderBy($base['sort'], $base['direction'])
-            ->paginate($base['per_page'])
-            ->withQueryString()
-            ->through(fn (Server $server) => $this->transformServer($server));
+            ->get();
+
+        $serversByDepartment = $filteredServers->groupBy('department_id');
+
+        $departments = Department::query()
+            ->orderBy('name')
+            ->get(['id', 'name', 'parent_id']);
+
+        $departmentTree = $this->buildDepartmentServerTree($departments, $serversByDepartment);
+
+        $hasActiveFilters = filled($base['search'])
+            || $status
+            || $departmentId
+            || $serverModelId
+            || $serviceId
+            || filled($siteName)
+            || filled($base['created_from'])
+            || filled($base['created_to']);
+
+        if ($hasActiveFilters) {
+            $departmentTree = $this->pruneEmptyDepartmentNodes($departmentTree);
+        }
 
         return Inertia::render('servers/index', [
-            'servers' => $servers,
+            'departmentTree' => $departmentTree,
+            'totalServers' => $filteredServers->count(),
             'filters' => [
                 ...$this->indexFilterProps($base),
                 'status' => $status instanceof ServerStatus ? $status->value : ($status ?? ''),
@@ -102,7 +134,7 @@ class ServerController extends Controller implements HasMiddleware
             ],
             'perPageOptions' => self::PER_PAGE_OPTIONS,
             'statusOptions' => ServerStatus::options(),
-            'departments' => Department::query()->orderBy('name')->get(['id', 'name']),
+            'departments' => Department::optionsForSelect(),
             'serverModels' => ServerModel::query()->orderBy('name')->get(['id', 'name']),
             'services' => ServerService::query()->orderBy('name')->get(['id', 'name']),
         ]);
@@ -135,7 +167,7 @@ class ServerController extends Controller implements HasMiddleware
     public function show(Server $server): Response
     {
         $server->load([
-            'department:id,name',
+            'department:id,name,parent_id',
             'serverModel:id,name',
             'itSupport:id,name,lastname,pbx',
             'services:id,name',
@@ -155,6 +187,8 @@ class ServerController extends Controller implements HasMiddleware
                 'status' => $server->status->value,
                 'status_label' => $server->status->label(),
                 'department' => $server->department?->name,
+                'department_path' => $server->department?->ancestryPath() ?? [],
+                'department_path_label' => $server->department?->pathLabel(),
                 'server_model' => $server->serverModel?->name,
                 'it_support' => $server->itSupport
                     ? trim($server->itSupport->name.' '.$server->itSupport->lastname)
@@ -248,7 +282,7 @@ class ServerController extends Controller implements HasMiddleware
     private function formOptions(): array
     {
         return [
-            'departments' => Department::query()->orderBy('name')->get(['id', 'name']),
+            'departments' => Department::optionsForSelect(),
             'serverModels' => ServerModel::query()->orderBy('name')->get(['id', 'name']),
             'services' => ServerService::query()->orderBy('name')->get(['id', 'name']),
             'itSupports' => ItSupport::query()
@@ -264,6 +298,89 @@ class ServerController extends Controller implements HasMiddleware
                 ]),
             'statusOptions' => ServerStatus::options(),
         ];
+    }
+
+    /**
+     * @param  Collection<int, Department>  $departments
+     * @param  Collection<int|string, Collection<int, Server>>  $serversByDepartment
+     * @return list<array<string, mixed>>
+     */
+    private function buildDepartmentServerTree(
+        Collection $departments,
+        Collection $serversByDepartment,
+    ): array {
+        $byParent = $departments->groupBy(
+            fn (Department $department) => $department->parent_id ?? 0,
+        );
+
+        $build = function (int|string $parentKey) use (
+            &$build,
+            $byParent,
+            $serversByDepartment,
+        ): array {
+            /** @var Collection<int, Department> $children */
+            $children = $byParent->get($parentKey, collect());
+
+            return $children
+                ->map(function (Department $department) use (
+                    &$build,
+                    $serversByDepartment,
+                ): array {
+                    $childNodes = $build($department->id);
+                    /** @var Collection<int, Server> $directServers */
+                    $directServers = $serversByDepartment->get($department->id, collect());
+                    $servers = $directServers
+                        ->map(fn (Server $server) => $this->transformServer($server))
+                        ->values()
+                        ->all();
+                    $directCount = count($servers);
+                    $childTotal = collect($childNodes)->sum(
+                        fn (array $node): int => (int) $node['total_server_count'],
+                    );
+
+                    return [
+                        'id' => $department->id,
+                        'name' => $department->name,
+                        'parent_id' => $department->parent_id,
+                        'server_count' => $directCount,
+                        'total_server_count' => $directCount + $childTotal,
+                        'servers' => $servers,
+                        'children' => $childNodes,
+                    ];
+                })
+                ->values()
+                ->all();
+        };
+
+        return $build(0);
+    }
+
+    /**
+     * @param  list<array<string, mixed>>  $nodes
+     * @return list<array<string, mixed>>
+     */
+    private function pruneEmptyDepartmentNodes(array $nodes): array
+    {
+        $pruned = [];
+
+        foreach ($nodes as $node) {
+            /** @var list<array<string, mixed>> $children */
+            $children = $this->pruneEmptyDepartmentNodes($node['children'] ?? []);
+            $servers = $node['servers'] ?? [];
+
+            if ($children === [] && $servers === []) {
+                continue;
+            }
+
+            $node['children'] = $children;
+            $node['server_count'] = count($servers);
+            $node['total_server_count'] = $node['server_count'] + collect($children)->sum(
+                fn (array $child): int => (int) $child['total_server_count'],
+            );
+            $pruned[] = $node;
+        }
+
+        return $pruned;
     }
 
     /**
@@ -283,6 +400,7 @@ class ServerController extends Controller implements HasMiddleware
             'status' => $server->status->value,
             'status_label' => $server->status->label(),
             'is_vm' => $server->is_vm,
+            'department_id' => $server->department_id,
             'department' => $server->department?->name,
             'server_model' => $server->serverModel?->name,
             'it_support' => $server->itSupport

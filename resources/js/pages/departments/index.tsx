@@ -29,6 +29,8 @@ import { create, edit, index, show } from '@/routes/departments';
 type DepartmentRow = {
     id: number;
     name: string;
+    parent_id: number | null;
+    parent: string | null;
     created_at: string | null;
     updated_at: string | null;
 };
@@ -94,6 +96,9 @@ export default function DepartmentsIndex({
                                 />
                             </DataTableHead>
                             <DataTableHead>
+                                {t('departments.parent')}
+                            </DataTableHead>
+                            <DataTableHead>
                                 <SortHeader
                                     label={t('common.created')}
                                     column="created_at"
@@ -116,7 +121,7 @@ export default function DepartmentsIndex({
                     </DataTableHeader>
                     <DataTableBody>
                         {departments.data.length === 0 ? (
-                            <DataTableEmpty colSpan={4}>
+                            <DataTableEmpty colSpan={5}>
                                 {t('departments.noResults')}
                             </DataTableEmpty>
                         ) : (
@@ -124,6 +129,10 @@ export default function DepartmentsIndex({
                                 <DataTableRow key={department.id}>
                                     <DataTableCell className="font-medium">
                                         {department.name}
+                                    </DataTableCell>
+                                    <DataTableCell>
+                                        {department.parent ??
+                                            t('departments.noParent')}
                                     </DataTableCell>
                                     <DataTableCell>
                                         {department.created_at ?? '—'}

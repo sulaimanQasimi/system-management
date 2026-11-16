@@ -150,6 +150,11 @@ export type TranslationDictionary = {
         departmentSubtitle: string;
         departmentDetails: string;
         placeholderName: string;
+        parent: string;
+        selectParent: string;
+        noParent: string;
+        hierarchy: string;
+        children: string;
     };
     roles: {
         title: string;
@@ -193,6 +198,10 @@ export type TranslationDictionary = {
         serverModel: string;
         itSupport: string;
         noResults: string;
+        treeSummary: string;
+        treeServerCount: string;
+        treeChildCount: string;
+        treeEmptyDepartment: string;
         deleteConfirm: string;
         breadcrumbAdd: string;
         breadcrumbEdit: string;

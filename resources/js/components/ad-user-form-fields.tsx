@@ -7,7 +7,13 @@ import { useTranslations } from '@/hooks/use-locale';
 
 const EMAIL_DOMAIN = 'mov.gov.af';
 
-export type DepartmentOption = { id: number; name: string };
+export type DepartmentOption = {
+    id: number;
+    name: string;
+    label?: string;
+    parent_id?: number | null;
+    depth?: number;
+};
 
 export type AdUserFormValues = {
     name?: string;
@@ -58,7 +64,7 @@ export default function AdUserFormFields({
         () =>
             departments.map((department) => ({
                 value: String(department.id),
-                label: department.name,
+                label: department.label ?? department.name,
             })),
         [departments],
     );

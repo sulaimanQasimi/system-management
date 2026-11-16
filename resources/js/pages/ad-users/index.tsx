@@ -180,7 +180,7 @@ export default function AdUsersIndex({
     users: PaginatedUsers;
     filters: Filters;
     perPageOptions: number[];
-    departments: { id: number; name: string }[];
+    departments: { id: number; name: string; label?: string }[];
 }) {
     const { can } = useCan();
     const { t } = useTranslations();
@@ -382,7 +382,7 @@ export default function AdUsersIndex({
                                         key={department.id}
                                         value={department.id}
                                     >
-                                        {department.name}
+                                        {department.label ?? department.name}
                                     </option>
                                 ))}
                             </select>
