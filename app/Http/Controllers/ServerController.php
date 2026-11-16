@@ -75,7 +75,7 @@ class ServerController extends Controller implements HasMiddleware
             );
         }
 
-        $filteredServers = Server::query()
+        $serverQuery = Server::query()
             ->with([
                 'department:id,name,parent_id',
                 'serverModel:id,name',
@@ -97,9 +97,9 @@ class ServerController extends Controller implements HasMiddleware
             ))
             ->when($base['created_from'], fn ($query) => $query->whereDate('created_at', '>=', $base['created_from']))
             ->when($base['created_to'], fn ($query) => $query->whereDate('created_at', '<=', $base['created_to']))
-            ->orderBy($base['sort'], $base['direction'])
-            ->get();
+            ->orderBy($base['sort'], $base['direction']);
 
+        $filteredServers = (clone $serverQuery)->get();
         $serversByDepartment = $filteredServers->groupBy('department_id');
 
         $departments = Department::query()
@@ -121,7 +121,13 @@ class ServerController extends Controller implements HasMiddleware
             $departmentTree = $this->pruneEmptyDepartmentNodes($departmentTree);
         }
 
+        $servers = $serverQuery
+            ->paginate($base['per_page'])
+            ->withQueryString()
+            ->through(fn (Server $server) => $this->transformServer($server));
+
         return Inertia::render('servers/index', [
+            'servers' => $servers,
             'departmentTree' => $departmentTree,
             'totalServers' => $filteredServers->count(),
             'filters' => [

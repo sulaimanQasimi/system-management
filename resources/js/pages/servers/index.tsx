@@ -30,8 +30,8 @@ type ServerFilters = ListFilters & {
 };
 
 export default function ServersIndex({
-    departmentTree,
-    totalServers,
+    departmentTree = [],
+    totalServers = 0,
     filters,
     perPageOptions,
     statusOptions,
@@ -39,8 +39,8 @@ export default function ServersIndex({
     serverModels,
     services,
 }: {
-    departmentTree: DepartmentTreeNode[];
-    totalServers: number;
+    departmentTree?: DepartmentTreeNode[];
+    totalServers?: number;
     filters: ServerFilters;
     perPageOptions: number[];
     statusOptions: StatusOption[];
