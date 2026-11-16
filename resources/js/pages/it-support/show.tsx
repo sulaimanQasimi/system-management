@@ -10,6 +10,7 @@ type ContactShow = {
     id: number;
     name: string;
     lastname: string;
+    site_name: string;
     pbx: string | null;
     created_at: string | null;
     updated_at: string | null;
@@ -60,6 +61,10 @@ export default function ItSupportShow({ contact }: { contact: ContactShow }) {
                     <DetailField
                         label={t('common.lastName')}
                         value={contact.lastname}
+                    />
+                    <DetailField
+                        label={t('servers.siteName')}
+                        value={contact.site_name}
                     />
                     <DetailField label={t('common.pbx')} value={contact.pbx} />
                     <DetailField

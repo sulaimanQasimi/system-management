@@ -16,6 +16,7 @@ export default function ItSupportEdit({
         id: number;
         name: string;
         lastname: string;
+        site_name: string;
         pbx: string | null;
     };
 }) {
@@ -66,6 +67,23 @@ export default function ItSupportEdit({
                                             defaultValue={contact.lastname}
                                         />
                                         <InputError message={errors.lastname} />
+                                    </div>
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="site_name">
+                                            {t('servers.siteName')}
+                                        </Label>
+                                        <Input
+                                            id="site_name"
+                                            name="site_name"
+                                            required
+                                            defaultValue={contact.site_name}
+                                            placeholder={t(
+                                                'itSupport.placeholderSiteName',
+                                            )}
+                                        />
+                                        <InputError
+                                            message={errors.site_name}
+                                        />
                                     </div>
                                     <div className="grid gap-2">
                                         <Label htmlFor="pbx">

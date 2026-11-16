@@ -34,6 +34,7 @@ type ItSupportRow = {
     id: number;
     name: string;
     lastname: string;
+    site_name: string;
     pbx: string | null;
     created_at: string | null;
     updated_at: string | null;
@@ -41,6 +42,7 @@ type ItSupportRow = {
 
 type ItSupportFilters = ListFilters & {
     pbx: string;
+    site_name: string;
 };
 
 export default function ItSupportIndex({
@@ -56,10 +58,12 @@ export default function ItSupportIndex({
     const { can } = useCan();
     const { t } = useTranslations();
     const [pbx, setPbx] = useState(filters.pbx);
+    const [siteName, setSiteName] = useState(filters.site_name);
 
     useEffect(() => {
         setPbx(filters.pbx);
-    }, [filters.pbx]);
+        setSiteName(filters.site_name);
+    }, [filters.pbx, filters.site_name]);
 
     return (
         <>
@@ -88,31 +92,64 @@ export default function ItSupportIndex({
                     perPageOptions={perPageOptions}
                     searchPlaceholder={t('itSupport.searchPlaceholder')}
                     extraFields={
-                        <div className="grid gap-2 xl:col-span-2">
-                            <Label htmlFor="pbx">{t('common.pbx')}</Label>
-                            <Input
-                                id="pbx"
-                                value={pbx}
-                                onChange={(event) => setPbx(event.target.value)}
-                                onBlur={() =>
-                                    applyListFilters(
-                                        indexUrl,
-                                        { pbx },
-                                        filters,
-                                    )
-                                }
-                                onKeyDown={(event) => {
-                                    if (event.key === 'Enter') {
+                        <>
+                            <div className="grid gap-2">
+                                <Label htmlFor="site_name">
+                                    {t('servers.siteName')}
+                                </Label>
+                                <Input
+                                    id="site_name"
+                                    value={siteName}
+                                    onChange={(event) =>
+                                        setSiteName(event.target.value)
+                                    }
+                                    onBlur={() =>
                                         applyListFilters(
                                             indexUrl,
-                                            { pbx },
+                                            { site_name: siteName, pbx },
                                             filters,
-                                        );
+                                        )
                                     }
-                                }}
-                                placeholder={t('itSupport.filterByPbx')}
-                            />
-                        </div>
+                                    onKeyDown={(event) => {
+                                        if (event.key === 'Enter') {
+                                            applyListFilters(
+                                                indexUrl,
+                                                { site_name: siteName, pbx },
+                                                filters,
+                                            );
+                                        }
+                                    }}
+                                    placeholder={t('itSupport.filterBySiteName')}
+                                />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="pbx">{t('common.pbx')}</Label>
+                                <Input
+                                    id="pbx"
+                                    value={pbx}
+                                    onChange={(event) =>
+                                        setPbx(event.target.value)
+                                    }
+                                    onBlur={() =>
+                                        applyListFilters(
+                                            indexUrl,
+                                            { site_name: siteName, pbx },
+                                            filters,
+                                        )
+                                    }
+                                    onKeyDown={(event) => {
+                                        if (event.key === 'Enter') {
+                                            applyListFilters(
+                                                indexUrl,
+                                                { site_name: siteName, pbx },
+                                                filters,
+                                            );
+                                        }
+                                    }}
+                                    placeholder={t('itSupport.filterByPbx')}
+                                />
+                            </div>
+                        </>
                     }
                 />
 
@@ -122,7 +159,7 @@ export default function ItSupportIndex({
                     total={contacts.total}
                 />
 
-                <DataTable minWidth={720}>
+                <DataTable minWidth={840}>
                     <DataTableHeader>
                         <DataTableHeaderRow>
                             <DataTableHead>
@@ -137,6 +174,14 @@ export default function ItSupportIndex({
                                 <SortHeader
                                     label={t('common.lastName')}
                                     column="lastname"
+                                    filters={filters}
+                                    indexUrl={indexUrl}
+                                />
+                            </DataTableHead>
+                            <DataTableHead>
+                                <SortHeader
+                                    label={t('servers.siteName')}
+                                    column="site_name"
                                     filters={filters}
                                     indexUrl={indexUrl}
                                 />
@@ -164,7 +209,7 @@ export default function ItSupportIndex({
                     </DataTableHeader>
                     <DataTableBody>
                         {contacts.data.length === 0 ? (
-                            <DataTableEmpty colSpan={5}>
+                            <DataTableEmpty colSpan={6}>
                                 {t('itSupport.noResults')}
                             </DataTableEmpty>
                         ) : (
@@ -175,6 +220,9 @@ export default function ItSupportIndex({
                                     </DataTableCell>
                                     <DataTableCell>
                                         {contact.lastname}
+                                    </DataTableCell>
+                                    <DataTableCell>
+                                        {contact.site_name || '—'}
                                     </DataTableCell>
                                     <DataTableCell>
                                         {contact.pbx ?? '—'}

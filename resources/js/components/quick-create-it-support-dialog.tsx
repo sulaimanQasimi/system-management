@@ -34,6 +34,7 @@ export default function QuickCreateItSupportDialog({
     const { t } = useTranslations();
     const [name, setName] = useState('');
     const [lastname, setLastname] = useState('');
+    const [siteName, setSiteName] = useState('');
     const [pbx, setPbx] = useState('');
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [processing, setProcessing] = useState(false);
@@ -41,6 +42,7 @@ export default function QuickCreateItSupportDialog({
     const reset = () => {
         setName('');
         setLastname('');
+        setSiteName('');
         setPbx('');
         setErrors({});
         setProcessing(false);
@@ -56,6 +58,7 @@ export default function QuickCreateItSupportDialog({
             {
                 name,
                 lastname,
+                site_name: siteName,
                 pbx: pbx || null,
             },
         );
@@ -150,7 +153,28 @@ export default function QuickCreateItSupportDialog({
                                 </p>
                             )}
                         </div>
-                        <div className="grid gap-2 sm:col-span-2">
+                        <div className="grid gap-2">
+                            <Label htmlFor="it-support-site-name">
+                                {t('servers.siteName')}
+                            </Label>
+                            <Input
+                                id="it-support-site-name"
+                                value={siteName}
+                                onChange={(event) =>
+                                    setSiteName(event.target.value)
+                                }
+                                placeholder={t(
+                                    'itSupport.placeholderSiteName',
+                                )}
+                                required
+                            />
+                            {errors.site_name && (
+                                <p className="text-destructive text-sm">
+                                    {errors.site_name}
+                                </p>
+                            )}
+                        </div>
+                        <div className="grid gap-2">
                             <Label htmlFor="it-support-pbx">
                                 {t('servers.phonePbx')}
                             </Label>
@@ -181,7 +205,10 @@ export default function QuickCreateItSupportDialog({
                         <Button
                             type="submit"
                             disabled={
-                                processing || !name.trim() || !lastname.trim()
+                                processing ||
+                                !name.trim() ||
+                                !lastname.trim() ||
+                                !siteName.trim()
                             }
                         >
                             {processing ? <Spinner /> : <Plus />}

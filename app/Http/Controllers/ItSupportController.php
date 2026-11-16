@@ -24,7 +24,7 @@ class ItSupportController extends Controller implements HasMiddleware
     }
 
     /** @var list<string> */
-    private const SORTABLE = ['name', 'lastname', 'pbx', 'created_at', 'updated_at'];
+    private const SORTABLE = ['name', 'lastname', 'site_name', 'pbx', 'created_at', 'updated_at'];
 
     public function index(Request $request): Response
     {
@@ -32,13 +32,16 @@ class ItSupportController extends Controller implements HasMiddleware
 
         $extra = $request->validate([
             'pbx' => ['nullable', 'string', 'max:255'],
+            'site_name' => ['nullable', 'string', 'max:255'],
         ]);
 
         $pbx = $extra['pbx'] ?? null;
+        $siteName = $extra['site_name'] ?? null;
 
         $contacts = ItSupport::query()
             ->search($base['search'])
             ->when($pbx, fn ($query) => $query->where('pbx', 'like', '%'.$pbx.'%'))
+            ->when($siteName, fn ($query) => $query->where('site_name', 'like', '%'.$siteName.'%'))
             ->when($base['created_from'], fn ($query) => $query->whereDate('created_at', '>=', $base['created_from']))
             ->when($base['created_to'], fn ($query) => $query->whereDate('created_at', '<=', $base['created_to']))
             ->orderBy($base['sort'], $base['direction'])
@@ -48,6 +51,7 @@ class ItSupportController extends Controller implements HasMiddleware
                 'id' => $contact->id,
                 'name' => $contact->name,
                 'lastname' => $contact->lastname,
+                'site_name' => $contact->site_name,
                 'pbx' => $contact->pbx,
                 'created_at' => $contact->created_at?->toDateTimeString(),
                 'updated_at' => $contact->updated_at?->toDateTimeString(),
@@ -58,6 +62,7 @@ class ItSupportController extends Controller implements HasMiddleware
             'filters' => [
                 ...$this->indexFilterProps($base),
                 'pbx' => $pbx ?? '',
+                'site_name' => $siteName ?? '',
             ],
             'perPageOptions' => self::PER_PAGE_OPTIONS,
         ]);
@@ -87,6 +92,7 @@ class ItSupportController extends Controller implements HasMiddleware
                 'id' => $itSupport->id,
                 'name' => $itSupport->name,
                 'lastname' => $itSupport->lastname,
+                'site_name' => $itSupport->site_name,
                 'pbx' => $itSupport->pbx,
                 'created_at' => $itSupport->created_at?->toDateTimeString(),
                 'updated_at' => $itSupport->updated_at?->toDateTimeString(),
@@ -101,6 +107,7 @@ class ItSupportController extends Controller implements HasMiddleware
                 'id' => $itSupport->id,
                 'name' => $itSupport->name,
                 'lastname' => $itSupport->lastname,
+                'site_name' => $itSupport->site_name,
                 'pbx' => $itSupport->pbx,
             ],
         ]);

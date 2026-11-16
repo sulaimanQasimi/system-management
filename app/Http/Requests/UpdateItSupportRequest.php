@@ -20,6 +20,7 @@ class UpdateItSupportRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'lastname' => ['required', 'string', 'max:255'],
+            'site_name' => ['required', 'string', 'max:255'],
             'pbx' => ['nullable', 'string', 'max:255'],
         ];
     }

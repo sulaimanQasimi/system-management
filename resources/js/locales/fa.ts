@@ -306,8 +306,9 @@ const fa: TranslationDictionary = {
         title: 'پشتیبانی IT',
         description: 'مخاطبین پشتیبانی و شماره‌های PBX برای ریاست.',
         addContact: 'افزودن مخاطب',
-        searchPlaceholder: 'جستجوی نام، تخلص یا PBX…',
+        searchPlaceholder: 'جستجوی نام، تخلص، سایت یا PBX…',
         filterByPbx: 'فیلتر بر اساس شماره PBX',
+        filterBySiteName: 'فیلتر بر اساس نام سایت',
         noResults: 'مخاطب پشتیبانی IT یافت نشد.',
         deleteConfirm: 'این مخاطب پشتیبانی IT حذف شود؟',
         breadcrumbAdd: 'افزودن مخاطب',
@@ -325,6 +326,7 @@ const fa: TranslationDictionary = {
         contactDetails: 'جزئیات مخاطب',
         placeholderFirstName: 'نام',
         placeholderLastName: 'تخلص',
+        placeholderSiteName: 'نام سایت',
         placeholderExtension: 'شماره داخلی',
     },
     nav: {

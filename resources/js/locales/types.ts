@@ -306,6 +306,7 @@ export type TranslationDictionary = {
         addContact: string;
         searchPlaceholder: string;
         filterByPbx: string;
+        filterBySiteName: string;
         noResults: string;
         deleteConfirm: string;
         breadcrumbAdd: string;
@@ -323,6 +324,7 @@ export type TranslationDictionary = {
         contactDetails: string;
         placeholderFirstName: string;
         placeholderLastName: string;
+        placeholderSiteName: string;
         placeholderExtension: string;
     };
     nav: {

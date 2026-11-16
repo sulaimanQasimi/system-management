@@ -303,8 +303,9 @@ const en: TranslationDictionary = {
         title: 'IT Support',
         description: 'Support contacts and PBX extensions for the department.',
         addContact: 'Add contact',
-        searchPlaceholder: 'Search name, last name, or PBX…',
+        searchPlaceholder: 'Search name, last name, site, or PBX…',
         filterByPbx: 'Filter by PBX extension',
+        filterBySiteName: 'Filter by site name',
         noResults: 'No IT Support contacts found.',
         deleteConfirm: 'Delete this IT Support contact?',
         breadcrumbAdd: 'Add contact',
@@ -322,6 +323,7 @@ const en: TranslationDictionary = {
         contactDetails: 'Contact details',
         placeholderFirstName: 'First name',
         placeholderLastName: 'Last name',
+        placeholderSiteName: 'Site name',
         placeholderExtension: 'Extension',
     },
     nav: {

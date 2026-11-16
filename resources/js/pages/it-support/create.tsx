@@ -60,6 +60,22 @@ export default function ItSupportCreate() {
                                         <InputError message={errors.lastname} />
                                     </div>
                                     <div className="grid gap-2">
+                                        <Label htmlFor="site_name">
+                                            {t('servers.siteName')}
+                                        </Label>
+                                        <Input
+                                            id="site_name"
+                                            name="site_name"
+                                            required
+                                            placeholder={t(
+                                                'itSupport.placeholderSiteName',
+                                            )}
+                                        />
+                                        <InputError
+                                            message={errors.site_name}
+                                        />
+                                    </div>
+                                    <div className="grid gap-2">
                                         <Label htmlFor="pbx">
                                             {t('common.pbx')}
                                         </Label>
