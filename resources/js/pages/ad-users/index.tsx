@@ -79,6 +79,7 @@ type Filters = {
 };
 
 type SortKey =
+    | 'id'
     | 'name'
     | 'lastname'
     | 'username'
@@ -108,7 +109,7 @@ function applyFilters(next: Partial<Filters>, current: Filters) {
     if (merged.date_to) {
         params.date_to = merged.date_to;
     }
-    if (merged.sort && merged.sort !== 'created_at') {
+    if (merged.sort && merged.sort !== 'id') {
         params.sort = merged.sort;
     }
     if (merged.direction && merged.direction !== 'desc') {
@@ -199,7 +200,7 @@ export default function AdUsersIndex({
         department_id: filters.department_id || undefined,
         date_from: filters.date_from || undefined,
         date_to: filters.date_to || undefined,
-        sort: filters.sort !== 'created_at' ? filters.sort : undefined,
+        sort: filters.sort !== 'id' ? filters.sort : undefined,
         direction: filters.direction !== 'desc' ? filters.direction : undefined,
     };
 
@@ -247,7 +248,7 @@ export default function AdUsersIndex({
             filters.department_id ||
             filters.date_from ||
             filters.date_to ||
-            filters.sort !== 'created_at' ||
+            filters.sort !== 'id' ||
             filters.direction !== 'desc' ||
             filters.per_page !== 15,
     );

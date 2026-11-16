@@ -39,6 +39,7 @@ class ActiveDirectoryUserController extends Controller implements HasMiddleware
 
     /** @var list<string> */
     private const SORTABLE = [
+        'id',
         'name',
         'lastname',
         'username',
@@ -53,13 +54,14 @@ class ActiveDirectoryUserController extends Controller implements HasMiddleware
     public function index(Request $request): Response
     {
         $filters = $this->validatedFilters($request);
-        $sort = $filters['sort'] ?? 'created_at';
+        $sort = $filters['sort'] ?? 'id';
         $direction = $filters['direction'] ?? 'desc';
         $perPage = (int) ($filters['per_page'] ?? 15);
 
         $users = $this->filteredQuery($filters)
             ->with(['creator:id,name', 'department:id,name'])
             ->orderBy($sort, $direction)
+            ->when($sort !== 'id', fn ($query) => $query->orderBy('id', $direction))
             ->paginate($perPage)
             ->withQueryString()
             ->through(fn (ActiveDirectoryUser $user) => [
@@ -99,10 +101,12 @@ class ActiveDirectoryUserController extends Controller implements HasMiddleware
     public function export(Request $request): BinaryFileResponse
     {
         $filters = $this->validatedFilters($request);
-        $sort = $filters['sort'] ?? 'created_at';
+        $sort = $filters['sort'] ?? 'id';
         $direction = $filters['direction'] ?? 'desc';
 
-        $query = $this->filteredQuery($filters)->orderBy($sort, $direction);
+        $query = $this->filteredQuery($filters)
+            ->orderBy($sort, $direction)
+            ->when($sort !== 'id', fn ($query) => $query->orderBy('id', $direction));
 
         return Excel::download(
             new ActiveDirectoryUsersExport($query),
@@ -147,7 +151,10 @@ class ActiveDirectoryUserController extends Controller implements HasMiddleware
             'message' => __('Active Directory users imported.'),
         ]);
 
-        return to_route('ad-users.index');
+        return to_route('ad-users.index', [
+            'sort' => 'id',
+            'direction' => 'desc',
+        ]);
     }
 
     public function create(): Response
@@ -181,7 +188,10 @@ class ActiveDirectoryUserController extends Controller implements HasMiddleware
                 : __(':count Active Directory users created.', ['count' => $count]),
         ]);
 
-        return to_route('ad-users.index');
+        return to_route('ad-users.index', [
+            'sort' => 'id',
+            'direction' => 'desc',
+        ]);
     }
 
     public function show(ActiveDirectoryUser $activeDirectoryUser): Response
