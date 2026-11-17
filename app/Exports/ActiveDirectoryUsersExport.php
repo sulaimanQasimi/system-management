@@ -71,7 +71,7 @@ class ActiveDirectoryUsersExport implements FromCollection, WithHeadings, WithMa
             $row->name,
             $row->lastname,
             $row->username,
-            $row->email,
+            $row->canonicalEmail(),
             $row->department?->name,
             $row->job,
             $row->pbx,

@@ -610,7 +610,9 @@ export default function AdUsersIndex({
                                         {user.username}
                                     </DataTableCell>
                                     <DataTableCell truncate>
-                                        {user.email}
+                                        {user.username
+                                            ? `${user.username}@mod.gov.af`
+                                            : user.email}
                                     </DataTableCell>
                                     <DataTableCell truncate>
                                         {user.department ?? '—'}

@@ -39,6 +39,34 @@ use Illuminate\Support\Carbon;
 ])]
 class ActiveDirectoryUser extends Model
 {
+    public const EMAIL_DOMAIN = 'mod.gov.af';
+
+    /** @var list<string> */
+    public const LEGACY_EMAIL_DOMAINS = ['mof.gov.af', 'mov.gov.af'];
+
+    /**
+     * Canonical AD email for display and persistence (username@mod.gov.af).
+     */
+    public function canonicalEmail(): string
+    {
+        $username = trim((string) $this->username);
+
+        if ($username !== '') {
+            return $username.'@'.self::EMAIL_DOMAIN;
+        }
+
+        $email = (string) $this->email;
+
+        foreach (self::LEGACY_EMAIL_DOMAINS as $legacyDomain) {
+            $suffix = '@'.$legacyDomain;
+            if (str_ends_with(strtolower($email), $suffix)) {
+                return substr($email, 0, -strlen($suffix)).'@'.self::EMAIL_DOMAIN;
+            }
+        }
+
+        return $email;
+    }
+
     /**
      * @return BelongsTo<Department, $this>
      */
