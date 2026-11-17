@@ -12,7 +12,7 @@ use Maatwebsite\Excel\Concerns\WithValidation;
 
 class ActiveDirectoryUsersImport implements ToModel, WithHeadingRow, WithValidation
 {
-    private const EMAIL_DOMAIN = 'mov.gov.af';
+    private const EMAIL_DOMAIN = 'mod.gov.af';
 
     /** @var array<string, int> */
     private array $departmentIdsByName = [];

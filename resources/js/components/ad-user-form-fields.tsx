@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import SearchableSelect from '@/components/ui/searchable-select';
 import { useTranslations } from '@/hooks/use-locale';
 
-const EMAIL_DOMAIN = 'mov.gov.af';
+const EMAIL_DOMAIN = 'mod.gov.af';
 
 export type DepartmentOption = {
     id: number;

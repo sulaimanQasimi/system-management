@@ -119,7 +119,7 @@ const fa: TranslationDictionary = {
         importExcel: 'ورود اکسل',
         downloadTemplate: 'دانلود قالب',
         importHint:
-            'فایل .xlsx / .xls / .csv را آپلود کنید. نام کاربری الزامی است؛ ایمیل به صورت username@mov.gov.af تنظیم می‌شود. نام‌های کاربری موجود به‌روزرسانی می‌شوند.',
+            'فایل .xlsx / .xls / .csv را آپلود کنید. نام کاربری الزامی است؛ ایمیل به صورت username@mod.gov.af تنظیم می‌شود. نام‌های کاربری موجود به‌روزرسانی می‌شوند.',
         importing: 'در حال ورود…',
     },
     departments: {

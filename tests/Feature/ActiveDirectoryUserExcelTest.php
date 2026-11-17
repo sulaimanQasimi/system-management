@@ -30,7 +30,7 @@ test('authorized users can export ad users to excel', function () {
         'name' => 'Ada',
         'lastname' => 'Lovelace',
         'username' => 'ada.lovelace',
-        'email' => 'ada.lovelace@mov.gov.af',
+        'email' => 'ada.lovelace@mod.gov.af',
         'department_id' => $department->id,
         'job' => 'Engineer',
         'created_by' => $this->admin->id,
@@ -71,7 +71,7 @@ test('authorized users can import ad users from csv', function () {
 
     $this->assertDatabaseHas('active_directory_users', [
         'username' => 'grace.hopper',
-        'email' => 'grace.hopper@mov.gov.af',
+        'email' => 'grace.hopper@mod.gov.af',
         'name' => 'Grace',
         'lastname' => 'Hopper',
         'department_id' => $department->id,
@@ -87,7 +87,7 @@ test('import updates existing users by username', function () {
         'name' => 'Old',
         'lastname' => 'Name',
         'username' => 'grace.hopper',
-        'email' => 'grace.hopper@mov.gov.af',
+        'email' => 'grace.hopper@mod.gov.af',
         'department_id' => null,
         'job' => 'Cadet',
         'created_by' => $this->admin->id,

@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreActiveDirectoryUserRequest extends FormRequest
 {
-    private const EMAIL_DOMAIN = 'mov.gov.af';
+    private const EMAIL_DOMAIN = 'mod.gov.af';
 
     public function authorize(): bool
     {

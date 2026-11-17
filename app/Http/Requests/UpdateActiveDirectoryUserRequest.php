@@ -8,7 +8,7 @@ use Illuminate\Validation\Rule;
 
 class UpdateActiveDirectoryUserRequest extends FormRequest
 {
-    private const EMAIL_DOMAIN = 'mov.gov.af';
+    private const EMAIL_DOMAIN = 'mod.gov.af';
 
     public function authorize(): bool
     {
